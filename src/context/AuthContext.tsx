@@ -38,18 +38,30 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const logout = async () => {
+    if (!auth || !auth.app) {
+      console.warn('Firebase Auth not initialized. Skipping logout.');
+      return;
+    }
     await signOut(auth);
   };
 
   useEffect(() => {
+    if (!auth || !auth.app) {
+      console.warn('Firebase Auth not initialized. Skipping auth listener.');
+      setLoading(false);
+      return;
+    }
+
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setUser(user);
       if (user) {
-        const userDoc = await getDoc(doc(db, 'users', user.uid));
-        if (userDoc.exists()) {
-          setUserData(userDoc.data());
-        } else {
-          setUserData(null);
+        if (db && db.type === 'firestore') { // Simple check for initialized Firestore
+          const userDoc = await getDoc(doc(db, 'users', user.uid));
+          if (userDoc.exists()) {
+            setUserData(userDoc.data());
+          } else {
+            setUserData(null);
+          }
         }
       } else {
         setUserData(null);
