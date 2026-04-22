@@ -1,0 +1,42 @@
+{
+  "nav": {
+    "home": "Home",
+    "features": "Features",
+    "mission": "Mission",
+    "marketplace": "Marketplace",
+    "join": "Join as Farmer",
+    "login": "Login Profile"
+  },
+  "hero": {
+    "title": "Empowering Farmers for a Sustainable Future",
+    "subtitle": "Join Kishan Seva Samiti to access exclusive benefits, sell organic products directly, and grow with a community dedicated to agricultural prosperity.",
+    "cta_join": "Join the Samiti",
+    "cta_marketplace": "Visit Marketplace",
+    "trust": "Trusted by"
+  },
+  "features": {
+    "title": "Membership Benefits",
+    "subtitle": "Everything you need to grow your farming business",
+    "cards": {
+      "card": {
+        "title": "Official Farmer ID",
+        "desc": "Get your digital and physical membership card with unique QR code."
+      },
+      "market": {
+        "title": "Direct Marketplace",
+        "desc": "Sell products like cow dung, fertilizers & seeds directly to buyers."
+      },
+      "referral": {
+        "title": "Earn via Referrals",
+        "desc": "Invite other farmers and earn ₹7 instantly per successful registration."
+      }
+    }
+  },
+  "footer": {
+    "legal": "© 2026 Kishan Seva Samiti. All rights reserved.",
+    "links": {
+      "privacy": "Privacy Policy",
+      "terms": "Terms of Service"
+    }
+  }
+}

@@ -1,0 +1,106 @@
+@import "tailwindcss";
+
+:root {
+  /* Premium Deep Forest & Sunset Gold Palette */
+  --emerald-900: #064e3b;
+  --emerald-800: #065f46;
+  --emerald-700: #047857;
+  --gold-500: #f59e0b;
+  --gold-400: #fbbf24;
+  --gold-300: #fcd34d;
+  
+  --primary: var(--emerald-900);
+  --primary-light: var(--emerald-700);
+  --accent: var(--gold-400);
+  --accent-dark: var(--gold-500);
+  
+  --background: #fbfbfc;
+  --surface: #ffffff;
+  --on-surface: #111827;
+  --on-primary: #ffffff;
+  
+  /* Glassmorphism Tokens */
+  --glass-bg: rgba(255, 255, 255, 0.03);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-blur: 16px;
+
+  /* Fonts */
+  --font-serif: var(--font-noto-serif), serif;
+  --font-sans: var(--font-manrope), sans-serif;
+
+  /* Spacing & Roundness */
+  --round-2xl: 1.5rem;
+  --round-xl: 1rem;
+  --round-lg: 0.75rem;
+}
+
+@theme {
+  --color-primary: var(--primary);
+  --color-primary-light: var(--primary-light);
+  --color-accent: var(--accent);
+  --color-accent-dark: var(--accent-dark);
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --font-serif: var(--font-serif);
+  --font-body: var(--font-sans);
+  --radius-2xl: var(--round-2xl);
+  --radius-xl: var(--round-xl);
+}
+
+body {
+  background-color: var(--background);
+  color: var(--on-surface);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  color: var(--primary);
+  letter-spacing: -0.02em;
+}
+
+/* Premium Utilities */
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+}
+
+.text-gradient-gold {
+  background: linear-gradient(135deg, var(--gold-500) 0%, var(--gold-300) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.bg-hero-gradient {
+  background: linear-gradient(to bottom, rgba(6, 78, 59, 1) 0%, rgba(6, 78, 59, 0.8) 100%);
+}
+
+.btn-premium {
+  @apply px-8 py-4 rounded-full font-bold transition-all duration-300 flex items-center justify-center gap-2;
+  background: var(--primary);
+  color: white;
+  box-shadow: 0 4px 20px rgba(6, 78, 59, 0.15);
+}
+
+.btn-premium:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(6, 78, 59, 0.25);
+  background: var(--primary-light);
+}
+
+.section-padding {
+  @apply py-24 px-6 md:px-12 lg:px-24;
+}
+
