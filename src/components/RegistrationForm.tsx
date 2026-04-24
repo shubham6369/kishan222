@@ -38,6 +38,12 @@ import { collection, query, where, getDocs, doc, setDoc, updateDoc, increment } 
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { useSearchParams, useRouter } from 'next/navigation';
 
+declare global {
+  interface Window {
+    recaptchaVerifier: any;
+  }
+}
+
 type Step = 1 | 2 | 3 | 4 | 'success';
 
 const steps = [
@@ -193,14 +199,33 @@ export default function RegistrationForm() {
           const appVerifier = window.recaptchaVerifier;
           const phoneWithCode = `+91${normalizedPhone}`;
           
+          // Check if using dummy keys
+          if (process.env.NEXT_PUBLIC_FIREBASE_API_KEY?.includes('dummy')) {
+            throw new Error("DUMMY_KEYS_DETECTED: Please configure real Firebase keys in .env.local");
+          }
+
           const confirmation = await signInWithPhoneNumber(auth, phoneWithCode, appVerifier);
           setConfirmationResult(confirmation);
           setOtpSent(true);
-          // Optional: we can alert the testing info for demo completeness if they use testing numbers
-          // alert(`OTP sent to ${formData.phone}. Check SMS.`);
         } catch (err: any) {
-          console.error("OTP Send Error:", err);
-          setError('Failed to send OTP. Please check your number and try again.');
+          console.error("OTP Send Error Details:", err);
+          
+          let userMessage = 'Failed to send OTP. Please check your number and try again.';
+          
+          if (err.message?.includes('DUMMY_KEYS_DETECTED')) {
+            userMessage = "Development Mode: Firebase dummy keys detected. Please add real credentials to .env.local to test SMS.";
+          } else if (err.code === 'auth/invalid-phone-number') {
+            userMessage = "Invalid phone number format. Please check and try again.";
+          } else if (err.code === 'auth/quota-exceeded') {
+            userMessage = "SMS quota exceeded for today. Please try again later.";
+          } else if (err.code === 'auth/too-many-requests') {
+            userMessage = "Too many attempts. Please wait a few minutes before trying again.";
+          } else if (err.message) {
+            userMessage = `Error: ${err.message}`;
+          }
+
+          setError(userMessage);
+          
           // Reset recaptcha on error so they can try again
           if (window.recaptchaVerifier) {
             window.recaptchaVerifier.clear();
