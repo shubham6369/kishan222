@@ -1,19 +1,10 @@
-'use client';
-
-import React, { useState, useEffect } from 'react';
-import Navbar from '@/components/layout/Navbar';
-import Footer from '@/components/layout/Footer';
-import { useCart } from '@/context/CartContext';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/context/AuthContext';
-import { Loader2, ShieldCheck, MapPin, CreditCard } from 'lucide-react';
-import { db } from '@/lib/firebase';
-import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
+import { useLanguage } from '@/context/LanguageContext';
 
 export default function CheckoutPage({ params }: { params: { lang: string } }) {
   const { cart, subtotal, deliveryTotal, clearCart } = useCart();
   const { user } = useAuth();
   const router = useRouter();
+  const { dict } = useLanguage();
   
   const grandTotal = subtotal + deliveryTotal;
   
@@ -74,11 +65,11 @@ export default function CheckoutPage({ params }: { params: { lang: string } }) {
         clearCart();
         router.push(`/${params.lang}/dashboard/purchases?success=1`);
       } else {
-        alert('Payment verification failed');
+        alert(dict.checkout.payment_failed);
       }
     } catch (err) {
       console.error(err);
-      alert('Error verifying payment');
+      alert(dict.checkout.payment_error);
     } finally {
       setLoading(false);
     }
@@ -87,9 +78,8 @@ export default function CheckoutPage({ params }: { params: { lang: string } }) {
   const handlePlaceOrder = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) {
-      alert("Please login to place an order.");
-      // Optional: Redirect to login or allow guest checkout. For now, prompt.
-      // return;
+      alert(dict.checkout.login_prompt);
+      return;
     }
 
     setLoading(true);
@@ -105,7 +95,7 @@ export default function CheckoutPage({ params }: { params: { lang: string } }) {
 
       const res = await loadScript();
       if (!res) {
-        alert("Razorpay SDK failed to load.");
+        alert(dict.checkout.sdk_failed);
         setLoading(false);
         return;
       }
@@ -119,7 +109,7 @@ export default function CheckoutPage({ params }: { params: { lang: string } }) {
       const data = await response.json();
 
       if (!data.orderId) {
-        throw new Error("Failed to create order");
+        throw new Error(dict.checkout.order_failed);
       }
 
       // 2. Open Razorpay
@@ -128,7 +118,7 @@ export default function CheckoutPage({ params }: { params: { lang: string } }) {
         amount: data.amount,
         currency: "INR",
         name: "Kishan Seva Samiti",
-        description: "Organic Produce Order",
+        description: dict.checkout.order_desc,
         order_id: data.orderId,
         handler: async function (response: any) {
           await verifyPaymentAndCreateOrder(response, data.orderId);
@@ -147,7 +137,7 @@ export default function CheckoutPage({ params }: { params: { lang: string } }) {
 
     } catch (error) {
       console.error(error);
-      alert("An error occurred during checkout.");
+      alert(dict.checkout.checkout_error);
       setLoading(false);
     }
   };
@@ -160,7 +150,7 @@ export default function CheckoutPage({ params }: { params: { lang: string } }) {
       
       <main className="flex-1 pt-32 pb-20 px-6">
         <div className="max-w-7xl mx-auto">
-          <h1 className="text-4xl font-serif font-bold text-[#122c1f] mb-8">Checkout</h1>
+          <h1 className="text-4xl font-serif font-bold text-[#122c1f] mb-8">{dict.checkout.title}</h1>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
             
@@ -172,32 +162,32 @@ export default function CheckoutPage({ params }: { params: { lang: string } }) {
                   <div className="w-8 h-8 rounded-full bg-[#122c1f]/5 flex items-center justify-center text-[#122c1f]">
                     <MapPin className="w-4 h-4" />
                   </div>
-                  <h2 className="text-xl font-serif font-bold text-[#122c1f]">Shipping Address</h2>
+                  <h2 className="text-xl font-serif font-bold text-[#122c1f]">{dict.checkout.shipping_address}</h2>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-[10px] font-bold uppercase tracking-widest text-[#77574d]">Full Name *</label>
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-[#77574d]">{dict.checkout.full_name} *</label>
                     <input required name="fullName" value={formData.fullName} onChange={handleInputChange} className="w-full px-6 py-4 bg-[#fbf9f5] border-none rounded-2xl focus:ring-2 focus:ring-[#122c1f]/10 transition-all font-body" />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-[10px] font-bold uppercase tracking-widest text-[#77574d]">Phone Number *</label>
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-[#77574d]">{dict.checkout.phone} *</label>
                     <input required name="phone" value={formData.phone} onChange={handleInputChange} className="w-full px-6 py-4 bg-[#fbf9f5] border-none rounded-2xl focus:ring-2 focus:ring-[#122c1f]/10 transition-all font-body" />
                   </div>
                   <div className="space-y-2 md:col-span-2">
-                    <label className="text-[10px] font-bold uppercase tracking-widest text-[#77574d]">Full Address *</label>
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-[#77574d]">{dict.checkout.address} *</label>
                     <input required name="address" value={formData.address} onChange={handleInputChange} className="w-full px-6 py-4 bg-[#fbf9f5] border-none rounded-2xl focus:ring-2 focus:ring-[#122c1f]/10 transition-all font-body" />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-[10px] font-bold uppercase tracking-widest text-[#77574d]">City *</label>
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-[#77574d]">{dict.checkout.city} *</label>
                     <input required name="city" value={formData.city} onChange={handleInputChange} className="w-full px-6 py-4 bg-[#fbf9f5] border-none rounded-2xl focus:ring-2 focus:ring-[#122c1f]/10 transition-all font-body" />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-[10px] font-bold uppercase tracking-widest text-[#77574d]">State *</label>
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-[#77574d]">{dict.checkout.state} *</label>
                     <input required name="state" value={formData.state} onChange={handleInputChange} className="w-full px-6 py-4 bg-[#fbf9f5] border-none rounded-2xl focus:ring-2 focus:ring-[#122c1f]/10 transition-all font-body" />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-[10px] font-bold uppercase tracking-widest text-[#77574d]">PIN Code *</label>
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-[#77574d]">{dict.checkout.pincode} *</label>
                     <input required name="pincode" value={formData.pincode} onChange={handleInputChange} className="w-full px-6 py-4 bg-[#fbf9f5] border-none rounded-2xl focus:ring-2 focus:ring-[#122c1f]/10 transition-all font-body" />
                   </div>
                 </div>
@@ -207,7 +197,7 @@ export default function CheckoutPage({ params }: { params: { lang: string } }) {
             {/* Summary */}
             <div className="space-y-6">
               <div className="p-8 bg-white rounded-[32px] border border-black/5 shadow-sm space-y-6 sticky top-24">
-                <h3 className="text-xl font-serif font-bold text-[#122c1f]">Your Order</h3>
+                <h3 className="text-xl font-serif font-bold text-[#122c1f]">{dict.checkout.your_order}</h3>
                 
                 <div className="space-y-4 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
                   {cart.map(item => (
@@ -220,15 +210,15 @@ export default function CheckoutPage({ params }: { params: { lang: string } }) {
 
                 <div className="space-y-4 text-sm text-[#77574d] pt-4 border-t border-black/5">
                   <div className="flex justify-between">
-                    <span>Subtotal</span>
+                    <span>{dict.checkout.subtotal}</span>
                     <span className="font-bold text-[#122c1f]">₹{subtotal}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span>Delivery</span>
+                    <span>{dict.checkout.delivery}</span>
                     <span className="font-bold text-[#122c1f]">₹{deliveryTotal}</span>
                   </div>
                   <div className="pt-4 border-t border-black/5 flex justify-between items-end">
-                    <span className="font-bold text-[#122c1f]">Total</span>
+                    <span className="font-bold text-[#122c1f]">{dict.checkout.total}</span>
                     <span className="text-2xl font-serif font-bold text-[#122c1f]">₹{grandTotal}</span>
                   </div>
                 </div>
@@ -240,12 +230,12 @@ export default function CheckoutPage({ params }: { params: { lang: string } }) {
                   className="w-full py-4 bg-[#122c1f] text-white rounded-2xl font-bold uppercase tracking-[0.2em] flex items-center justify-center gap-2 shadow-xl hover:shadow-[#122c1f]/20 hover:scale-[1.02] transition-all disabled:opacity-50 disabled:hover:scale-100"
                 >
                   {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <CreditCard className="w-4 h-4" />}
-                  {loading ? 'Processing...' : 'Pay with Razorpay'}
+                  {loading ? dict.checkout.processing : dict.checkout.pay_button}
                 </button>
 
                 <div className="flex items-center justify-center gap-2 text-[10px] text-[#77574d]">
                   <ShieldCheck className="w-3 h-3" />
-                  100% Secure Payments
+                  {dict.checkout.secure_payment}
                 </div>
               </div>
             </div>

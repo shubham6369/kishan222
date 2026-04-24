@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   User, 
@@ -37,6 +37,7 @@ import {
 import { collection, query, where, getDocs, doc, setDoc, updateDoc, increment } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { useSearchParams, useRouter } from 'next/navigation';
+import { useLanguage } from '@/context/LanguageContext';
 
 declare global {
   interface Window {
@@ -57,6 +58,7 @@ const steps = [
 export default function RegistrationForm() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const { dict } = useLanguage();
   const referrerId = searchParams.get('ref');
   
   const [step, setStep] = useState<Step>(1);
@@ -70,6 +72,17 @@ export default function RegistrationForm() {
   const [paymentProcessing, setPaymentProcessing] = useState(false);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
+  const [countdown, setCountdown] = useState(0);
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (countdown > 0) {
+      timer = setInterval(() => {
+        setCountdown((prev) => prev - 1);
+      }, 1000);
+    }
+    return () => clearInterval(timer);
+  }, [countdown]);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -89,7 +102,7 @@ export default function RegistrationForm() {
     const file = e.target.files?.[0];
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
-        setError('Photo size must be less than 5MB');
+        setError(dict.register.errors.photo_size);
         return;
       }
       setPhotoFile(file);
@@ -111,12 +124,12 @@ export default function RegistrationForm() {
         setStep(2);
       } catch (err: any) {
         console.error("OTP Error:", err);
-        setError('Invalid OTP code. Please try again.');
+        setError(dict.register.errors.invalid_otp);
       } finally {
         setIsSubmitting(false);
       }
     } else {
-      setError('Please enter a valid 6-digit OTP');
+      setError(dict.register.errors.valid_otp_6);
     }
   };
 
@@ -131,7 +144,7 @@ export default function RegistrationForm() {
         body: JSON.stringify({ amount: 50 }), // ₹50 membership fee
       });
       const orderData = await orderRes.json();
-      if (!orderData.id) throw new Error('Failed to create payment order.');
+      if (!orderData.id) throw new Error(dict.register.errors.payment_failed);
 
       // Step 2: Open Razorpay modal
       const options = {
@@ -139,7 +152,7 @@ export default function RegistrationForm() {
         amount: orderData.amount,
         currency: 'INR',
         name: 'Kishan Seva Samiti',
-        description: 'Farmer Membership Card — One-time Fee',
+        description: dict.register.payment_desc,
         order_id: orderData.id,
         handler: async (response: any) => {
           // Step 3: ONLY call handleSubmit after payment is confirmed
@@ -153,7 +166,7 @@ export default function RegistrationForm() {
         modal: {
           ondismiss: () => {
             setPaymentProcessing(false);
-            setError('Payment was cancelled. Please try again to complete your membership.');
+            setError(dict.register.errors.payment_cancelled);
           },
         },
       };
@@ -162,7 +175,7 @@ export default function RegistrationForm() {
       rzp.open();
     } catch (err: any) {
       console.error('Payment error:', err);
-      setError(err.message || 'Payment initiation failed. Please try again.');
+      setError(err.message || dict.register.errors.payment_init_failed);
       setPaymentProcessing(false);
     }
   };
@@ -171,7 +184,7 @@ export default function RegistrationForm() {
     setError('');
     if (step === 1) {
       if (!formData.fullName || !formData.phone || formData.phone.length < 10) {
-        setError('Please enter a valid full name and mobile number.');
+        setError(dict.register.errors.valid_name_phone);
         return;
       }
       if (!otpSent) {
@@ -184,7 +197,7 @@ export default function RegistrationForm() {
           const querySnapshot = await getDocs(q);
           
           if (!querySnapshot.empty) {
-            setError('This mobile number is already registered. Please login.');
+            setError(dict.register.errors.phone_registered);
             setIsSubmitting(false);
             return;
           }
@@ -207,10 +220,11 @@ export default function RegistrationForm() {
           const confirmation = await signInWithPhoneNumber(auth, phoneWithCode, appVerifier);
           setConfirmationResult(confirmation);
           setOtpSent(true);
+          setCountdown(60); // Start 60s countdown
         } catch (err: any) {
           console.error("OTP Send Error Details:", err);
           
-          let userMessage = 'Failed to send OTP. Please check your number and try again.';
+          let userMessage = dict.register.errors.otp_send_failed;
           
           if (err.message?.includes('DUMMY_KEYS_DETECTED')) {
             userMessage = "Development Mode: Firebase dummy keys detected. Please add real credentials to .env.local to test SMS.";
@@ -239,13 +253,13 @@ export default function RegistrationForm() {
       }
     } else if (step === 2) {
       if (!formData.village || !formData.district || !formData.crops || !formData.landSize) {
-        setError('Please fill all farming details.');
+        setError(dict.register.errors.farming_details);
         return;
       }
       setStep(3);
     } else if (step === 3) {
       if (!formData.password || formData.password.length < 6) {
-        setError('Passcode must be at least 6 characters.');
+        setError(dict.register.errors.passcode_min);
         return;
       }
       setStep(4);
@@ -264,7 +278,7 @@ export default function RegistrationForm() {
     
     try {
       const user = auth.currentUser;
-      if (!user) throw new Error("Authentication session lost. Please restart.");
+      if (!user) throw new Error(dict.register.errors.session_lost);
 
       // Link the password to their phone account using EmailAuthProvider proxy
       const emailProxy = `${formData.phone.replace(/\D/g, '')}@kishanseva.in`;
@@ -422,7 +436,11 @@ export default function RegistrationForm() {
                   <Icon className="w-4 h-4 md:w-5 md:h-5" />
                 </div>
                 <span className={`text-[8px] md:text-[10px] font-bold uppercase tracking-widest hidden sm:block ${isActive ? "text-[#122c1f]" : "text-[#122c1f]/30"}`}>
-                  {s.title}
+                  {s.id === 1 ? dict.register.steps.identity :
+                   s.id === 2 ? dict.register.steps.farming :
+                   s.id === 3 ? dict.register.steps.security :
+                   s.id === 4 ? dict.register.steps.payment :
+                   dict.register.steps.card}
                 </span>
               </div>
             );
@@ -442,8 +460,8 @@ export default function RegistrationForm() {
                   <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                     <Check className="w-8 h-8 text-green-600" />
                   </div>
-                  <h2 className="text-3xl font-serif font-bold text-[#122c1f]">Transaction Successful!</h2>
-                  <p className="text-[#77574d] text-sm">Your membership is registered. Print your card and share your link to earn ₹7 per referral.</p>
+                  <h2 className="text-3xl font-serif font-bold text-[#122c1f]">{dict.register.success_title}</h2>
+                  <p className="text-[#77574d] text-sm">{dict.register.success_desc}</p>
                 </div>
                 
                 <div className="w-full flex justify-center py-4 print:py-0">
@@ -458,7 +476,7 @@ export default function RegistrationForm() {
                       photoBase64: formData.photoBase64,
                       registrationDate: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }),
                       expiryDate: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }),
-                      memberType: 'Farmer'
+                      memberType: dict.register.member_type_farmer
                     }}
                   />
                 </div>
@@ -469,11 +487,11 @@ export default function RegistrationForm() {
                     className="w-full py-4 bg-white border-2 border-[#122c1f] text-[#122c1f] rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#122c1f]/5 transition-all"
                   >
                     <Printer className="w-5 h-5" />
-                    Print Membership Card
+                    {dict.register.print_card}
                   </button>
 
                   <div className="pt-4 border-t border-black/5">
-                    <p className="text-xs font-bold uppercase tracking-wider text-[#122c1f] mb-3">Your Referral link (Earn ₹7 per sign up)</p>
+                    <p className="text-xs font-bold uppercase tracking-wider text-[#122c1f] mb-3">{dict.register.referral_link_label}</p>
                     <div className="flex gap-2">
                       <div className="flex-1 bg-white px-4 py-3 rounded-xl border border-[#77574d]/20 text-xs font-mono truncate flex items-center">
                         {referralLink}
@@ -481,7 +499,7 @@ export default function RegistrationForm() {
                       <button 
                         onClick={() => {
                             navigator.clipboard.writeText(referralLink);
-                            alert('Link copied!');
+                            alert(dict.register.errors.link_copied);
                         }}
                         className="p-3 bg-[#122c1f] text-white rounded-xl hover:bg-[#122c1f]/90 transition-colors"
                       >
@@ -494,7 +512,7 @@ export default function RegistrationForm() {
                     onClick={() => router.push('/dashboard')}
                     className="w-full py-4 bg-[#122c1f] text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#122c1f]/90 transition-all shadow-md mt-4"
                   >
-                    Go to Dashboard
+                    {dict.register.go_dashboard}
                   </button>
                 </div>
               </motion.div>
@@ -510,8 +528,8 @@ export default function RegistrationForm() {
                   {step === 1 && (
                     <div className="space-y-6">
                       <div className="space-y-2">
-                        <h2 className="text-2xl font-serif font-bold text-[#122c1f]">Mobile Verification</h2>
-                        <p className="text-sm text-[#77574d]">Register with your mobile number to get started.</p>
+                        <h2 className="text-2xl font-serif font-bold text-[#122c1f]">{dict.register.mobile_verification}</h2>
+                        <p className="text-sm text-[#77574d]">{dict.register.mobile_desc}</p>
                       </div>
 
                       {error && (
@@ -527,7 +545,7 @@ export default function RegistrationForm() {
 
                       <div className="space-y-4">
                         <div className="space-y-2">
-                          <label className="text-[10px] font-bold uppercase tracking-widest text-[#77574d]">Full Name</label>
+                          <label className="text-[10px] font-bold uppercase tracking-widest text-[#77574d]">{dict.register.full_name}</label>
                           <div className="relative">
                             <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#77574d]/30" />
                             <input
@@ -535,13 +553,13 @@ export default function RegistrationForm() {
                               value={formData.fullName}
                               onChange={(e) => setFormData({...formData, fullName: e.target.value})}
                               className="w-full pl-12 pr-4 py-4 bg-[#fbf9f5] border-none rounded-xl focus:ring-2 focus:ring-[#122c1f]/10 transition-all text-[#122c1f]"
-                              placeholder="e.g. Ramesh Singh"
+                              placeholder={dict.register.full_name_placeholder}
                               disabled={otpSent}
                             />
                           </div>
                         </div>
                         <div className="space-y-2">
-                          <label className="text-[10px] font-bold uppercase tracking-widest text-[#77574d]">Phone Number</label>
+                          <label className="text-[10px] font-bold uppercase tracking-widest text-[#77574d]">{dict.register.phone_number}</label>
                           <div className="relative">
                             <PhoneIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#77574d]/30" />
                             <input
@@ -549,7 +567,7 @@ export default function RegistrationForm() {
                               value={formData.phone}
                               onChange={(e) => setFormData({...formData, phone: e.target.value})}
                               className="w-full pl-12 pr-4 py-4 bg-[#fbf9f5] border-none rounded-xl focus:ring-2 focus:ring-[#122c1f]/10 transition-all text-[#122c1f]"
-                              placeholder="9876543210"
+                              placeholder={dict.register.phone_placeholder}
                               disabled={otpSent}
                             />
                           </div>
@@ -560,9 +578,22 @@ export default function RegistrationForm() {
                             <motion.div 
                               initial={{ opacity: 0, height: 0 }}
                               animate={{ opacity: 1, height: 'auto' }}
-                              className="space-y-2 pt-2"
+                              className="space-y-4 pt-2"
                             >
-                              <label className="text-[10px] font-bold uppercase tracking-widest text-green-700">Enter 6-Digit OTP</label>
+                              <div className="flex justify-between items-end">
+                                <label className="text-[10px] font-bold uppercase tracking-widest text-green-700">{dict.register.enter_otp}</label>
+                                <button 
+                                  onClick={() => {
+                                    setOtpSent(false);
+                                    setOtpValue('');
+                                    setConfirmationResult(null);
+                                    setCountdown(0);
+                                  }}
+                                  className="text-[10px] font-bold uppercase tracking-widest text-[#122c1f] hover:underline"
+                                >
+                                  {dict.auth.change_number}
+                                </button>
+                              </div>
                               <div className="relative">
                                 <CheckCircle2 className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-green-600/50" />
                                 <input
@@ -571,8 +602,26 @@ export default function RegistrationForm() {
                                   value={otpValue}
                                   onChange={(e) => setOtpValue(e.target.value.replace(/\D/g, ''))}
                                   className="w-full pl-12 pr-4 py-4 bg-green-50 border-2 border-green-200 rounded-xl focus:ring-2 focus:ring-green-500 transition-all text-[#122c1f] font-mono tracking-[0.5em] text-lg"
-                                  placeholder="------"
+                                  placeholder={dict.register.otp_placeholder}
                                 />
+                              </div>
+                              
+                              <div className="flex justify-center">
+                                {countdown > 0 ? (
+                                  <p className="text-xs text-[#77574d]">
+                                    {dict.auth.wait_resend.replace('{seconds}', countdown.toString())}
+                                  </p>
+                                ) : (
+                                  <button
+                                    onClick={async () => {
+                                      setOtpSent(false); // Temporarily reset to trigger nextStep resend
+                                      await nextStep();
+                                    }}
+                                    className="text-xs font-bold text-[#122c1f] hover:underline"
+                                  >
+                                    {dict.auth.resend_otp}
+                                  </button>
+                                )}
                               </div>
                             </motion.div>
                           )}
@@ -585,8 +634,8 @@ export default function RegistrationForm() {
                   {step === 2 && (
                     <div className="space-y-6">
                       <div className="space-y-2">
-                        <h2 className="text-2xl font-serif font-bold text-[#122c1f]">Farming Profile</h2>
-                        <p className="text-sm text-[#77574d]">Details for your official membership card.</p>
+                        <h2 className="text-2xl font-serif font-bold text-[#122c1f]">{dict.register.farming_profile}</h2>
+                        <p className="text-sm text-[#77574d]">{dict.register.farming_desc}</p>
                       </div>
                       
                       {error && (
@@ -605,7 +654,7 @@ export default function RegistrationForm() {
                             )}
                           </div>
                           <div className="absolute -bottom-2 bg-white px-3 py-1 rounded-full text-[10px] shadow-sm font-bold border border-[#122c1f]/10 whitespace-nowrap left-1/2 -translate-x-1/2">
-                            Upload Photo
+                            {dict.register.upload_photo}
                           </div>
                           <input 
                             type="file" 
@@ -619,7 +668,7 @@ export default function RegistrationForm() {
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <label className="text-[10px] font-bold uppercase tracking-widest text-[#77574d]">Village</label>
+                          <label className="text-[10px] font-bold uppercase tracking-widest text-[#77574d]">{dict.register.village}</label>
                           <div className="relative">
                             <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#77574d]/30" />
                             <input
@@ -627,12 +676,12 @@ export default function RegistrationForm() {
                               value={formData.village}
                               onChange={(e) => setFormData({...formData, village: e.target.value})}
                               className="w-full pl-12 pr-4 py-4 bg-[#fbf9f5] border-none rounded-xl focus:ring-2 focus:ring-[#122c1f]/10 transition-all text-[#122c1f]"
-                              placeholder="Your Village"
+                              placeholder={dict.register.village_placeholder}
                             />
                           </div>
                         </div>
                         <div className="space-y-2">
-                          <label className="text-[10px] font-bold uppercase tracking-widest text-[#77574d]">District</label>
+                          <label className="text-[10px] font-bold uppercase tracking-widest text-[#77574d]">{dict.register.district}</label>
                           <div className="relative">
                             <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#77574d]/30" />
                             <input
@@ -640,12 +689,12 @@ export default function RegistrationForm() {
                               value={formData.district}
                               onChange={(e) => setFormData({...formData, district: e.target.value})}
                               className="w-full pl-12 pr-4 py-4 bg-[#fbf9f5] border-none rounded-xl focus:ring-2 focus:ring-[#122c1f]/10 transition-all text-[#122c1f]"
-                              placeholder="Your District"
+                              placeholder={dict.register.district_placeholder}
                             />
                           </div>
                         </div>
                         <div className="space-y-2">
-                          <label className="text-[10px] font-bold uppercase tracking-widest text-[#77574d]">Primary Crops</label>
+                          <label className="text-[10px] font-bold uppercase tracking-widest text-[#77574d]">{dict.register.crops}</label>
                           <div className="relative">
                             <Sprout className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#77574d]/30" />
                             <input
@@ -653,12 +702,12 @@ export default function RegistrationForm() {
                               value={formData.crops}
                               onChange={(e) => setFormData({...formData, crops: e.target.value})}
                               className="w-full pl-12 pr-4 py-4 bg-[#fbf9f5] border-none rounded-xl focus:ring-2 focus:ring-[#122c1f]/10 transition-all text-[#122c1f]"
-                              placeholder="e.g. Wheat, Rice"
+                              placeholder={dict.register.crops_placeholder}
                             />
                           </div>
                         </div>
                         <div className="space-y-2">
-                          <label className="text-[10px] font-bold uppercase tracking-widest text-[#77574d]">Land Size (Acres)</label>
+                          <label className="text-[10px] font-bold uppercase tracking-widest text-[#77574d]">{dict.register.land_size}</label>
                           <div className="relative">
                             <Tractor className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#77574d]/30" />
                             <input
@@ -666,7 +715,7 @@ export default function RegistrationForm() {
                               value={formData.landSize}
                               onChange={(e) => setFormData({...formData, landSize: e.target.value})}
                               className="w-full pl-12 pr-4 py-4 bg-[#fbf9f5] border-none rounded-xl focus:ring-2 focus:ring-[#122c1f]/10 transition-all text-[#122c1f]"
-                              placeholder="e.g. 5.5"
+                              placeholder={dict.register.land_size_placeholder}
                             />
                           </div>
                         </div>
@@ -677,8 +726,8 @@ export default function RegistrationForm() {
                   {step === 3 && (
                     <div className="space-y-6">
                       <div className="space-y-2">
-                        <h2 className="text-2xl font-serif font-bold text-[#122c1f]">Set Passcode</h2>
-                        <p className="text-sm text-[#77574d]">Create a secure PIN/password to log in to your portal.</p>
+                        <h2 className="text-2xl font-serif font-bold text-[#122c1f]">{dict.register.set_passcode}</h2>
+                        <p className="text-sm text-[#77574d]">{dict.register.passcode_desc}</p>
                       </div>
                       
                       {error && (
@@ -689,7 +738,7 @@ export default function RegistrationForm() {
 
                       <div className="space-y-4">
                         <div className="space-y-2">
-                          <label className="text-[10px] font-bold uppercase tracking-widest text-[#77574d]">Secret Passcode</label>
+                          <label className="text-[10px] font-bold uppercase tracking-widest text-[#77574d]">{dict.register.secret_passcode}</label>
                           <div className="relative">
                             <button
                               type="button"
@@ -703,7 +752,7 @@ export default function RegistrationForm() {
                               value={formData.password}
                               onChange={(e) => setFormData({...formData, password: e.target.value})}
                               className="w-full px-4 py-4 bg-[#fbf9f5] border-none rounded-xl focus:ring-2 focus:ring-[#122c1f]/10 transition-all text-[#122c1f]"
-                              placeholder="Minimum 6 characters"
+                              placeholder={dict.register.passcode_placeholder}
                             />
                           </div>
                         </div>
@@ -717,17 +766,17 @@ export default function RegistrationForm() {
                         <div className="w-16 h-16 bg-[#122c1f]/5 rounded-full flex items-center justify-center mx-auto mb-4">
                           <CreditCard className="w-8 h-8 text-[#122c1f]" />
                         </div>
-                        <h2 className="text-3xl font-serif font-bold text-[#122c1f]">Membership Fee</h2>
-                        <p className="text-sm text-[#77574d]">One-time fee to generate your Official Farmer ID Card.</p>
+                        <h2 className="text-3xl font-serif font-bold text-[#122c1f]">{dict.register.membership_fee}</h2>
+                        <p className="text-sm text-[#77574d]">{dict.register.fee_desc}</p>
                       </div>
                       
                       <div className="p-6 bg-[#fbf9f5] rounded-2xl border border-black/5">
                         <div className="flex justify-between items-center pb-4 border-b border-black/5">
-                          <span className="text-[#77574d]">Lifelong Membership Card</span>
+                          <span className="text-[#77574d]">{dict.register.lifelong_card}</span>
                           <span className="font-bold text-[#122c1f]">₹50.00</span>
                         </div>
                         <div className="flex justify-between items-center pt-4">
-                          <span className="font-bold text-lg text-[#122c1f]">Total amount</span>
+                          <span className="font-bold text-lg text-[#122c1f]">{dict.register.total_amount}</span>
                           <span className="font-bold text-2xl text-green-700">₹50</span>
                         </div>
                       </div>
@@ -748,7 +797,7 @@ export default function RegistrationForm() {
                         className="flex-1 py-4 px-6 border border-[#122c1f]/10 rounded-xl font-bold text-[#122c1f] flex items-center justify-center gap-2 hover:bg-[#122c1f]/5 transition-all disabled:opacity-50"
                       >
                         <ChevronLeft className="w-5 h-5" />
-                        Back
+                        {dict.register.back}
                       </button>
                     )}
                     <button
@@ -764,9 +813,9 @@ export default function RegistrationForm() {
                         />
                       ) : (
                         <>
-                          {step === 1 && !otpSent ? 'Send OTP' : 
-                           step === 1 && otpSent ? 'Verify OTP' : 
-                           step === 4 ? 'Pay ₹50 securely' : 'Continue'}
+                          {step === 1 && !otpSent ? dict.register.send_otp : 
+                           step === 1 && otpSent ? dict.register.verify_otp : 
+                           step === 4 ? dict.register.pay_securely : dict.register.continue}
                           <ChevronRight className="w-5 h-5" />
                         </>
                       )}

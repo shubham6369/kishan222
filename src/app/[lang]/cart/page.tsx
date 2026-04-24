@@ -9,8 +9,11 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Trash2, ShoppingBag, ArrowRight } from 'lucide-react';
 
+import { useLanguage } from '@/context/LanguageContext';
+
 export default function CartPage({ params }: { params: { lang: string } }) {
   const { cart, removeFromCart, updateQuantity, subtotal, deliveryTotal, totalItems } = useCart();
+  const { dict } = useLanguage();
   
   const grandTotal = subtotal + deliveryTotal;
 
@@ -22,7 +25,7 @@ export default function CartPage({ params }: { params: { lang: string } }) {
         <div className="max-w-7xl mx-auto">
           <h1 className="text-4xl font-serif font-bold text-[#122c1f] mb-8 flex items-center gap-3">
             <ShoppingBag className="w-8 h-8" />
-            Your Basket
+            {dict.cart.title}
           </h1>
 
           {cart.length === 0 ? (
@@ -30,13 +33,13 @@ export default function CartPage({ params }: { params: { lang: string } }) {
               <div className="w-20 h-20 bg-[#122c1f]/5 rounded-full flex items-center justify-center mx-auto mb-6">
                 <ShoppingBag className="w-10 h-10 text-[#122c1f]/20" />
               </div>
-              <h2 className="text-2xl font-serif font-bold text-[#122c1f] mb-4">Your basket is empty</h2>
-              <p className="text-[#77574d] mb-8">Looks like you haven't added any organic produce yet.</p>
+              <h2 className="text-2xl font-serif font-bold text-[#122c1f] mb-4">{dict.cart.empty}</h2>
+              <p className="text-[#77574d] mb-8">{dict.cart.empty_subtitle}</p>
               <Link 
                 href={`/${params.lang}/marketplace`}
                 className="inline-flex items-center gap-2 px-8 py-4 bg-[#122c1f] text-white rounded-full font-bold uppercase tracking-widest hover:scale-105 transition-transform"
               >
-                Explore Marketplace
+                {dict.cart.explore}
               </Link>
             </div>
           ) : (
@@ -107,19 +110,19 @@ export default function CartPage({ params }: { params: { lang: string } }) {
               {/* Order Summary */}
               <div className="space-y-6">
                 <div className="p-8 bg-white rounded-[32px] border border-black/5 shadow-sm space-y-6 sticky top-24">
-                  <h3 className="text-xl font-serif font-bold text-[#122c1f]">Order Summary</h3>
+                  <h3 className="text-xl font-serif font-bold text-[#122c1f]">{dict.cart.summary}</h3>
                   
                   <div className="space-y-4 text-sm text-[#77574d]">
                     <div className="flex justify-between">
-                      <span>Subtotal ({totalItems} items)</span>
+                      <span>{dict.cart.subtotal} ({totalItems} items)</span>
                       <span className="font-bold text-[#122c1f]">₹{subtotal}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span>Delivery Charges</span>
+                      <span>{dict.cart.delivery}</span>
                       <span className="font-bold text-[#122c1f]">{deliveryTotal === 0 ? 'Free' : `₹${deliveryTotal}`}</span>
                     </div>
                     <div className="pt-4 border-t border-black/5 flex justify-between items-end">
-                      <span className="font-bold text-[#122c1f]">Total Amount</span>
+                      <span className="font-bold text-[#122c1f]">{dict.cart.total}</span>
                       <span className="text-2xl font-serif font-bold text-[#122c1f]">₹{grandTotal}</span>
                     </div>
                   </div>
@@ -128,7 +131,7 @@ export default function CartPage({ params }: { params: { lang: string } }) {
                     href={`/${params.lang}/checkout`}
                     className="w-full py-4 bg-[#122c1f] text-white rounded-2xl font-bold uppercase tracking-[0.2em] flex items-center justify-center gap-2 shadow-xl hover:shadow-[#122c1f]/20 hover:scale-[1.02] transition-all"
                   >
-                    Proceed to Checkout
+                    {dict.cart.proceed}
                     <ArrowRight className="w-4 h-4" />
                   </Link>
 

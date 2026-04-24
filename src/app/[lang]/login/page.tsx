@@ -26,6 +26,7 @@ import { auth } from '@/lib/firebase';
 import { useRouter } from 'next/navigation';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
+import { useLanguage } from '@/context/LanguageContext';
 
 declare global {
   interface Window {
@@ -35,6 +36,7 @@ declare global {
 
 export default function LoginPage() {
   const router = useRouter();
+  const { dict, lang } = useLanguage();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -46,6 +48,17 @@ export default function LoginPage() {
   const [otpSent, setOtpSent] = useState(false);
   const [otpValue, setOtpValue] = useState('');
   const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
+  const [countdown, setCountdown] = useState(0);
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (countdown > 0) {
+      timer = setInterval(() => {
+        setCountdown((prev) => prev - 1);
+      }, 1000);
+    }
+    return () => clearInterval(timer);
+  }, [countdown]);
 
   const [formData, setFormData] = useState({
     email: '', // Also used for phone in password mode
@@ -80,7 +93,7 @@ export default function LoginPage() {
     
     const phone = formData.phone.replace(/\D/g, '');
     if (phone.length < 10) {
-      setError('Please enter a valid 10-digit mobile number.');
+      setError(dict.login.error_phone);
       return;
     }
 
@@ -93,6 +106,7 @@ export default function LoginPage() {
       const confirmation = await signInWithPhoneNumber(auth, phoneWithCode, appVerifier);
       setConfirmationResult(confirmation);
       setOtpSent(true);
+      setCountdown(60);
     } catch (err: any) {
       console.error("OTP Send Error:", err);
       let userMessage = 'Failed to send OTP. Please try again.';
@@ -113,7 +127,7 @@ export default function LoginPage() {
   const handleVerifyOTP = async (e: React.FormEvent) => {
     e.preventDefault();
     if (otpValue.length !== 6 || !confirmationResult) {
-      setError('Please enter the 6-digit code.');
+      setError(dict.login.error_otp);
       return;
     }
 
@@ -145,7 +159,7 @@ export default function LoginPage() {
       router.push('/dashboard');
     } catch (err: any) {
       console.error(err);
-      setError('Invalid credentials. Please check your phone/email and password.');
+      setError(dict.login.error_creds);
     } finally {
       setIsSubmitting(false);
     }
@@ -155,20 +169,14 @@ export default function LoginPage() {
     <main className="min-h-screen bg-[#fbf9f5]">
       <Navbar />
       
-      <section className="pt-32 pb-20 px-6">
-        <div className="max-w-md mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-black/5 p-8 md:p-12"
           >
             <div className="text-center space-y-4 mb-8">
               <div className="inline-flex items-center gap-2 bg-primary/5 px-4 py-2 rounded-full text-primary font-bold text-[10px] uppercase tracking-widest">
                 <Star className="w-3 h-3 fill-primary" />
-                Member Access
+                {dict.login.badge}
               </div>
-              <h1 className="text-3xl font-serif font-bold text-[#122c1f]">Welcome Back</h1>
-              <p className="text-sm text-[#77574d]">Sign in to your farmer dashboard</p>
+              <h1 className="text-3xl font-serif font-bold text-[#122c1f]">{dict.login.title}</h1>
+              <p className="text-sm text-[#77574d]">{dict.login.subtitle}</p>
             </div>
 
             {/* Toggle Switch */}
@@ -183,7 +191,7 @@ export default function LoginPage() {
                 }`}
               >
                 <Smartphone className="w-4 h-4" />
-                SMS OTP
+                {dict.login.method_otp}
               </button>
               <button
                 onClick={() => {
@@ -195,7 +203,7 @@ export default function LoginPage() {
                 }`}
               >
                 <Key className="w-4 h-4" />
-                Passcode
+                {dict.login.method_password}
               </button>
             </div>
 
@@ -222,7 +230,7 @@ export default function LoginPage() {
                 >
                   {!otpSent ? (
                     <div className="space-y-2">
-                      <label className="text-[10px] font-bold uppercase tracking-widest text-[#77574d]">Mobile Number</label>
+                      <label className="text-[10px] font-bold uppercase tracking-widest text-[#77574d]">{dict.login.phone_label}</label>
                       <div className="relative">
                         <PhoneIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#77574d]/30" />
                         <input
@@ -231,7 +239,7 @@ export default function LoginPage() {
                           value={formData.phone}
                           onChange={(e) => setFormData({...formData, phone: e.target.value})}
                           className="w-full pl-12 pr-4 py-4 bg-[#fbf9f5] border-none rounded-xl focus:ring-2 focus:ring-[#122c1f]/10 transition-all text-[#122c1f]"
-                          placeholder="9876543210"
+                          placeholder={dict.login.phone_placeholder}
                         />
                       </div>
                     </div>
@@ -239,17 +247,17 @@ export default function LoginPage() {
                     <div className="space-y-4">
                       <div className="p-3 bg-green-50 border border-green-100 rounded-xl flex items-center gap-3 text-green-700 text-xs">
                         <ShieldCheck className="w-4 h-4" />
-                        OTP sent to +91 {formData.phone}
+                        {dict.login.otp_sent_to} {formData.phone}
                         <button 
                           type="button" 
                           onClick={() => setOtpSent(false)} 
                           className="ml-auto font-bold underline"
                         >
-                          Change
+                          {dict.login.change}
                         </button>
                       </div>
                       <div className="space-y-2">
-                        <label className="text-[10px] font-bold uppercase tracking-widest text-[#77574d]">6-Digit OTP</label>
+                        <label className="text-[10px] font-bold uppercase tracking-widest text-[#77574d]">{dict.login.otp_label}</label>
                         <div className="relative">
                           <ShieldCheck className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#77574d]/30" />
                           <input
@@ -258,9 +266,25 @@ export default function LoginPage() {
                             maxLength={6}
                             value={otpValue}
                             onChange={(e) => setOtpValue(e.target.value.replace(/\D/g, ''))}
-                            className="w-full pl-12 pr-4 py-4 bg-[#fbf9f5] border-none rounded-xl focus:ring-2 focus:ring-[#122c1f]/10 transition-all text-[#122c1f] font-mono tracking-[0.5em] text-lg"
+                            className="w-full pl-12 pr-4 py-4 bg-white border border-[#77574d]/10 rounded-xl focus:ring-2 focus:ring-[#122c1f]/10 transition-all text-[#122c1f] font-mono tracking-[0.5em] text-lg"
                             placeholder="------"
                           />
+                        </div>
+                        
+                        <div className="flex justify-center">
+                          {countdown > 0 ? (
+                            <p className="text-xs text-[#77574d]">
+                              {dict.auth.wait_resend.replace('{seconds}', countdown.toString())}
+                            </p>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={handleSendOTP}
+                              className="text-xs font-bold text-[#122c1f] hover:underline"
+                            >
+                              {dict.auth.resend_otp}
+                            </button>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -281,7 +305,7 @@ export default function LoginPage() {
                       />
                     ) : (
                       <>
-                        {otpSent ? 'Verify & Sign In' : 'Send OTP Code'}
+                        {otpSent ? dict.login.verify_otp : dict.login.send_otp}
                         <ArrowRight className="w-5 h-5" />
                       </>
                     )}
@@ -297,7 +321,7 @@ export default function LoginPage() {
                   className="space-y-6"
                 >
                   <div className="space-y-2">
-                    <label className="text-[10px] font-bold uppercase tracking-widest text-[#77574d]">Phone or Email</label>
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-[#77574d]">{dict.login.phone_or_email}</label>
                     <div className="relative">
                       <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#77574d]/30" />
                       <input
@@ -306,16 +330,16 @@ export default function LoginPage() {
                         value={formData.email}
                         onChange={(e) => setFormData({...formData, email: e.target.value})}
                         className="w-full pl-12 pr-4 py-4 bg-[#fbf9f5] border-none rounded-xl focus:ring-2 focus:ring-[#122c1f]/10 transition-all text-[#122c1f]"
-                        placeholder="e.g. 9876543210"
+                        placeholder={dict.login.phone_or_email_placeholder}
                       />
                     </div>
                   </div>
 
                   <div className="space-y-2">
                     <div className="flex justify-between">
-                      <label className="text-[10px] font-bold uppercase tracking-widest text-[#77574d]">Passcode</label>
-                      <Link href="/forgot-password" className="text-[10px] font-bold uppercase tracking-widest text-[#d4af37] hover:underline">
-                        Forgot?
+                      <label className="text-[10px] font-bold uppercase tracking-widest text-[#77574d]">{dict.login.password_label}</label>
+                      <Link href={`/${lang}/forgot-password`} className="text-[10px] font-bold uppercase tracking-widest text-[#d4af37] hover:underline">
+                        {dict.login.forgot}
                       </Link>
                     </div>
                     <div className="relative">
@@ -333,7 +357,7 @@ export default function LoginPage() {
                         value={formData.password}
                         onChange={(e) => setFormData({...formData, password: e.target.value})}
                         className="w-full pl-12 pr-4 py-4 bg-[#fbf9f5] border-none rounded-xl focus:ring-2 focus:ring-[#122c1f]/10 transition-all text-[#122c1f]"
-                        placeholder="••••••••"
+                        placeholder={dict.login.password_placeholder}
                       />
                     </div>
                   </div>
@@ -351,7 +375,7 @@ export default function LoginPage() {
                       />
                     ) : (
                       <>
-                        Sign In
+                        {dict.login.signin}
                         <ArrowRight className="w-5 h-5" />
                       </>
                     )}
@@ -362,9 +386,9 @@ export default function LoginPage() {
 
             <div className="mt-10 text-center">
               <p className="text-sm text-[#77574d]">
-                Not a member yet?{' '}
+                {dict.login.no_account}{' '}
                 <Link href="/register" className="text-secondary font-bold hover:underline">
-                  Join the Samiti
+                  {dict.login.register}
                 </Link>
               </p>
             </div>

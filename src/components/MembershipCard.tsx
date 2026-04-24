@@ -4,6 +4,7 @@ import React from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import { Landmark, ShieldCheck, MapPin, Phone, Sprout, Tractor, User as UserIcon } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useLanguage } from '@/context/LanguageContext';
 
 export interface MembershipCardProps {
   memberData: {
@@ -21,6 +22,7 @@ export interface MembershipCardProps {
 }
 
 export default function MembershipCard({ memberData }: MembershipCardProps) {
+  const { dict } = useLanguage();
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -49,7 +51,7 @@ export default function MembershipCard({ memberData }: MembershipCardProps) {
             </div>
             <div>
               <h3 className="text-base sm:text-lg font-serif font-bold tracking-tight">Kishan Seva Samiti</h3>
-              <p className="text-[8px] sm:text-[10px] uppercase tracking-[0.2em] opacity-60">Official Member</p>
+              <p className="text-[8px] sm:text-[10px] uppercase tracking-[0.2em] opacity-60">{dict.register.card.official_member}</p>
             </div>
           </div>
           <div className="flex flex-col items-end">
@@ -96,7 +98,7 @@ export default function MembershipCard({ memberData }: MembershipCardProps) {
               </div>
               <div className="flex items-center gap-1.5 sm:gap-2">
                 <Tractor className="w-3 h-3 opacity-40 shrink-0" />
-                <span className="text-[9px] sm:text-[10px] opacity-70 truncate">{memberData.landSize || '0'} Acres</span>
+                <span className="text-[9px] sm:text-[10px] opacity-70 truncate">{memberData.landSize || '0'} {dict.register.card.acres}</span>
               </div>
             </div>
           </div>
@@ -117,11 +119,11 @@ export default function MembershipCard({ memberData }: MembershipCardProps) {
         <div className="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-[#fbf9f5]/10 flex justify-between items-center">
           <div className="flex gap-4">
             <div>
-              <p className="text-[7px] sm:text-[8px] uppercase opacity-40 tracking-wider">Issued</p>
+              <p className="text-[7px] sm:text-[8px] uppercase opacity-40 tracking-wider">{dict.register.card.issued}</p>
               <p className="text-[9px] sm:text-[10px] font-medium">{memberData.registrationDate}</p>
             </div>
             <div>
-              <p className="text-[7px] sm:text-[8px] uppercase opacity-40 tracking-wider">Expires</p>
+              <p className="text-[7px] sm:text-[8px] uppercase opacity-40 tracking-wider">{dict.register.card.expires}</p>
               <p className="text-[9px] sm:text-[10px] font-medium">{memberData.expiryDate}</p>
             </div>
           </div>
