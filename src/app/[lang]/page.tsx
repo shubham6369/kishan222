@@ -41,7 +41,9 @@ export default function Home() {
             className="object-cover opacity-60"
             priority
           />
-          <div className="absolute inset-0 bg-linear-to-r from-primary via-primary/80 to-transparent"></div>
+          {/* Darker gradient overlay for better text contrast */}
+          <div className="absolute inset-0 bg-linear-to-r from-black/80 via-black/40 to-transparent z-1"></div>
+          <div className="absolute inset-0 bg-linear-to-b from-primary/20 to-transparent z-1"></div>
         </div>
         
         <div className="relative z-10 max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center">
@@ -61,11 +63,11 @@ export default function Home() {
               The Gold Standard of Rural Heritage
             </motion.div>
             
-            <h1 className="text-5xl md:text-8xl font-serif leading-none text-white">
+            <h1 className="text-5xl md:text-8xl font-serif leading-none text-white! drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]">
               {dict.hero?.title || 'Cultivating the Legacy of Tomorrow'}
             </h1>
             
-            <p className="text-lg md:text-xl text-white/80 font-body leading-relaxed max-w-xl">
+            <p className="text-lg md:text-xl text-white/90! font-body leading-relaxed max-w-xl drop-shadow-md">
               {dict.hero?.subtitle || "Join India's most prestigious agricultural collective. We bridge the gap between ancient wisdom and modern innovation, empowering farmers through sustainable membership and premium organic commerce."}
             </p>
             

@@ -63,8 +63,8 @@ export default function Navbar() {
             <span className={`font-serif text-2xl font-bold tracking-tight leading-tight transition-colors ${hasScrolled ? "text-primary" : "text-white"}`}>
               Kishan Seva <span className="text-accent italic">Samiti</span>
             </span>
-            <span className={`text-[8px] uppercase tracking-[0.4em] font-bold ${hasScrolled ? "text-primary/40" : "text-white/40"}`}>
-              Rural Empowerment Collective
+            <span className={`text-[8px] uppercase tracking-[0.4em] font-bold ${hasScrolled ? "text-primary/60" : "text-white/80"}`}>
+              {dict.nav?.tagline || "Rural Empowerment Collective"}
             </span>
           </div>
         </Link>
@@ -89,13 +89,13 @@ export default function Navbar() {
             href={`/${lang}/about`} 
             className={`text-sm font-bold uppercase tracking-widest hover:text-accent-dark transition-colors ${hasScrolled ? "text-primary" : "text-white"}`}
           >
-            About
+            {dict.nav?.about || "About"}
           </Link>
           <Link 
             href={`/${lang}/contact`} 
             className={`text-sm font-bold uppercase tracking-widest hover:text-accent-dark transition-colors ${hasScrolled ? "text-primary" : "text-white"}`}
           >
-            Contact
+            {dict.nav?.contact || "Contact"}
           </Link>
           
           <div className="flex items-center gap-6 ml-6 pl-6 border-l border-white/10">
