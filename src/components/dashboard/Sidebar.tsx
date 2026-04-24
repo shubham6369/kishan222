@@ -7,7 +7,6 @@ import {
   BarChart3, 
   Users, 
   ShoppingBag, 
-  CreditCard, 
   LogOut, 
   Home,
   PlusCircle,

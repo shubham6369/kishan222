@@ -16,6 +16,7 @@ export interface Review {
     userName: string;
     rating: number;
     comment: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     createdAt: any; // Firestore Timestamp
 }
 
@@ -38,12 +39,14 @@ export interface Order {
         state: string;
         pincode: string;
     };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     createdAt: any; // Firestore Timestamp
     sellerIds: string[]; // To query orders by seller
 }
 
 declare global {
     interface Window {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         recaptchaVerifier: any;
     }
 }

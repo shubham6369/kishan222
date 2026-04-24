@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Search, MapPin, CheckCircle, Clock, XCircle, Tractor, Users } from 'lucide-react';
+import { Search, MapPin, CheckCircle, Clock, XCircle, Users } from 'lucide-react';
 import { db } from '@/lib/firebase';
 import { collection, getDocs, doc, updateDoc } from 'firebase/firestore';
 
@@ -27,10 +27,6 @@ export default function FarmersTab() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
 
-  useEffect(() => {
-    fetchFarmers();
-  }, []);
-
   const fetchFarmers = async () => {
     try {
       const querySnapshot = await getDocs(collection(db, 'users'));
@@ -52,6 +48,11 @@ export default function FarmersTab() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchFarmers();
+  }, []);
 
   const updateStatus = async (farmerId: string, status: 'verified' | 'rejected') => {
     try {

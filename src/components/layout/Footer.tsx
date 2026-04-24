@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Mail, Phone, MapPin, ArrowUpRight, Globe, Users, ShieldCheck } from "lucide-react";
+import { Mail, Phone, ArrowUpRight, Globe, Users, ShieldCheck } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 
 export default function Footer() {

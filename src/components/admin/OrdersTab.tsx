@@ -12,10 +12,6 @@ export default function OrdersTab() {
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
 
-    useEffect(() => {
-        fetchOrders();
-    }, []);
-
     const fetchOrders = async () => {
         try {
             const querySnapshot = await getDocs(collection(db, 'orders'));
@@ -36,6 +32,11 @@ export default function OrdersTab() {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        fetchOrders();
+    }, []);
 
     const filteredOrders = orders.filter(o => 
         o.id.toLowerCase().includes(searchTerm.toLowerCase()) || 

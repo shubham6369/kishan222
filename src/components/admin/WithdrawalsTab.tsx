@@ -22,10 +22,6 @@ export default function WithdrawalsTab() {
     const [loading, setLoading] = useState(true);
     const [processing, setProcessing] = useState<string | null>(null);
 
-    useEffect(() => {
-        fetchWithdrawals();
-    }, []);
-
     const fetchWithdrawals = async () => {
         try {
             const querySnapshot = await getDocs(collection(db, 'withdrawals'));
@@ -33,7 +29,8 @@ export default function WithdrawalsTab() {
             querySnapshot.forEach((d) => {
                 fetched.push({ id: d.id, ...d.data() } as Withdrawal);
             });
-            fetched.sort((a, b) => (b.requestedAt?.toMillis?.() || 0) - (a.requestedAt?.toMillis?.() || 0));
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            fetched.sort((a, b) => ((b.requestedAt as any)?.toMillis?.() || 0) - ((a.requestedAt as any)?.toMillis?.() || 0));
             setWithdrawals(fetched);
         } catch (error) {
             console.error('Error fetching withdrawals:', error);
@@ -41,6 +38,11 @@ export default function WithdrawalsTab() {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        fetchWithdrawals();
+    }, []);
 
     const approveWithdrawal = async (req: Withdrawal) => {
         setProcessing(req.id);
@@ -161,7 +163,7 @@ export default function WithdrawalsTab() {
                 <div>
                     <h2 className="text-xl font-bold text-gray-900">Wallet Withdrawals</h2>
                     <p className="text-sm text-gray-500 mt-0.5">
-                        Approving a request deducts the amount from the user's wallet.
+                        Approving a request deducts the amount from the user&apos;s wallet.
                         Rejecting leaves the balance unchanged.
                     </p>
                 </div>

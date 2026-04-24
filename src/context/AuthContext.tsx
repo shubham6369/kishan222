@@ -5,9 +5,34 @@ import { onAuthStateChanged, User, signOut } from 'firebase/auth';
 import { auth, db } from '@/lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 
+interface UserData {
+  uid: string;
+  fullName: string;
+  phone: string;
+  membershipId?: string;
+  membershipCardUnlocked?: boolean;
+  registrationDate?: string;
+  photoUrl?: string;
+  photoBase64?: string;
+  village?: string;
+  district?: string;
+  state?: string;
+  crops?: string;
+  landSize?: string;
+  isAdmin?: boolean;
+  walletBalance?: number;
+  referralCode?: string;
+  referredBy?: string;
+  stats?: {
+    earnings: number;
+    totalReferrals: number;
+    activeListings: number;
+  };
+}
+
 interface AuthContextType {
   user: User | null;
-  userData: any | null;
+  userData: UserData | null;
   loading: boolean;
   refreshUserData: () => Promise<void>;
   logout: () => Promise<void>;
@@ -25,14 +50,14 @@ export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [userData, setUserData] = useState<any | null>(null);
+  const [userData, setUserData] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
 
   const refreshUserData = async () => {
     if (user) {
       const userDoc = await getDoc(doc(db, 'users', user.uid));
       if (userDoc.exists()) {
-        setUserData(userDoc.data());
+        setUserData(userDoc.data() as UserData);
       }
     }
   };
@@ -48,6 +73,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     if (!auth || !auth.app) {
       console.warn('Firebase Auth not initialized. Skipping auth listener.');
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setLoading(false);
       return;
     }
@@ -58,7 +84,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         if (db && db.type === 'firestore') { // Simple check for initialized Firestore
           const userDoc = await getDoc(doc(db, 'users', user.uid));
           if (userDoc.exists()) {
-            setUserData(userDoc.data());
+            setUserData(userDoc.data() as UserData);
           } else {
             setUserData(null);
           }

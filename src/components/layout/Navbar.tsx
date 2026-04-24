@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, User, LogOut, LayoutDashboard, Search, Globe } from "lucide-react";
+import { Menu, X, LogOut, LayoutDashboard, Globe } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { usePathname, useRouter } from "next/navigation";

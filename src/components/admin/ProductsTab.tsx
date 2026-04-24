@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Search, CheckCircle, XCircle, Package } from 'lucide-react';
+import { Search, CheckCircle, XCircle } from 'lucide-react';
 import { db } from '@/lib/firebase';
 import { collection, getDocs, doc, updateDoc } from 'firebase/firestore';
 import { toast } from 'react-hot-toast';
@@ -22,10 +22,6 @@ export default function ProductsTab() {
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
 
-    useEffect(() => {
-        fetchProducts();
-    }, []);
-
     const fetchProducts = async () => {
         try {
             const querySnapshot = await getDocs(collection(db, 'products'));
@@ -45,6 +41,11 @@ export default function ProductsTab() {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        fetchProducts();
+    }, []);
 
     const updateStatus = async (productId: string, status: 'approved' | 'rejected') => {
         try {

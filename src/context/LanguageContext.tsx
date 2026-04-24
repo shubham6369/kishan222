@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, ReactNode } from 'react';
 
-type Dictionary = Record<string, any>;
+type Dictionary = any;
 
 interface LanguageContextType {
   lang: string;
