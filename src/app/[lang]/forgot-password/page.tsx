@@ -257,7 +257,7 @@ export default function ForgotPasswordPage() {
                             required
                             maxLength={6}
                             value={formData.otp}
-                            onChange={(e) => setFormData({...formData, otp: e.target.value.replace(/\D/g, ''))}
+                            onChange={(e) => setFormData({...formData, otp: e.target.value.replace(/\D/g, '')})}
                             className="w-full pl-12 pr-4 py-4 bg-[#fbf9f5] border-none rounded-xl focus:ring-2 focus:ring-[#122c1f]/10 transition-all text-[#122c1f] font-mono tracking-[0.5em] text-lg"
                             placeholder="------"
                           />

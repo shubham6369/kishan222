@@ -1,4 +1,15 @@
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 import { useLanguage } from '@/context/LanguageContext';
+import { useCart } from '@/context/CartContext';
+import { useAuth } from '@/context/AuthContext';
+import Navbar from '@/components/layout/Navbar';
+import Footer from '@/components/layout/Footer';
+import { MapPin, Loader2, CreditCard, ShieldCheck } from 'lucide-react';
 
 export default function CheckoutPage({ params }: { params: { lang: string } }) {
   const { cart, subtotal, deliveryTotal, clearCart } = useCart();

@@ -169,6 +169,12 @@ export default function LoginPage() {
     <main className="min-h-screen bg-[#fbf9f5]">
       <Navbar />
       
+      <section className="container mx-auto px-4 py-20">
+        <div className="max-w-md mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-white rounded-3xl shadow-2xl p-8 md:p-10 border border-black/5"
           >
             <div className="text-center space-y-4 mb-8">
               <div className="inline-flex items-center gap-2 bg-primary/5 px-4 py-2 rounded-full text-primary font-bold text-[10px] uppercase tracking-widest">
