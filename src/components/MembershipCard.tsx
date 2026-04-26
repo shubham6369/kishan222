@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { QRCodeSVG } from 'qrcode.react';
 import { Landmark, ShieldCheck, MapPin, Phone, Sprout, Tractor, User as UserIcon } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -17,7 +18,7 @@ export interface MembershipCardProps {
     photoBase64?: string;
     registrationDate: string;
     expiryDate: string;
-    memberType: 'Premium' | 'Regular' | 'Farmer';
+    memberType: string;
   };
 }
 
@@ -69,7 +70,14 @@ export default function MembershipCard({ memberData }: MembershipCardProps) {
               {/* Photo Area */}
               <div className="w-12 h-12 sm:w-14 sm:h-14 bg-white/10 rounded-full shrink-0 border-2 border-white/20 overflow-hidden flex items-center justify-center">
                 {memberData.photoBase64 ? (
-                  <img src={memberData.photoBase64} alt="Farmer Profile" className="w-full h-full object-cover" />
+                  <Image 
+                    src={memberData.photoBase64} 
+                    alt="Farmer Profile" 
+                    width={56} 
+                    height={56} 
+                    className="w-full h-full object-cover"
+                    unoptimized={memberData.photoBase64.startsWith('data:')}
+                  />
                 ) : (
                   <UserIcon className="w-6 h-6 text-white/50" />
                 )}

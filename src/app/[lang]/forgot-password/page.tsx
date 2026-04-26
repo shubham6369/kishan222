@@ -28,11 +28,7 @@ import Footer from '@/components/layout/Footer';
 import { useLanguage } from '@/context/LanguageContext';
 import Link from 'next/link';
 
-declare global {
-  interface Window {
-    recaptchaVerifier: any;
-  }
-}
+
 
 export default function ForgotPasswordPage() {
   const router = useRouter();
@@ -110,7 +106,7 @@ export default function ForgotPasswordPage() {
       setConfirmationResult(confirmation);
       setStep(2);
       setCountdown(60);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("OTP Send Error:", err);
       setError(dict.register.errors.otp_send_failed);
       if (window.recaptchaVerifier) {
@@ -134,7 +130,7 @@ export default function ForgotPasswordPage() {
     try {
       await confirmationResult.confirm(formData.otp);
       setStep(3);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("OTP Verify Error:", err);
       setError('Invalid code. Please check and try again.');
     } finally {
@@ -159,9 +155,10 @@ export default function ForgotPasswordPage() {
       setSuccess(true);
       // Log them out so they can log back in with new passcode properly
       await signOut(auth);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Reset Error:", err);
-      setError('Failed to update passcode. ' + (err.message || ''));
+      const authError = err as Error;
+      setError('Failed to update passcode. ' + (authError.message || ''));
     } finally {
       setIsSubmitting(false);
     }
@@ -246,7 +243,7 @@ export default function ForgotPasswordPage() {
                     >
                       <div className="p-3 bg-green-50 border border-green-100 rounded-xl flex items-center gap-3 text-green-700 text-xs">
                         <ShieldCheck className="w-4 h-4" />
-                        Code sent to {formData.phone}
+                        {dict.login.otp_sent_to} {formData.phone}
                       </div>
                       <div className="space-y-2">
                         <label className="text-[10px] font-bold uppercase tracking-widest text-[#77574d]">{dict.login.otp_label}</label>

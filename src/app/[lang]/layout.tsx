@@ -23,11 +23,11 @@ export async function generateStaticParams() {
   return [{ lang: "en" }, { lang: "hi" }];
 }
 
-import { LanguageProvider } from "@/context/LanguageContext";
+import { LanguageProvider, Dictionary } from "@/context/LanguageContext";
 
-const dictionaries: Record<string, any> = {
-  en: () => import('@/lib/dictionaries/en.json').then((module) => module.default),
-  hi: () => import('@/lib/dictionaries/hi.json').then((module) => module.default),
+const dictionaries: Record<string, () => Promise<Dictionary>> = {
+  en: () => import('@/lib/dictionaries/en.json').then((module) => module.default as Dictionary),
+  hi: () => import('@/lib/dictionaries/hi.json').then((module) => module.default as Dictionary),
 };
 
 export default async function LocaleLayout({

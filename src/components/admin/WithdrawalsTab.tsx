@@ -1,48 +1,42 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { db } from '@/lib/firebase';
 import { collection, getDocs, doc, updateDoc, increment } from 'firebase/firestore';
 import toast from 'react-hot-toast';
 import { CheckCircle, XCircle, Clock, IndianRupee, User, CreditCard } from 'lucide-react';
-
-interface Withdrawal {
-    id: string;
-    userId: string;
-    userName: string;
-    amount: number;
-    status: 'pending' | 'completed' | 'rejected';
-    requestedAt: any;
-    upiId?: string;
-    bankAccount?: string;
-}
+import { Withdrawal } from '@/types';
 
 export default function WithdrawalsTab() {
     const [withdrawals, setWithdrawals] = useState<Withdrawal[]>([]);
     const [loading, setLoading] = useState(true);
     const [processing, setProcessing] = useState<string | null>(null);
 
-    const fetchWithdrawals = async () => {
+    const fetchWithdrawals = useCallback(async () => {
         try {
             const querySnapshot = await getDocs(collection(db, 'withdrawals'));
             const fetched: Withdrawal[] = [];
             querySnapshot.forEach((d) => {
                 fetched.push({ id: d.id, ...d.data() } as Withdrawal);
             });
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            fetched.sort((a, b) => ((b.requestedAt as any)?.toMillis?.() || 0) - ((a.requestedAt as any)?.toMillis?.() || 0));
+            
+            fetched.sort((a, b) => {
+                const timeA = a.requestedAt?.toMillis?.() || 0;
+                const timeB = b.requestedAt?.toMillis?.() || 0;
+                return timeB - timeA;
+            });
             setWithdrawals(fetched);
         } catch (error) {
             console.error('Error fetching withdrawals:', error);
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
 
     useEffect(() => {
         // eslint-disable-next-line react-hooks/set-state-in-effect
         fetchWithdrawals();
-    }, []);
+    }, [fetchWithdrawals]);
 
     const approveWithdrawal = async (req: Withdrawal) => {
         setProcessing(req.id);
@@ -232,3 +226,4 @@ export default function WithdrawalsTab() {
         </div>
     );
 }
+

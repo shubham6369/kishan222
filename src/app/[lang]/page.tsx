@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, ShieldCheck, CreditCard, Users, Star, ShoppingBag, Leaf, Trophy, Globe } from "lucide-react";
+import { ArrowRight, CreditCard, Users, Star, ShoppingBag, Leaf, Trophy, Globe } from "lucide-react";
 import { motion } from "framer-motion";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -208,7 +208,7 @@ export default function Home() {
           >
             <h2 className="text-white text-4xl md:text-6xl">Rooted in Earth, <br />Dedicated to <span className="text-accent underline decoration-accent/30 underline-offset-8">Future</span></h2>
             <p className="text-white/70 font-body text-xl leading-relaxed">
-              Kishan Seva Samiti isn't just a platform; it's a movement towards regenerative agriculture. We monitor over 1 million hectares of soil health, ensuring that every harvest contributes back to the planet.
+              Kishan Seva Samiti isn&apos;t just a platform; it&apos;s a movement towards regenerative agriculture. We monitor over 1 million hectares of soil health, ensuring that every harvest contributes back to the planet.
             </p>
             
             <div className="grid sm:grid-cols-2 gap-8">

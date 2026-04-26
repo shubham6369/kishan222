@@ -32,17 +32,39 @@ import {
   ConfirmationResult,
   linkWithCredential,
   EmailAuthProvider,
-  updateProfile
+  updateProfile,
+  AuthError
 } from 'firebase/auth';
 import { collection, query, where, getDocs, doc, setDoc, updateDoc, increment } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useLanguage } from '@/context/LanguageContext';
 
-declare global {
-  interface Window {
-    recaptchaVerifier: any;
-  }
+import { Product } from '@/types';
+import Image from 'next/image';
+
+interface RazorpayResponse {
+  razorpay_payment_id: string;
+  razorpay_order_id: string;
+  razorpay_signature: string;
+}
+
+interface RazorpayOptions {
+  key: string | undefined;
+  amount: number;
+  currency: string;
+  name: string;
+  description: string;
+  order_id: string;
+  handler: (response: RazorpayResponse) => Promise<void>;
+  prefill: {
+    name: string;
+    contact: string;
+  };
+  theme: { color: string };
+  modal: {
+    ondismiss: () => void;
+  };
 }
 
 type Step = 1 | 2 | 3 | 4 | 'success';
@@ -122,7 +144,7 @@ export default function RegistrationForm() {
         await confirmationResult.confirm(otpValue);
         setError('');
         setStep(2);
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error("OTP Error:", err);
         setError(dict.register.errors.invalid_otp);
       } finally {
@@ -154,7 +176,7 @@ export default function RegistrationForm() {
         name: 'Kishan Seva Samiti',
         description: dict.register.payment_desc,
         order_id: orderData.id,
-        handler: async (response: any) => {
+        handler: async (response: RazorpayResponse) => {
           // Step 3: ONLY call handleSubmit after payment is confirmed
           await handleSubmit(response.razorpay_payment_id, orderData.id);
         },
@@ -171,11 +193,12 @@ export default function RegistrationForm() {
         },
       };
 
-      const rzp = new (window as any).Razorpay(options);
+      const rzp = new window.Razorpay(options);
       rzp.open();
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Payment error:', err);
-      setError(err.message || dict.register.errors.payment_init_failed);
+      const error = err as Error;
+      setError(error.message || dict.register.errors.payment_init_failed);
       setPaymentProcessing(false);
     }
   };
@@ -221,27 +244,28 @@ export default function RegistrationForm() {
           setConfirmationResult(confirmation);
           setOtpSent(true);
           setCountdown(60); // Start 60s countdown
-        } catch (err: any) {
+        } catch (err: unknown) {
           console.error("OTP Send Error Details:", err);
           
+          const authError = err as AuthError;
           let userMessage = dict.register.errors.otp_send_failed;
           
-          if (err.message?.includes('DUMMY_KEYS_DETECTED')) {
+          if (authError.message?.includes('DUMMY_KEYS_DETECTED')) {
             userMessage = "Development Mode: Firebase dummy keys detected. Please add real credentials to .env.local to test SMS.";
-          } else if (err.code === 'auth/invalid-phone-number') {
+          } else if (authError.code === 'auth/invalid-phone-number') {
             userMessage = "Invalid phone number format. Please check and try again.";
-          } else if (err.code === 'auth/quota-exceeded') {
+          } else if (authError.code === 'auth/quota-exceeded') {
             userMessage = "SMS quota exceeded for today. Please try again later.";
-          } else if (err.code === 'auth/too-many-requests') {
+          } else if (authError.code === 'auth/too-many-requests') {
             userMessage = "Too many attempts. Please wait a few minutes before trying again.";
-          } else if (err.message) {
-            userMessage = `Error: ${err.message}`;
+          } else if (authError.message) {
+            userMessage = `Error: ${authError.message}`;
           }
 
           setError(userMessage);
           
           // Reset recaptcha on error so they can try again
-          if (window.recaptchaVerifier) {
+          if (typeof window !== 'undefined' && window.recaptchaVerifier) {
             window.recaptchaVerifier.clear();
             window.recaptchaVerifier = undefined;
           }
@@ -286,7 +310,7 @@ export default function RegistrationForm() {
       try {
         const credential = EmailAuthProvider.credential(emailProxy, formData.password);
         await linkWithCredential(user, credential);
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.warn('Linking credential warning:', err);
       }
 
@@ -382,9 +406,10 @@ export default function RegistrationForm() {
       }
 
       setStep('success');
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      setError(err.message || 'Registration failed. Please try again.');
+      const error = err as Error;
+      setError(error.message || 'Registration failed. Please try again.');
       setStep(3);
     } finally {
       setIsSubmitting(false);
@@ -646,9 +671,16 @@ export default function RegistrationForm() {
 
                       <div className="flex justify-center mb-6">
                         <div className="relative group cursor-pointer" onClick={() => fileInputRef.current?.click()}>
-                          <div className="w-24 h-24 bg-[#fbf9f5] rounded-full border-2 border-dashed border-[#122c1f]/20 flex items-center justify-center overflow-hidden transition-all group-hover:border-[#122c1f]/50">
+                          <div className="w-24 h-24 bg-[#fbf9f5] rounded-full border-2 border-dashed border-[#122c1f]/20 flex items-center justify-center overflow-hidden transition-all group-hover:border-[#122c1f]/50 relative">
                             {formData.photoBase64 ? (
-                              <img src={formData.photoBase64} alt="Preview" className="w-full h-full object-cover" />
+                              <Image 
+                                src={formData.photoBase64} 
+                                alt="Preview" 
+                                width={96}
+                                height={96}
+                                className="w-full h-full object-cover" 
+                                unoptimized={formData.photoBase64.startsWith('data:')}
+                              />
                             ) : (
                               <Camera className="w-8 h-8 text-[#122c1f]/30 group-hover:text-[#122c1f]/60" />
                             )}

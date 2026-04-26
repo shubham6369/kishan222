@@ -119,7 +119,9 @@ export default function CartPage({ params }: { params: { lang: string } }) {
                     </div>
                     <div className="flex justify-between">
                       <span>{dict.cart.delivery}</span>
-                      <span className="font-bold text-[#122c1f]">{deliveryTotal === 0 ? 'Free' : `₹${deliveryTotal}`}</span>
+                      <p className="font-bold text-[#122c1f] uppercase tracking-tighter">
+                        {deliveryTotal === 0 ? dict.cart.free : `₹${deliveryTotal}`}
+                      </p>
                     </div>
                     <div className="pt-4 border-t border-black/5 flex justify-between items-end">
                       <span className="font-bold text-[#122c1f]">{dict.cart.total}</span>
@@ -135,8 +137,8 @@ export default function CartPage({ params }: { params: { lang: string } }) {
                     <ArrowRight className="w-4 h-4" />
                   </Link>
 
-                  <p className="text-[10px] text-center text-[#77574d] px-4">
-                    Taxes include GST where applicable. Secure checkout provided by Razorpay.
+                  <p className="text-[10px] text-[#77574d] mt-4 text-center">
+                    {dict.cart.taxes_notice}
                   </p>
                 </div>
               </div>

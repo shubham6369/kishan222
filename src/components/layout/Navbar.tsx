@@ -172,30 +172,30 @@ export default function Navbar() {
                 {dict.nav?.marketplace || "Marketplace"}
               </Link>
               <Link 
-                href={`/${lang}/schemes`} 
+                href={`/${lang}/about`} 
                 className="block text-2xl font-serif text-white hover:text-accent transition-colors"
                 onClick={() => setIsOpen(false)}
               >
-                Govt Schemes
+                {dict.nav?.about || "About"}
               </Link>
               
               <div className="pt-8 border-t border-white/10 space-y-6">
                 {user ? (
                   <>
                     <Link 
-                      href="/dashboard" 
+                      href={`/${lang}/dashboard`} 
                       className="flex items-center gap-4 text-xl text-white font-body"
                       onClick={() => setIsOpen(false)}
                     >
                       <LayoutDashboard className="w-6 h-6 text-accent" />
-                      Farmer Dashboard
+                      {dict.nav?.dashboard || "Farmer Dashboard"}
                     </Link>
                     <button 
                       onClick={handleLogout}
                       className="flex items-center gap-4 text-xl text-red-400 font-body"
                     >
                       <LogOut className="w-6 h-6" />
-                      Sign Out
+                      {dict.nav?.signout || "Sign Out"}
                     </button>
                   </>
                 ) : (

@@ -4,31 +4,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { onAuthStateChanged, User, signOut } from 'firebase/auth';
 import { auth, db } from '@/lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
-
-interface UserData {
-  uid: string;
-  fullName: string;
-  phone: string;
-  membershipId?: string;
-  membershipCardUnlocked?: boolean;
-  registrationDate?: string;
-  photoUrl?: string;
-  photoBase64?: string;
-  village?: string;
-  district?: string;
-  state?: string;
-  crops?: string;
-  landSize?: string;
-  isAdmin?: boolean;
-  walletBalance?: number;
-  referralCode?: string;
-  referredBy?: string;
-  stats?: {
-    earnings: number;
-    totalReferrals: number;
-    activeListings: number;
-  };
-}
+import { UserData } from '@/types';
 
 interface AuthContextType {
   user: User | null;
@@ -104,3 +80,4 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     </AuthContext.Provider>
   );
 };
+

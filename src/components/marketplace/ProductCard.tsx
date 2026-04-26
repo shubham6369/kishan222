@@ -7,22 +7,7 @@ import { ShoppingCart, Star, ArrowRight, ShieldCheck, CheckCheck } from 'lucide-
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
 
-interface Product {
-  id: string;
-  name: string;
-  category: string;
-  price: number;
-  unit: string;
-  rating?: number;
-  images?: string[];
-  image?: string;
-  sellerName?: string;
-  farmer?: string;
-  isOrganic: boolean;
-  stock?: number;
-  deliveryCharge?: number;
-  sellerId?: string;
-}
+import { Product } from '@/types';
 
 interface ProductCardProps {
   product: Product;
@@ -96,7 +81,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       <div className="p-6 flex flex-col flex-1">
         <div className="flex justify-between items-start mb-2">
           <span className="text-[10px] uppercase tracking-widest text-[#77574d] font-bold">
-            {product.category}
+            {product.category || 'Uncategorized'}
           </span>
           <div className="flex items-center gap-1">
             <Star className="w-3 h-3 text-yellow-400 fill-yellow-400" />
@@ -126,7 +111,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             <p className="text-[10px] text-[#77574d] uppercase font-bold tracking-tight">Price</p>
             <div className="flex items-baseline gap-1">
               <span className="text-2xl font-serif font-bold text-[#122c1f]">₹{product.price}</span>
-              <span className="text-xs text-[#77574d]/60 font-medium">/ {product.unit}</span>
+              <span className="text-xs text-[#77574d]/60 font-medium">/ {product.unit || 'unit'}</span>
             </div>
           </div>
           

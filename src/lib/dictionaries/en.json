@@ -5,7 +5,12 @@
     "mission": "Mission",
     "marketplace": "Marketplace",
     "join": "Join as Farmer",
-    "login": "Login Profile"
+    "login": "Login Profile",
+    "tagline": "Rural Empowerment Collective",
+    "about": "About",
+    "contact": "Contact",
+    "dashboard": "Dashboard",
+    "signout": "Sign Out"
   },
   "hero": {
     "title": "Empowering Farmers for a Sustainable Future",
@@ -42,10 +47,105 @@
     "delivery": "Delivery Charges",
     "total": "Total Amount",
     "proceed": "Proceed to Checkout",
-    "items_count": "{count} items"
+    "items_count": "{count} items",
+    "free": "Free",
+    "taxes_notice": "Taxes and shipping calculated at checkout"
+  },
+  "marketplace": {
+    "title": "Organic Marketplace",
+    "subtitle": "Direct from our verified farmers to your doorstep.",
+    "search_placeholder": "Search products...",
+    "no_results": "No products found in this category.",
+    "add_to_cart": "Add to Cart",
+    "view_details": "View Details",
+    "organic_label": "100% Organic Marketplace",
+    "filters": "Advanced Filters",
+    "season": "Current Season",
+    "featured": "Featured Products",
+    "showing": "Showing",
+    "results": "results",
+    "categories": {
+      "all": "All Products",
+      "seeds": "Organic Seeds",
+      "fertilizers": "Organic Fertilizers",
+      "pesticides": "Bio Pesticides",
+      "cattle": "Cattle Care",
+      "fresh": "Fresh Produce"
+    }
+  },
+  "contact": {
+    "title": "Contact Us",
+    "subtitle": "We are here to help you grow. Reach out to us for support or information.",
+    "reach_out": "Get in Touch",
+    "phone": "Phone Support",
+    "email": "Email Us",
+    "visit": "Visit Us",
+    "visit_address": "102, Kishan Bhavan, Vidhyadhar Nagar, Jaipur, RJ 302039",
+    "form_name": "Full Name",
+    "form_email": "Email Address",
+    "form_subject": "Subject",
+    "form_message": "Message",
+    "form_submit": "Send Message",
+    "faqs_title": "Frequently Asked Questions"
+  },
+  "about": {
+    "story_tag": "Our Story",
+    "hero_title": "Rooted in the Soil of India",
+    "hero_subtitle": "Kishan Seva Samiti was born from a simple belief — that every Indian farmer deserves dignity, a fair market, and a community that stands behind them.",
+    "mission_tag": "Our Mission",
+    "mission_title": "Empowering Farmers with Identity, Income & Independence",
+    "mission_p1": "We provide every registered farmer with an official membership card, a direct marketplace to sell organic produce, and a referral-based income system — all in one unified platform.",
+    "mission_p2": "Our platform bridges the gap between rural farmers and urban consumers, eliminating middlemen and ensuring fair prices for quality organic products.",
+    "join_movement": "Join the Movement",
+    "stats": {
+      "active": "Years Active",
+      "farmers": "Registered Farmers",
+      "products": "Organic Products",
+      "districts": "Districts Covered"
+    },
+    "pillars_title": "What We Stand For",
+    "pillars_subtitle": "Our Four Pillars",
+    "pillars": {
+      "organic": {
+        "title": "Organic Farming",
+        "desc": "Promoting sustainable, chemical-free agricultural practices rooted in ancient Indian wisdom and modern science."
+      },
+      "protection": {
+        "title": "Farmer Protection",
+        "desc": "Verified membership cards that protect farmers from exploitation and establish their identity in the market."
+      },
+      "community": {
+        "title": "Community First",
+        "desc": "Building a powerful network where every farmer supports each other through referrals, knowledge sharing, and solidarity."
+      },
+      "gaushala": {
+        "title": "Gaushala Integration",
+        "desc": "Deeply rooted in our love for cows — connecting farmers with authentic panchgavya products for holistic farming."
+      }
+    },
+    "milestones_title": "Our Journey",
+    "milestones_subtitle": "Milestones",
+    "team_title": "Leadership",
+    "team_subtitle": "Our Team",
+    "cta_title": "Be Part of the Change",
+    "cta_desc": "Join thousands of farmers across India who are building a better future through community, organic farming, and mutual support.",
+    "cta_get_card": "Get Your Membership Card",
+    "cta_contact": "Contact Us"
   },
   "footer": {
     "legal": "© 2026 Kishan Seva Samiti. All rights reserved.",
+    "established": "Est. Rural Empowerment 2024",
+    "mission": "The premier collective for the modern Indian farmer. We facilitate a global transition to regenerative agriculture while preserving our rich rural heritage.",
+    "exploration": "Exploration",
+    "exploration_links": ["Our Heritage", "Marketplace", "Membership", "Technical Support"],
+    "intelligence": "Intelligence",
+    "intelligence_links": ["Soil Analytics", "Market Trends", "Govt Schemes", "Climate Tech"],
+    "assistance": "Assistance",
+    "support_hours": "Mon - Sat, 9am - 6pm",
+    "digital_support": "24/7 Digital Support",
+    "privacy": "Privacy Charter",
+    "terms": "Membership Terms",
+    "ethics": "Ethics & Transparency",
     "links": {
       "privacy": "Privacy Policy",
       "terms": "Terms of Service"
@@ -64,12 +164,12 @@
     "subtotal": "Subtotal",
     "delivery": "Delivery",
     "total": "Total",
-    "pay_button": "Pay with Razorpay",
+    "pay_button": "Secure Payment",
     "processing": "Processing...",
     "secure_payment": "100% Secure Payments",
     "login_prompt": "Please login to place an order.",
     "order_desc": "Organic Produce Order",
-    "sdk_failed": "Razorpay SDK failed to load.",
+    "sdk_failed": "Payment SDK failed to load.",
     "order_failed": "Failed to create order",
     "checkout_error": "An error occurred during checkout.",
     "payment_failed": "Payment verification failed",
@@ -99,10 +199,14 @@
     "phone_or_email_placeholder": "e.g. 9876543210",
     "error_phone": "Please enter a valid 10-digit mobile number.",
     "error_otp": "Please enter the 6-digit code.",
-    "error_creds": "Invalid credentials. Please check your phone/email and password.",
+    "error_creds": "Invalid credentials. Please check your phone/email and password."
+  },
+  "auth": {
     "resend_otp": "Resend Code",
     "wait_resend": "Resend in {seconds}s",
-    "change_number": "Change Number"
+    "change_number": "Change Number",
+    "error_phone": "Please enter a valid 10-digit mobile number.",
+    "error_otp": "Please enter the 6-digit code."
   },
   "forgot": {
     "title": "Reset Passcode",
@@ -190,5 +294,85 @@
       "issued": "Issued",
       "expires": "Expires"
     }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "jai_kisan": "Jai Kisan",
+    "farmer": "Farmer",
+    "welcome": "Welcome back to your Seva Portal. Here's your impact today.",
+    "premium_member": "Premium Member",
+    "stats": {
+      "earnings": "Referral Earnings",
+      "referrals": "Total Referrals",
+      "listings": "Active Listings",
+      "today": "today",
+      "lifetime": "Lifetime",
+      "live_now": "Live Now"
+    },
+    "identity": {
+      "title": "Your Digital Identity",
+      "desc": "This card verifies your membership with the Samiti. Show the QR code at any Samiti collection center to avail services and list your products.",
+      "download": "Download / Print",
+      "share": "Share Card"
+    },
+    "referrals": {
+      "title": "Recent Referrals",
+      "subtitle": "Farmers who joined using your unique link.",
+      "view_all": "View All",
+      "loading": "Loading referrals...",
+      "none": "No recent referrals found. Start sharing to earn rewards!",
+      "earned": "Earned",
+      "joined": "Joined",
+      "recently": "recently",
+      "unknown": "Unknown Farmer"
+    },
+    "wallet": {
+      "title": "Your Wallet",
+      "balance": "Available Balance",
+      "withdraw": "Withdraw Funds",
+      "min_fee": "Min ₹50",
+      "withdraw_msg": "Withdrawal request verified. Funds will be transferred in 24 hours."
+    },
+    "referral_box": {
+      "title": "Spread the Growth",
+      "subtitle": "Earn ₹50 for every verified farmer who joins through your link.",
+      "link_label": "Your Referral link",
+      "copied": "Link copied!"
+    },
+    "support": {
+      "title": "Direct Support",
+      "expert": "Expert Advice",
+      "market": "Market Trends"
+    },
+    "payments": {
+      "title": "Payment History",
+      "subtitle": "Track all your transactions and payment statuses.",
+      "successful": "Successful",
+      "pending": "Pending",
+      "failed": "Failed",
+      "loading": "Loading transactions...",
+      "none": "No transactions found.",
+      "order_id": "Order ID",
+      "amount": "Amount",
+      "date": "Date",
+      "status": "Status",
+      "action": "Action"
+    }
+  },
+  "sidebar": {
+    "overview": "Overview",
+    "my_card": "My Card",
+    "marketplace": "Marketplace",
+    "seller_hub": "Seller Hub",
+    "my_products": "My Products",
+    "referrals": "Referrals",
+    "payments": "Payments",
+    "wallet": "Wallet",
+    "surplus_title": "Have Surplus?",
+    "surplus_desc": "List your organic produce and reach thousands of buyers.",
+    "sell_now": "Sell Now",
+    "logout": "Logout",
+    "portal": "Samiti Portal",
+    "brand": "Kishan Seva"
   }
 }

@@ -7,10 +7,12 @@ import { collection, query, where, orderBy, onSnapshot } from 'firebase/firestor
 import { Package, Clock, CheckCircle2, XCircle } from 'lucide-react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { Order, CartItem } from '@/types';
+import Image from 'next/image';
 
 export default function BuyerPurchasesPage() {
   const { user } = useAuth();
-  const [orders, setOrders] = useState<any[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -26,7 +28,7 @@ export default function BuyerPurchasesPage() {
       const fetchedOrders = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
-      }));
+      })) as Order[];
       setOrders(fetchedOrders);
       setLoading(false);
     });
@@ -89,11 +91,18 @@ export default function BuyerPurchasesPage() {
               </div>
 
               <div className="space-y-3">
-                {order.items.map((item: any, i: number) => (
+                {order.items.map((item: CartItem, i: number) => (
                   <div key={i} className="flex justify-between items-center text-sm">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-lg overflow-hidden relative bg-[#fbf9f5]">
-                        {item.image && <img src={item.image} alt={item.name} className="w-full h-full object-cover" />}
+                        {item.image && (
+                          <Image 
+                            src={item.image} 
+                            alt={item.name} 
+                            fill
+                            className="object-cover" 
+                          />
+                        )}
                       </div>
                       <span className="font-medium text-[#122c1f]">{item.quantity}x {item.name}</span>
                     </div>

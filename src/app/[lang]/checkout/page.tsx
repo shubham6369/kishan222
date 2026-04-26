@@ -10,6 +10,7 @@ import { useAuth } from '@/context/AuthContext';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { MapPin, Loader2, CreditCard, ShieldCheck } from 'lucide-react';
+import { load } from '@cashfreepayments/cashfree-js';
 
 export default function CheckoutPage({ params }: { params: { lang: string } }) {
   const { cart, subtotal, deliveryTotal, clearCart } = useCart();
@@ -42,50 +43,6 @@ export default function CheckoutPage({ params }: { params: { lang: string } }) {
     });
   };
 
-  const verifyPaymentAndCreateOrder = async (razorpayResponse: any, orderId: string) => {
-    try {
-      const response = await fetch('/api/verify-payment', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          razorpay_payment_id: razorpayResponse.razorpay_payment_id,
-          razorpay_order_id: razorpayResponse.razorpay_order_id,
-          razorpay_signature: razorpayResponse.razorpay_signature,
-        })
-      });
-      const data = await response.json();
-      if (data.isOk) {
-        // Create order in Firestore
-        const sellerIds = [...new Set(cart.map(item => item.sellerId))];
-        
-        await addDoc(collection(db, 'orders'), {
-          buyerId: user?.uid || 'guest',
-          buyerName: formData.fullName,
-          items: cart,
-          subtotal,
-          deliveryTotal,
-          totalAmount: grandTotal,
-          status: 'pending',
-          paymentStatus: 'paid',
-          paymentId: razorpayResponse.razorpay_payment_id,
-          shippingAddress: formData,
-          createdAt: serverTimestamp(),
-          sellerIds
-        });
-
-        clearCart();
-        router.push(`/${params.lang}/dashboard/purchases?success=1`);
-      } else {
-        alert(dict.checkout.payment_failed);
-      }
-    } catch (err) {
-      console.error(err);
-      alert(dict.checkout.payment_error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handlePlaceOrder = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) {
@@ -96,59 +53,58 @@ export default function CheckoutPage({ params }: { params: { lang: string } }) {
     setLoading(true);
 
     try {
-      const loadScript = () => new Promise((resolve) => {
-        const script = document.createElement("script");
-        script.src = "https://checkout.razorpay.com/v1/checkout.js";
-        script.onload = () => resolve(true);
-        script.onerror = () => resolve(false);
-        document.body.appendChild(script);
+      // 1. Initialize Cashfree
+      const cashfree = await load({
+        mode: process.env.NEXT_PUBLIC_CASHFREE_ENV === 'PRODUCTION' ? 'production' : 'sandbox'
       });
 
-      const res = await loadScript();
-      if (!res) {
-        alert(dict.checkout.sdk_failed);
-        setLoading(false);
-        return;
-      }
-
-      // 1. Create order on backend
-      const response = await fetch('/api/create-order', {
+      // 2. Create order on backend
+      const response = await fetch('/api/cashfree/create-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount: grandTotal })
+        body: JSON.stringify({ 
+          amount: grandTotal,
+          customerId: user.uid,
+          customerPhone: formData.phone,
+          customerName: formData.fullName,
+          customerEmail: user.email || '',
+          lang: params.lang
+        })
       });
+      
       const data = await response.json();
 
-      if (!data.orderId) {
-        throw new Error(dict.checkout.order_failed);
+      if (!data.paymentSessionId) {
+        throw new Error(data.error || 'Failed to create order');
       }
 
-      // 2. Open Razorpay
-      const options = {
-        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || 'rzp_test_YourKey',
-        amount: data.amount,
-        currency: "INR",
-        name: "Kishan Seva Samiti",
-        description: dict.checkout.order_desc,
-        order_id: data.orderId,
-        handler: async function (response: any) {
-          await verifyPaymentAndCreateOrder(response, data.orderId);
-        },
-        prefill: {
-          name: formData.fullName,
-          contact: formData.phone,
-        },
-        theme: {
-          color: "#122c1f"
-        }
-      };
+      // 3. Store order details in Firestore as "pending" before payment
+      const sellerIds = [...new Set(cart.map(item => item.sellerId))];
+      await addDoc(collection(db, 'orders'), {
+        orderId: data.orderId,
+        buyerId: user.uid,
+        buyerName: formData.fullName,
+        items: cart,
+        subtotal,
+        deliveryTotal,
+        totalAmount: grandTotal,
+        status: 'pending',
+        paymentStatus: 'pending',
+        shippingAddress: formData,
+        createdAt: serverTimestamp(),
+        sellerIds,
+        paymentGateway: 'cashfree'
+      });
 
-      const paymentObject = new (window as any).Razorpay(options);
-      paymentObject.open();
+      // 4. Open Cashfree Checkout
+      await cashfree.checkout({
+        paymentSessionId: data.paymentSessionId,
+        redirectTarget: "_self", // Redirect back to return_url defined in API
+      });
 
-    } catch (error) {
-      console.error(error);
-      alert(dict.checkout.checkout_error);
+    } catch (error: any) {
+      console.error('Checkout error:', error);
+      alert(error.message || 'Something went wrong during checkout');
       setLoading(false);
     }
   };

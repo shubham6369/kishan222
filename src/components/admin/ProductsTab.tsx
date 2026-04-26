@@ -1,28 +1,19 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Search, CheckCircle, XCircle } from 'lucide-react';
 import { db } from '@/lib/firebase';
 import { collection, getDocs, doc, updateDoc } from 'firebase/firestore';
 import { toast } from 'react-hot-toast';
-
-interface Product {
-    id: string;
-    name: string;
-    sellerName: string;
-    description: string;
-    price: number;
-    stock: number;
-    status: 'pending' | 'approved' | 'rejected';
-    image: string;
-}
+import { Product } from '@/types';
+import Image from 'next/image';
 
 export default function ProductsTab() {
     const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
 
-    const fetchProducts = async () => {
+    const fetchProducts = useCallback(async () => {
         try {
             const querySnapshot = await getDocs(collection(db, 'products'));
             const fetchedProducts: Product[] = [];
@@ -32,7 +23,7 @@ export default function ProductsTab() {
                     ...doc.data()
                 } as Product);
             });
-            // We should ideally sort by createdAt, but let's just reverse for newest first assuming natural order
+            // Sort by createdAt or just reverse for newest first
             setProducts(fetchedProducts.reverse());
         } catch (error) {
             console.error("Error fetching products:", error);
@@ -40,12 +31,11 @@ export default function ProductsTab() {
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
 
     useEffect(() => {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
         fetchProducts();
-    }, []);
+    }, [fetchProducts]);
 
     const updateStatus = async (productId: string, status: 'approved' | 'rejected') => {
         try {
@@ -100,8 +90,14 @@ export default function ProductsTab() {
                                 <tr key={product.id} className="hover:bg-gray-50">
                                     <td className="p-4">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded bg-gray-100 overflow-hidden shrink-0">
-                                                <img src={product.image || 'https://placehold.co/100x100?text=No+Image'} alt={product.name} className="w-full h-full object-cover" />
+                                            <div className="w-10 h-10 rounded bg-gray-100 overflow-hidden shrink-0 relative">
+                                                <Image 
+                                                    src={product.image || 'https://placehold.co/100x100?text=No+Image'} 
+                                                    alt={product.name} 
+                                                    width={40}
+                                                    height={40}
+                                                    className="w-full h-full object-cover" 
+                                                />
                                             </div>
                                             <div>
                                                 <div className="font-medium text-gray-900 line-clamp-1">{product.name}</div>

@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
+import { useLanguage } from '@/context/LanguageContext';
 
 const fadeUp = (delay = 0) => ({
   initial: { opacity: 0, y: 30 },
@@ -16,51 +17,52 @@ const fadeUp = (delay = 0) => ({
   transition: { duration: 0.6, delay },
 });
 
-const PILLARS = [
-  {
-    icon: Leaf,
-    title: 'Organic Farming',
-    desc: 'Promoting sustainable, chemical-free agricultural practices rooted in ancient Indian wisdom and modern science.',
-    color: 'bg-green-50 text-green-600',
-  },
-  {
-    icon: Shield,
-    title: 'Farmer Protection',
-    desc: 'Verified membership cards that protect farmers from exploitation and establish their identity in the market.',
-    color: 'bg-blue-50 text-blue-600',
-  },
-  {
-    icon: Users,
-    title: 'Community First',
-    desc: 'Building a powerful network where every farmer supports each other through referrals, knowledge sharing, and solidarity.',
-    color: 'bg-purple-50 text-purple-600',
-  },
-  {
-    icon: Heart,
-    title: 'Gaushala Integration',
-    desc: 'Deeply rooted in our love for cows — connecting farmers with authentic panchgavya products for holistic farming.',
-    color: 'bg-orange-50 text-orange-600',
-  },
-];
-
-const MILESTONES = [
-  { year: '2020', event: 'Foundation of Kishan Seva Samiti in Rajasthan' },
-  { year: '2021', event: 'First 500 farmers enrolled in membership programme' },
-  { year: '2022', event: 'Organic Marketplace launched with 50+ product categories' },
-  { year: '2023', event: 'Referral system introduced — ₹7 per verified farmer' },
-  { year: '2024', event: 'Digital membership card launched for all enrolled farmers' },
-  { year: '2025', event: 'Platform expanded pan-India with bilingual support' },
-];
-
-const TEAM = [
-  { name: 'Shri Ramkishan Sharma', role: 'Founder & President', location: 'Jaipur, Rajasthan' },
-  { name: 'Smt. Kamla Devi', role: 'Secretary General', location: 'Ajmer, Rajasthan' },
-  { name: 'Dr. Vijay Gupta', role: 'Chief Agricultural Advisor', location: 'Kota, Rajasthan' },
-];
-
 export default function AboutPage() {
   const params = useParams();
   const lang = (params?.lang as string) || 'en';
+  const { dict } = useLanguage();
+
+  const PILLARS = [
+    {
+      icon: Leaf,
+      title: dict.about.pillars.organic.title,
+      desc: dict.about.pillars.organic.desc,
+      color: 'bg-green-50 text-green-600',
+    },
+    {
+      icon: Shield,
+      title: dict.about.pillars.protection.title,
+      desc: dict.about.pillars.protection.desc,
+      color: 'bg-blue-50 text-blue-600',
+    },
+    {
+      icon: Users,
+      title: dict.about.pillars.community.title,
+      desc: dict.about.pillars.community.desc,
+      color: 'bg-purple-50 text-purple-600',
+    },
+    {
+      icon: Heart,
+      title: dict.about.pillars.gaushala.title,
+      desc: dict.about.pillars.gaushala.desc,
+      color: 'bg-orange-50 text-orange-600',
+    },
+  ];
+
+  const MILESTONES = [
+    { year: '2020', event: lang === 'en' ? 'Foundation of Kishan Seva Samiti in Rajasthan' : 'राजस्थान में किशन सेवा समिति की स्थापना' },
+    { year: '2021', event: lang === 'en' ? 'First 500 farmers enrolled in membership programme' : 'सदस्यता कार्यक्रम में पहले 500 किसान नामांकित' },
+    { year: '2022', event: lang === 'en' ? 'Organic Marketplace launched with 50+ product categories' : '50+ उत्पाद श्रेणियों के साथ जैविक बाजार शुरू किया गया' },
+    { year: '2023', event: lang === 'en' ? 'Referral system introduced — ₹7 per verified farmer' : 'रेफरल प्रणाली शुरू की गई - ₹7 प्रति सत्यापित किसान' },
+    { year: '2024', event: lang === 'en' ? 'Digital membership card launched for all enrolled farmers' : 'सभी नामांकित किसानों के लिए डिजिटल सदस्यता कार्ड लॉन्च किया गया' },
+    { year: '2025', event: lang === 'en' ? 'Platform expanded pan-India with bilingual support' : 'द्विभाषी समर्थन के साथ पूरे भारत में मंच का विस्तार' },
+  ];
+
+  const TEAM = [
+    { name: 'Shri Ramkishan Sharma', role: lang === 'en' ? 'Founder & President' : 'संस्थापक और अध्यक्ष', location: lang === 'en' ? 'Jaipur, Rajasthan' : 'जयपुर, राजस्थान' },
+    { name: 'Smt. Kamla Devi', role: lang === 'en' ? 'Secretary General' : 'महासचिव', location: lang === 'en' ? 'Ajmer, Rajasthan' : 'अजमेर, राजस्थान' },
+    { name: 'Dr. Vijay Gupta', role: lang === 'en' ? 'Chief Agricultural Advisor' : 'मुख्य कृषि सलाहकार', location: lang === 'en' ? 'Kota, Rajasthan' : 'कोटा, राजस्थान' },
+  ];
 
   return (
     <div className="min-h-screen bg-[#fbf9f5]">
@@ -73,15 +75,13 @@ export default function AboutPage() {
           <motion.div {...fadeUp()} className="max-w-3xl">
             <div className="flex items-center gap-2 text-green-400 text-sm font-bold uppercase tracking-widest mb-6">
               <Sprout className="w-4 h-4" />
-              Our Story
+              {dict.about.story_tag}
             </div>
             <h1 className="text-5xl md:text-7xl font-serif font-bold leading-tight mb-6">
-              Rooted in the<br />
-              <span className="text-green-400 italic">Soil of India</span>
+              {dict.about.hero_title}
             </h1>
             <p className="text-white/70 text-xl leading-relaxed max-w-2xl">
-              Kishan Seva Samiti was born from a simple belief — that every Indian farmer deserves dignity, 
-              a fair market, and a community that stands behind them.
+              {dict.about.hero_subtitle}
             </p>
           </motion.div>
         </div>
@@ -93,32 +93,30 @@ export default function AboutPage() {
       <section className="max-w-6xl mx-auto px-6 py-24">
         <div className="grid md:grid-cols-2 gap-16 items-center">
           <motion.div {...fadeUp()}>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-[#77574d] mb-4">Our Mission</p>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-[#77574d] mb-4">{dict.about.mission_tag}</p>
             <h2 className="text-4xl font-serif font-bold text-[#122c1f] leading-tight mb-6">
-              Empowering Farmers with Identity, Income & Independence
+              {dict.about.mission_title}
             </h2>
             <p className="text-[#77574d] text-lg leading-relaxed mb-4">
-              We provide every registered farmer with an official membership card, a direct marketplace 
-              to sell organic produce, and a referral-based income system — all in one unified platform.
+              {dict.about.mission_p1}
             </p>
             <p className="text-[#77574d] leading-relaxed">
-              Our platform bridges the gap between rural farmers and urban consumers, eliminating middlemen 
-              and ensuring fair prices for quality organic products.
+              {dict.about.mission_p2}
             </p>
             <Link
               href={`/${lang}/register`}
               className="inline-flex items-center gap-2 mt-8 px-8 py-4 bg-[#122c1f] text-white rounded-2xl font-bold hover:bg-[#122c1f]/90 transition-all hover:scale-105"
             >
-              Join the Movement <ChevronRight className="w-4 h-4" />
+              {dict.about.join_movement} <ChevronRight className="w-4 h-4" />
             </Link>
           </motion.div>
 
           <motion.div {...fadeUp(0.2)} className="grid grid-cols-2 gap-4">
             {[
-              { icon: Sun, label: 'Years Active', value: '5+' },
-              { icon: Users, label: 'Registered Farmers', value: '5,000+' },
-              { icon: Leaf, label: 'Organic Products', value: '200+' },
-              { icon: MapPin, label: 'Districts Covered', value: '50+' },
+              { icon: Sun, label: dict.about.stats.active, value: '5+' },
+              { icon: Users, label: dict.about.stats.farmers, value: '5,000+' },
+              { icon: Leaf, label: dict.about.stats.products, value: '200+' },
+              { icon: MapPin, label: dict.about.stats.districts, value: '50+' },
             ].map((stat, i) => (
               <div key={i} className="bg-white rounded-3xl p-6 border border-black/5 shadow-sm text-center">
                 <stat.icon className="w-6 h-6 text-[#77574d] mx-auto mb-3" />
@@ -134,8 +132,8 @@ export default function AboutPage() {
       <section className="bg-white py-24">
         <div className="max-w-6xl mx-auto px-6">
           <motion.div {...fadeUp()} className="text-center mb-16">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-[#77574d] mb-3">What We Stand For</p>
-            <h2 className="text-4xl font-serif font-bold text-[#122c1f]">Our Four Pillars</h2>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-[#77574d] mb-3">{dict.about.pillars_title}</p>
+            <h2 className="text-4xl font-serif font-bold text-[#122c1f]">{dict.about.pillars_subtitle}</h2>
           </motion.div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {PILLARS.map((pillar, i) => (
@@ -156,8 +154,8 @@ export default function AboutPage() {
       {/* Timeline */}
       <section className="max-w-6xl mx-auto px-6 py-24">
         <motion.div {...fadeUp()} className="text-center mb-16">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-[#77574d] mb-3">Our Journey</p>
-          <h2 className="text-4xl font-serif font-bold text-[#122c1f]">Milestones</h2>
+          <p className="text-[10px] font-bold uppercase tracking-widest text-[#77574d] mb-3">{dict.about.milestones_title}</p>
+          <h2 className="text-4xl font-serif font-bold text-[#122c1f]">{dict.about.milestones_subtitle}</h2>
         </motion.div>
         <div className="relative">
           <div className="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-px bg-[#122c1f]/10 hidden md:block" />
@@ -184,8 +182,8 @@ export default function AboutPage() {
       <section className="bg-[#122c1f] py-24">
         <div className="max-w-6xl mx-auto px-6">
           <motion.div {...fadeUp()} className="text-center mb-16">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-white/40 mb-3">Leadership</p>
-            <h2 className="text-4xl font-serif font-bold text-white">Our Team</h2>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-white/40 mb-3">{dict.about.team_title}</p>
+            <h2 className="text-4xl font-serif font-bold text-white">{dict.about.team_subtitle}</h2>
           </motion.div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {TEAM.map((member, i) => (
@@ -211,22 +209,21 @@ export default function AboutPage() {
         <motion.div {...fadeUp()}>
           <Droplets className="w-10 h-10 text-[#77574d] mx-auto mb-6" />
           <h2 className="text-4xl md:text-5xl font-serif font-bold text-[#122c1f] mb-4">
-            Be Part of the Change
+            {dict.about.cta_title}
           </h2>
           <p className="text-[#77574d] text-lg mb-8 max-w-2xl mx-auto">
-            Join thousands of farmers across India who are building a better future through community, 
-            organic farming, and mutual support.
+            {dict.about.cta_desc}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href={`/${lang}/register`}
               className="px-10 py-5 bg-[#122c1f] text-white rounded-2xl font-bold hover:scale-105 transition-all shadow-xl"
             >
-              Get Your Membership Card
+              {dict.about.cta_get_card}
             </Link>
             <Link href={`/${lang}/contact`}
               className="px-10 py-5 bg-white border border-black/10 text-[#122c1f] rounded-2xl font-bold hover:shadow-md transition-all"
             >
-              Contact Us
+              {dict.about.cta_contact}
             </Link>
           </div>
         </motion.div>

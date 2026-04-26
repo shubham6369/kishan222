@@ -13,22 +13,27 @@ import {
   Landmark,
   Wallet,
   Store,
-  IdCard
+  IdCard,
+  CreditCard
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-const NAV_ITEMS = [
-  { name: 'Overview', href: '/dashboard', icon: BarChart3 },
-  { name: 'My Card', href: '/dashboard/card', icon: IdCard },
-  { name: 'Marketplace', href: '/marketplace', icon: Home },
-  { name: 'Seller Hub', href: '/dashboard/seller', icon: Store },
-  { name: 'My Products', href: '/dashboard/products', icon: ShoppingBag },
-  { name: 'Referrals', href: '/dashboard/referrals', icon: Users },
-  { name: 'Wallet', href: '/dashboard/wallet', icon: Wallet },
-];
+import { useLanguage } from '@/context/LanguageContext';
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const { dict, lang } = useLanguage();
+
+  const NAV_ITEMS = [
+    { name: dict.sidebar.overview, href: `/${lang}/dashboard`, icon: BarChart3 },
+    { name: dict.sidebar.my_card, href: `/${lang}/dashboard/card`, icon: IdCard },
+    { name: dict.sidebar.marketplace, href: `/${lang}/marketplace`, icon: Home },
+    { name: dict.sidebar.seller_hub, href: `/${lang}/dashboard/seller`, icon: Store },
+    { name: dict.sidebar.my_products, href: `/${lang}/dashboard/products`, icon: ShoppingBag },
+    { name: dict.sidebar.referrals, href: `/${lang}/dashboard/referrals`, icon: Users },
+    { name: dict.sidebar.payments, href: `/${lang}/dashboard/payments`, icon: CreditCard },
+    { name: dict.sidebar.wallet, href: `/${lang}/dashboard/wallet`, icon: Wallet },
+  ];
 
   return (
     <aside className="w-80 h-screen bg-[#122c1f] text-[#fbf9f5] flex flex-col sticky top-0 overflow-hidden">
@@ -37,13 +42,13 @@ export default function Sidebar() {
       
       {/* Logo */}
       <div className="p-10 relative z-10">
-        <Link href="/" className="flex items-center gap-3">
+        <Link href={`/${lang}`} className="flex items-center gap-3">
           <div className="p-2 bg-white/10 rounded-xl backdrop-blur-md border border-white/10">
             <Landmark className="w-6 h-6" />
           </div>
           <div>
-            <h1 className="text-xl font-serif font-bold tracking-tight">Kishan Seva</h1>
-            <p className="text-[10px] uppercase tracking-[0.2em] opacity-40">Samiti Portal</p>
+            <h1 className="text-xl font-serif font-bold tracking-tight">{dict.sidebar.brand}</h1>
+            <p className="text-[10px] uppercase tracking-[0.2em] opacity-40">{dict.sidebar.portal}</p>
           </div>
         </Link>
       </div>
@@ -83,13 +88,13 @@ export default function Sidebar() {
             <div className="absolute top-0 right-0 p-2 opacity-10">
                 <PlusCircle className="w-16 h-16" />
             </div>
-            <h4 className="text-sm font-serif font-bold relative z-10">Have Surplus?</h4>
-            <p className="text-[10px] opacity-70 relative z-10 leading-relaxed">List your organic produce and reach thousands of buyers.</p>
+            <h4 className="text-sm font-serif font-bold relative z-10">{dict.sidebar.surplus_title}</h4>
+            <p className="text-[10px] opacity-70 relative z-10 leading-relaxed">{dict.sidebar.surplus_desc}</p>
             <Link 
-                href="/dashboard/products/new"
+                href={`/${lang}/dashboard/products/new`}
                 className="block text-center py-3 bg-[#122c1f] text-white rounded-xl text-xs font-bold uppercase tracking-widest hover:scale-105 transition-all relative z-10"
             >
-                Sell Now
+                {dict.sidebar.sell_now}
             </Link>
         </div>
       </div>
@@ -98,7 +103,7 @@ export default function Sidebar() {
       <div className="p-6 border-t border-white/5 relative z-10">
         <button className="w-full flex items-center gap-4 px-6 py-4 text-white/40 hover:text-white transition-colors group">
           <LogOut className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-          <span className="text-sm font-bold tracking-wide">Logout</span>
+          <span className="text-sm font-bold tracking-wide">{dict.sidebar.logout}</span>
         </button>
       </div>
     </aside>

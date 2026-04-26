@@ -1,10 +1,15 @@
+'use client';
+
 import React from 'react';
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import RegistrationForm from "@/components/RegistrationForm";
 import { UserCheck } from "lucide-react";
+import { useLanguage } from '@/context/LanguageContext';
 
 export default function RegisterPage() {
+  const { dict } = useLanguage();
+  
   return (
     <main className="min-h-screen bg-surface">
       <Navbar />
@@ -17,24 +22,24 @@ export default function RegisterPage() {
               <UserCheck className="w-8 h-8" />
             </div>
             <div className="space-y-4">
-              <h1 className="text-4xl md:text-5xl font-serif text-primary">Join the Heritage</h1>
+              <h1 className="text-4xl md:text-5xl font-serif text-primary">{dict.register.title}</h1>
               <p className="text-primary/60 font-body text-lg leading-relaxed">
-                By joining the Kishan Seva Samiti, you are not just registering for a service—you are becoming part of a prestigious community of farmers.
+                {dict.register.subtitle}
               </p>
             </div>
             
             <div className="space-y-6">
               <div className="flex gap-4 p-4 card-layer-1">
                 <div className="w-2 h-2 mt-2 bg-secondary rounded-full shrink-0" />
-                <p className="text-sm font-body text-primary/70">Verified Farmer Status & ID Card</p>
+                <p className="text-sm font-body text-primary/70">{dict.register.benefit_verified}</p>
               </div>
               <div className="flex gap-4 p-4 card-layer-1">
                 <div className="w-2 h-2 mt-2 bg-secondary rounded-full shrink-0" />
-                <p className="text-sm font-body text-primary/70">Exclusive Government Scheme Alerts</p>
+                <p className="text-sm font-body text-primary/70">{dict.register.benefit_schemes}</p>
               </div>
               <div className="flex gap-4 p-4 card-layer-1">
                 <div className="w-2 h-2 mt-2 bg-secondary rounded-full shrink-0" />
-                <p className="text-sm font-body text-primary/70">Community Referral Rewards</p>
+                <p className="text-sm font-body text-primary/70">{dict.register.benefit_referral}</p>
               </div>
             </div>
           </div>

@@ -20,19 +20,14 @@ import {
   signInWithEmailAndPassword, 
   RecaptchaVerifier, 
   signInWithPhoneNumber,
-  ConfirmationResult
+  ConfirmationResult,
+  AuthError
 } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { useRouter } from 'next/navigation';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { useLanguage } from '@/context/LanguageContext';
-
-declare global {
-  interface Window {
-    recaptchaVerifier: any;
-  }
-}
 
 export default function LoginPage() {
   const router = useRouter();
@@ -69,7 +64,7 @@ export default function LoginPage() {
   // Cleanup recaptcha on unmount
   useEffect(() => {
     return () => {
-      if (window.recaptchaVerifier) {
+      if (typeof window !== 'undefined' && window.recaptchaVerifier) {
         window.recaptchaVerifier.clear();
         window.recaptchaVerifier = undefined;
       }
@@ -77,7 +72,7 @@ export default function LoginPage() {
   }, []);
 
   const setupRecaptcha = () => {
-    if (!window.recaptchaVerifier) {
+    if (typeof window !== 'undefined' && !window.recaptchaVerifier) {
       window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
         size: 'invisible',
         callback: () => {
@@ -107,15 +102,16 @@ export default function LoginPage() {
       setConfirmationResult(confirmation);
       setOtpSent(true);
       setCountdown(60);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("OTP Send Error:", err);
+      const authError = err as AuthError;
       let userMessage = 'Failed to send OTP. Please try again.';
-      if (err.code === 'auth/invalid-phone-number') userMessage = "Invalid phone number.";
-      if (err.code === 'auth/quota-exceeded') userMessage = "SMS quota exceeded. Try later.";
-      if (err.code === 'auth/too-many-requests') userMessage = "Too many attempts. Wait a bit.";
+      if (authError.code === 'auth/invalid-phone-number') userMessage = "Invalid phone number.";
+      if (authError.code === 'auth/quota-exceeded') userMessage = "SMS quota exceeded. Try later.";
+      if (authError.code === 'auth/too-many-requests') userMessage = "Too many attempts. Wait a bit.";
       setError(userMessage);
       
-      if (window.recaptchaVerifier) {
+      if (typeof window !== 'undefined' && window.recaptchaVerifier) {
         window.recaptchaVerifier.clear();
         window.recaptchaVerifier = undefined;
       }
@@ -135,8 +131,8 @@ export default function LoginPage() {
     setError('');
     try {
       await confirmationResult.confirm(otpValue);
-      router.push('/dashboard');
-    } catch (err: any) {
+      router.push(`/${lang}/dashboard`);
+    } catch (err: unknown) {
       console.error("OTP Verify Error:", err);
       setError('Invalid OTP code. Please check and try again.');
     } finally {
@@ -156,8 +152,8 @@ export default function LoginPage() {
       }
 
       await signInWithEmailAndPassword(auth, loginEmail, formData.password);
-      router.push('/dashboard');
-    } catch (err: any) {
+      router.push(`/${lang}/dashboard`);
+    } catch (err: unknown) {
       console.error(err);
       setError(dict.login.error_creds);
     } finally {
@@ -393,7 +389,7 @@ export default function LoginPage() {
             <div className="mt-10 text-center">
               <p className="text-sm text-[#77574d]">
                 {dict.login.no_account}{' '}
-                <Link href="/register" className="text-secondary font-bold hover:underline">
+                <Link href={`/${lang}/register`} className="text-secondary font-bold hover:underline">
                   {dict.login.register}
                 </Link>
               </p>

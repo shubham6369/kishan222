@@ -5,22 +5,30 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import ProductCard from '@/components/marketplace/ProductCard';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Filter, Leaf, Droplets, Sun, Wind } from 'lucide-react';
-
+import { Search, Filter, Leaf, Droplets, Sun, Wind, ShoppingBasket, ArrowRight } from 'lucide-react';
+import { useLanguage } from '@/context/LanguageContext';
 import { db } from '@/lib/firebase';
-import { collection, query, where, getDocs, onSnapshot } from 'firebase/firestore';
+import { collection, onSnapshot } from 'firebase/firestore';
 import { useEffect } from 'react';
-
-const CATEGORIES = ['All', 'Grains', 'Dairy & Sweeteners', 'Oils', 'Spices', 'Seeds'];
+import { Product } from '@/types';
 
 export default function MarketplacePage() {
-  const [products, setProducts] = useState<any[]>([]);
+  const { dict } = useLanguage();
+  const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
 
+  const CATEGORIES = [
+    { id: 'all', label: dict.marketplace.categories.all },
+    { id: 'seeds', label: dict.marketplace.categories.seeds },
+    { id: 'fertilizers', label: dict.marketplace.categories.fertilizers },
+    { id: 'pesticides', label: dict.marketplace.categories.pesticides },
+    { id: 'cattle', label: dict.marketplace.categories.cattle },
+    { id: 'fresh', label: dict.marketplace.categories.fresh },
+  ];
+
   useEffect(() => {
-    setLoading(true);
     const productsRef = collection(db, 'products');
     
     // Set up real-time listener
@@ -28,7 +36,7 @@ export default function MarketplacePage() {
       const items = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
-      }));
+      })) as Product[];
       setProducts(items);
       setLoading(false);
     });
@@ -37,7 +45,7 @@ export default function MarketplacePage() {
   }, []);
 
   const filteredProducts = products.filter(p => 
-    (selectedCategory === 'All' || p.category === selectedCategory) &&
+    (selectedCategory === 'all' || p.category === selectedCategory) &&
     (p.name?.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
@@ -60,25 +68,27 @@ export default function MarketplacePage() {
               className="flex items-center gap-3 px-4 py-2 bg-white/10 rounded-full backdrop-blur-md border border-white/10"
             >
               <Leaf className="w-4 h-4 text-green-400" />
-              <span className="text-[10px] font-bold uppercase tracking-[0.2em]">100% Organic Marketplace</span>
+              <span className="text-[10px] font-bold uppercase tracking-[0.2em]">{dict.marketplace.organic_label}</span>
             </motion.div>
             
             <motion.h1 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="text-5xl md:text-7xl font-serif font-bold leading-tight"
+              className="text-5xl md:text-7xl font-serif font-bold leading-tight mb-6"
             >
-              Earth's Bounty, <br />
-              <span className="text-[#fbf9f5]/60 italic font-medium">Direct to You.</span>
+              {dict.marketplace.title}
             </motion.h1>
+            <p className="text-white/70 text-xl leading-relaxed max-w-2xl">
+              {dict.marketplace.subtitle}
+            </p>
             
             <div className="w-full max-w-2xl mt-10">
                 <div className="relative group">
                     <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-[#fbf9f5]/40 group-focus-within:text-white transition-colors" />
                     <input 
                         type="text" 
-                        placeholder="Search for organic produce, seeds, or farmers..."
+                        placeholder={dict.marketplace.search_placeholder}
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         className="w-full bg-white/5 border border-white/10 rounded-2xl py-6 pl-16 pr-6 text-lg focus:bg-white/10 focus:ring-4 focus:ring-white/5 transition-all outline-none backdrop-blur-sm"
@@ -95,22 +105,22 @@ export default function MarketplacePage() {
             <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-hide no-scrollbar w-full md:w-auto">
                 {CATEGORIES.map(cat => (
                     <button
-                        key={cat}
-                        onClick={() => setSelectedCategory(cat)}
+                        key={cat.id}
+                        onClick={() => setSelectedCategory(cat.id)}
                         className={`whitespace-nowrap px-6 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all ${
-                            selectedCategory === cat 
+                            selectedCategory === cat.id 
                             ? 'bg-[#122c1f] text-white' 
                             : 'bg-[#fbf9f5] text-[#122c1f]/60 hover:bg-[#122c1f]/5'
                         }`}
                     >
-                        {cat}
+                        {cat.label}
                     </button>
                 ))}
             </div>
             
             <button className="flex items-center gap-2 px-6 py-2 bg-[#fbf9f5] border border-black/3 rounded-xl text-xs font-bold uppercase tracking-wider text-[#122c1f]/60 hover:text-[#122c1f] transition-all">
                 <Filter className="w-4 h-4" />
-                Advanced Filters
+                {dict.marketplace.filters}
             </button>
         </div>
       </section>
@@ -120,11 +130,11 @@ export default function MarketplacePage() {
         <div className="max-w-7xl mx-auto">
           <div className="flex justify-between items-end mb-12">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#77574d] mb-2 font-body">Current Season</p>
-              <h2 className="text-4xl font-serif font-bold text-[#122c1f]">Featured Products</h2>
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#77574d] mb-2 font-body">{dict.marketplace.season}</p>
+              <h2 className="text-4xl font-serif font-bold text-[#122c1f]">{dict.marketplace.featured}</h2>
             </div>
             <p className="text-sm text-[#77574d] font-medium font-body">
-              Showing <span className="text-[#122c1f] font-bold">{filteredProducts.length}</span> results
+              {dict.marketplace.showing} <span className="text-[#122c1f] font-bold">{filteredProducts.length}</span> {dict.marketplace.results}
             </p>
           </div>
 
@@ -149,8 +159,13 @@ export default function MarketplacePage() {
                 <div className="w-16 h-16 bg-[#122c1f]/5 rounded-full flex items-center justify-center mx-auto">
                     <Search className="w-8 h-8 text-[#122c1f]/20" />
                 </div>
-                <h3 className="text-2xl font-serif font-bold text-[#122c1f]">No products found</h3>
-                <p className="text-[#77574d]">Try adjusting your search or category filters.</p>
+                <h3 className="text-xl font-serif font-bold text-[#122c1f] mb-2">{dict.marketplace.no_results}</h3>
+                <button
+                    onClick={() => { setSearchQuery(''); setSelectedCategory('all'); }}
+                    className="text-[#77574d] font-bold underline"
+                >
+                    {dict.marketplace.categories.all}
+                </button>
             </div>
           )}
         </div>

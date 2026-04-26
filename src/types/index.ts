@@ -1,3 +1,6 @@
+import type { Timestamp } from 'firebase/firestore';
+import type { RecaptchaVerifier, ConfirmationResult } from 'firebase/auth';
+
 export interface CartItem {
     productId: string;
     name: string;
@@ -9,6 +12,31 @@ export interface CartItem {
     weight: string;
 }
 
+export interface UserData {
+    uid: string;
+    fullName: string;
+    phone: string;
+    membershipId?: string;
+    membershipCardUnlocked?: boolean;
+    registrationDate?: string;
+    photoUrl?: string;
+    photoBase64?: string;
+    village?: string;
+    district?: string;
+    state?: string;
+    crops?: string;
+    landSize?: string;
+    isAdmin?: boolean;
+    walletBalance?: number;
+    referralCode?: string;
+    referredBy?: string;
+    stats?: {
+        earnings: number;
+        totalReferrals: number;
+        activeListings: number;
+    };
+}
+
 export interface Review {
     id: string;
     productId: string;
@@ -16,8 +44,18 @@ export interface Review {
     userName: string;
     rating: number;
     comment: string;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    createdAt: any; // Firestore Timestamp
+    createdAt: Timestamp;
+}
+
+export interface Withdrawal {
+    id: string;
+    userId: string;
+    userName: string;
+    amount: number;
+    status: 'pending' | 'completed' | 'rejected';
+    requestedAt: Timestamp;
+    upiId?: string;
+    bankAccount?: string;
 }
 
 export interface Order {
@@ -39,14 +77,67 @@ export interface Order {
         state: string;
         pincode: string;
     };
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    createdAt: any; // Firestore Timestamp
-    sellerIds: string[]; // To query orders by seller
+    createdAt: Timestamp;
+    sellerIds: string[];
+}
+
+export interface Product {
+    id: string;
+    name: string;
+    sellerId: string;
+    sellerName: string;
+    description: string;
+    price: number;
+    stock: number;
+    status: 'pending' | 'approved' | 'rejected';
+    image: string;
+    images?: string[];
+    category?: string;
+    unit?: string;
+    rating?: number;
+    farmer?: string;
+    isOrganic?: boolean;
+    deliveryCharge?: number;
+    createdAt?: Timestamp;
+}
+
+export interface Referral {
+    id: string;
+    referredUserId: string;
+    referredUserName: string;
+    rewardAmount: number;
+    createdAt: Timestamp;
+    status: 'pending' | 'completed';
+}
+
+interface RazorpayOptions {
+    key: string | undefined;
+    amount: number;
+    currency: string;
+    name: string;
+    description: string;
+    order_id: string;
+    handler: (response: any) => Promise<void>;
+    prefill: {
+        name: string;
+        contact: string;
+        email?: string;
+    };
+    theme: { color: string };
+    modal?: {
+        ondismiss: () => void;
+    };
 }
 
 declare global {
     interface Window {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        recaptchaVerifier: any;
+        recaptchaVerifier: RecaptchaVerifier | undefined;
+        confirmationResult: ConfirmationResult | undefined;
+        Razorpay: {
+            new (options: RazorpayOptions): {
+                open: () => void;
+            };
+        };
     }
 }
+
