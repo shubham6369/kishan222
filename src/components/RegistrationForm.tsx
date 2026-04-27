@@ -228,6 +228,78 @@ export default function RegistrationForm() {
     }
   };
 
+  const handleSendOTP = async () => {
+    if (isSubmitting || paymentProcessing) return;
+    setError('');
+    setIsSubmitting(true);
+    
+    try {
+      // Check for duplicate phone number
+      const usersRef = collection(db, 'users');
+      const normalizedPhone = formData.phone.replace(/\D/g, '');
+      const q = query(usersRef, where('phone', '==', normalizedPhone));
+      const querySnapshot = await getDocs(q);
+      
+      if (!querySnapshot.empty) {
+        setError(dict.register.errors.phone_registered);
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Setup Recaptcha
+      if (typeof window !== 'undefined' && !window.recaptchaVerifier) {
+        window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+          size: 'invisible',
+        });
+      }
+      
+      const appVerifier = window.recaptchaVerifier;
+      if (!appVerifier) throw new Error("Recaptcha initialization failed");
+
+      const phoneWithCode = `+91${normalizedPhone}`;
+      
+      // Check if using dummy keys
+      if (process.env.NEXT_PUBLIC_FIREBASE_API_KEY?.includes('dummy')) {
+        throw new Error("DUMMY_KEYS_DETECTED: Please configure real Firebase keys in .env.local");
+      }
+
+      const confirmation = await signInWithPhoneNumber(auth, phoneWithCode, appVerifier);
+      setConfirmationResult(confirmation);
+      setOtpSent(true);
+      setCountdown(60); // Start 60s countdown
+      setError('');
+    } catch (err: unknown) {
+      console.error("OTP Send Error Details:", err);
+      
+      const authError = err as AuthError;
+      let userMessage = dict.register.errors.otp_send_failed;
+      
+      if (authError.message?.includes('DUMMY_KEYS_DETECTED')) {
+        userMessage = "Development Mode: Firebase dummy keys detected. Please add real credentials to .env.local to test SMS.";
+      } else if (authError.code === 'auth/invalid-phone-number') {
+        userMessage = "Invalid phone number format. Please check and try again.";
+      } else if (authError.code === 'auth/quota-exceeded') {
+        userMessage = "SMS quota exceeded for today. Please try again later.";
+      } else if (authError.code === 'auth/too-many-requests') {
+        userMessage = "Too many attempts. Please wait a few minutes before trying again.";
+      } else if (authError.message) {
+        userMessage = `Error: ${authError.message}`;
+      }
+
+      setError(userMessage);
+      
+      // Reset recaptcha on error so they can try again
+      if (typeof window !== 'undefined' && window.recaptchaVerifier) {
+        try {
+          window.recaptchaVerifier.clear();
+        } catch (e) {}
+        window.recaptchaVerifier = undefined;
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const nextStep = async () => {
     if (isSubmitting || paymentProcessing) return;
     setError('');
@@ -237,67 +309,7 @@ export default function RegistrationForm() {
         return;
       }
       if (!otpSent) {
-        setIsSubmitting(true);
-        try {
-          // Check for duplicate phone number
-          const usersRef = collection(db, 'users');
-          const normalizedPhone = formData.phone.replace(/\D/g, '');
-          const q = query(usersRef, where('phone', '==', normalizedPhone));
-          const querySnapshot = await getDocs(q);
-          
-          if (!querySnapshot.empty) {
-            setError(dict.register.errors.phone_registered);
-            setIsSubmitting(false);
-            return;
-          }
-
-          // Setup Recaptcha
-          if (!window.recaptchaVerifier) {
-            window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-              size: 'invisible',
-            });
-          }
-          
-          const appVerifier = window.recaptchaVerifier;
-          const phoneWithCode = `+91${normalizedPhone}`;
-          
-          // Check if using dummy keys
-          if (process.env.NEXT_PUBLIC_FIREBASE_API_KEY?.includes('dummy')) {
-            throw new Error("DUMMY_KEYS_DETECTED: Please configure real Firebase keys in .env.local");
-          }
-
-          const confirmation = await signInWithPhoneNumber(auth, phoneWithCode, appVerifier);
-          setConfirmationResult(confirmation);
-          setOtpSent(true);
-          setCountdown(60); // Start 60s countdown
-        } catch (err: unknown) {
-          console.error("OTP Send Error Details:", err);
-          
-          const authError = err as AuthError;
-          let userMessage = dict.register.errors.otp_send_failed;
-          
-          if (authError.message?.includes('DUMMY_KEYS_DETECTED')) {
-            userMessage = "Development Mode: Firebase dummy keys detected. Please add real credentials to .env.local to test SMS.";
-          } else if (authError.code === 'auth/invalid-phone-number') {
-            userMessage = "Invalid phone number format. Please check and try again.";
-          } else if (authError.code === 'auth/quota-exceeded') {
-            userMessage = "SMS quota exceeded for today. Please try again later.";
-          } else if (authError.code === 'auth/too-many-requests') {
-            userMessage = "Too many attempts. Please wait a few minutes before trying again.";
-          } else if (authError.message) {
-            userMessage = `Error: ${authError.message}`;
-          }
-
-          setError(userMessage);
-          
-          // Reset recaptcha on error so they can try again
-          if (typeof window !== 'undefined' && window.recaptchaVerifier) {
-            window.recaptchaVerifier.clear();
-            window.recaptchaVerifier = undefined;
-          }
-        } finally {
-          setIsSubmitting(false);
-        }
+        await handleSendOTP();
       } else {
         await verifyOTP();
       }
@@ -628,9 +640,11 @@ export default function RegistrationForm() {
                         <AnimatePresence>
                           {otpSent && (
                             <motion.div 
-                              initial={{ opacity: 0, height: 0 }}
-                              animate={{ opacity: 1, height: 'auto' }}
-                              className="space-y-4 pt-2"
+                              key="otp-field"
+                              initial={{ opacity: 0, height: 0, scale: 0.95 }}
+                              animate={{ opacity: 1, height: 'auto', scale: 1 }}
+                              exit={{ opacity: 0, height: 0, scale: 0.95 }}
+                              className="space-y-4 pt-2 overflow-hidden"
                             >
                               <div className="flex justify-between items-end">
                                 <label className="text-[10px] font-bold uppercase tracking-widest text-green-700">{dict.register.enter_otp}</label>
@@ -665,10 +679,7 @@ export default function RegistrationForm() {
                                   </span>
                                 ) : (
                                   <button
-                                    onClick={() => {
-                                      setOtpSent(false);
-                                      nextStep();
-                                    }}
+                                    onClick={handleSendOTP}
                                     className="text-xs font-bold text-[#122c1f] hover:underline"
                                   >
                                     {dict?.auth?.resend_otp || "Resend OTP"}
