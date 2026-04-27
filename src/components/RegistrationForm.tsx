@@ -21,8 +21,10 @@ import {
   AlertCircle,
   Camera,
   Tractor,
-  Printer
+  Printer,
+  Loader2
 } from 'lucide-react';
+import { load } from '@cashfreepayments/cashfree-js';
 import MembershipCard from './MembershipCard';
 import { auth, db, storage } from '@/lib/firebase';
 import { 
@@ -43,28 +45,9 @@ import { useLanguage } from '@/context/LanguageContext';
 import { Product } from '@/types';
 import Image from 'next/image';
 
-interface RazorpayResponse {
-  razorpay_payment_id: string;
-  razorpay_order_id: string;
-  razorpay_signature: string;
-}
-
-interface RazorpayOptions {
-  key: string | undefined;
-  amount: number;
-  currency: string;
-  name: string;
-  description: string;
-  order_id: string;
-  handler: (response: RazorpayResponse) => Promise<void>;
-  prefill: {
-    name: string;
-    contact: string;
-  };
-  theme: { color: string };
-  modal: {
-    ondismiss: () => void;
-  };
+interface PaymentResponse {
+  paymentId: string;
+  orderId: string;
 }
 
 type Step = 1 | 2 | 3 | 4 | 'success';
@@ -106,6 +89,49 @@ export default function RegistrationForm() {
     return () => clearInterval(timer);
   }, [countdown]);
 
+  // Handle return from Cashfree payment
+  useEffect(() => {
+    const order_id = searchParams.get('order_id');
+    const cf_payment_id = searchParams.get('payment_id');
+    
+    if (order_id && step !== 'success') {
+      const finalizeAfterPayment = async () => {
+        setPaymentProcessing(true);
+        try {
+          // Verify payment status
+          const res = await fetch(`/api/cashfree/verify-payment?order_id=${order_id}`);
+          const data = await res.json();
+          
+          if (data.status === 'SUCCESS') {
+            // Retrieve saved form data
+            const savedData = localStorage.getItem('pending_registration');
+            if (savedData) {
+              const parsedData = JSON.parse(savedData);
+              // Update local state so handleSubmit has access to it
+              setFormData(parsedData);
+              await handleSubmit(cf_payment_id || data.paymentId, order_id, parsedData);
+            } else {
+              // Fallback: if localStorage is cleared, try to recover from current state
+              // but current state might be lost on redirect
+              await handleSubmit(cf_payment_id || data.paymentId, order_id);
+            }
+          } else {
+            setError(dict.register.errors.payment_failed);
+            setStep(4);
+          }
+        } catch (err) {
+          console.error("Payment verification error:", err);
+          setError("Payment verification failed. Please contact support.");
+        } finally {
+          setPaymentProcessing(false);
+          // Clear saved data
+          localStorage.removeItem('pending_registration');
+        }
+      };
+      finalizeAfterPayment();
+    }
+  }, [searchParams]);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [formData, setFormData] = useState({
@@ -143,10 +169,11 @@ export default function RegistrationForm() {
         setIsSubmitting(true);
         await confirmationResult.confirm(otpValue);
         setError('');
+        // Successfully verified OTP, move to next step
         setStep(2);
       } catch (err: unknown) {
         console.error("OTP Error:", err);
-        setError(dict.register.errors.invalid_otp);
+        setError(dict?.register?.errors?.invalid_otp || "Invalid OTP. Please try again.");
       } finally {
         setIsSubmitting(false);
       }
@@ -159,42 +186,40 @@ export default function RegistrationForm() {
     setPaymentProcessing(true);
     setError('');
     try {
-      // Step 1: Create Razorpay order on server
-      const orderRes = await fetch('/api/create-order', {
+      const user = auth.currentUser;
+      if (!user) throw new Error(dict.register.errors.session_lost);
+
+      // Save form data to localStorage before redirecting
+      localStorage.setItem('pending_registration', JSON.stringify(formData));
+
+      // Step 1: Create Cashfree order on server
+      const orderRes = await fetch('/api/cashfree/create-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount: 50 }), // ₹50 membership fee
+        body: JSON.stringify({ 
+          amount: 50, // ₹50 membership fee
+          customerId: user.uid,
+          customerPhone: formData.phone.replace(/\D/g, ''),
+          customerName: formData.fullName,
+          customerEmail: `${formData.phone.replace(/\D/g, '')}@kishanseva.in`,
+          lang: 'en',
+          returnUrl: `${window.location.origin}/register?order_id={order_id}&payment_id={payment_id}`
+        }),
       });
+      
       const orderData = await orderRes.json();
-      if (!orderData.id) throw new Error(dict.register.errors.payment_failed);
+      if (!orderData.paymentSessionId) throw new Error(orderData.error || dict.register.errors.payment_failed);
 
-      // Step 2: Open Razorpay modal
-      const options = {
-        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-        amount: orderData.amount,
-        currency: 'INR',
-        name: 'Kishan Seva Samiti',
-        description: dict.register.payment_desc,
-        order_id: orderData.id,
-        handler: async (response: RazorpayResponse) => {
-          // Step 3: ONLY call handleSubmit after payment is confirmed
-          await handleSubmit(response.razorpay_payment_id, orderData.id);
-        },
-        prefill: {
-          name: formData.fullName,
-          contact: formData.phone,
-        },
-        theme: { color: '#122c1f' },
-        modal: {
-          ondismiss: () => {
-            setPaymentProcessing(false);
-            setError(dict.register.errors.payment_cancelled);
-          },
-        },
-      };
+      // Step 2: Open Cashfree Checkout
+      const cashfree = await load({
+        mode: process.env.NEXT_PUBLIC_CASHFREE_ENV === 'PRODUCTION' ? 'production' : 'sandbox'
+      });
 
-      const rzp = new window.Razorpay(options);
-      rzp.open();
+      await cashfree.checkout({
+        paymentSessionId: orderData.paymentSessionId,
+        redirectTarget: "_self", // Redirect to returnUrl after payment
+      });
+
     } catch (err: unknown) {
       console.error('Payment error:', err);
       const error = err as Error;
@@ -204,6 +229,7 @@ export default function RegistrationForm() {
   };
 
   const nextStep = async () => {
+    if (isSubmitting || paymentProcessing) return;
     setError('');
     if (step === 1) {
       if (!formData.fullName || !formData.phone || formData.phone.length < 10) {
@@ -296,7 +322,8 @@ export default function RegistrationForm() {
     }
   };
 
-  const handleSubmit = async (razorpayPaymentId: string, razorpayOrderId: string) => {
+  const handleSubmit = async (paymentId: string, orderId: string, recoveredData?: any) => {
+    const currentData = recoveredData || formData;
     setIsSubmitting(true);
     setError('');
     
@@ -305,16 +332,16 @@ export default function RegistrationForm() {
       if (!user) throw new Error(dict.register.errors.session_lost);
 
       // Link the password to their phone account using EmailAuthProvider proxy
-      const emailProxy = `${formData.phone.replace(/\D/g, '')}@kishanseva.in`;
+      const emailProxy = `${currentData.phone.replace(/\D/g, '')}@kishanseva.in`;
       
       try {
-        const credential = EmailAuthProvider.credential(emailProxy, formData.password);
+        const credential = EmailAuthProvider.credential(emailProxy, currentData.password);
         await linkWithCredential(user, credential);
       } catch (err: unknown) {
         console.warn('Linking credential warning:', err);
       }
 
-      await updateProfile(user, { displayName: formData.fullName });
+      await updateProfile(user, { displayName: currentData.fullName });
 
       // Generate Membership ID
       const newMemberId = 'KSS-' + Math.random().toString(36).substr(2, 6).toUpperCase();
@@ -322,7 +349,7 @@ export default function RegistrationForm() {
       setReferralLink(`${window.location.origin}/register?ref=${newMemberId}`);
 
       // Upload Photo
-      let finalPhotoUrl = formData.photoBase64;
+      let finalPhotoUrl = currentData.photoBase64;
       if (photoFile) {
         const fileExt = photoFile.name.split('.').pop() || 'jpg';
         const storageRef = ref(storage, `farmers/${user.uid}/profile_${Date.now()}.${fileExt}`);
@@ -330,19 +357,19 @@ export default function RegistrationForm() {
         finalPhotoUrl = await getDownloadURL(storageRef);
       }
 
-      const normalizedPhone = formData.phone.replace(/\D/g, '');
+      const normalizedPhone = currentData.phone.replace(/\D/g, '');
 
       // Store Farmer Data — only after payment is confirmed
       const userData = {
         uid: user.uid,
-        fullName: formData.fullName,
+        fullName: currentData.fullName,
         phone: normalizedPhone,
         email: emailProxy,
-        village: formData.village,
-        district: formData.district,
-        state: formData.state,
-        crops: formData.crops,
-        landSize: formData.landSize,
+        village: currentData.village,
+        district: currentData.district,
+        state: currentData.state,
+        crops: currentData.crops,
+        landSize: currentData.landSize,
         photoUrl: finalPhotoUrl,
         photoBase64: finalPhotoUrl,
         membershipId: newMemberId,
@@ -352,8 +379,8 @@ export default function RegistrationForm() {
         // Payment confirmation — card is unlocked only because payment succeeded
         membershipFeePaid: 50,
         membershipCardUnlocked: true,
-        paymentId: razorpayPaymentId,
-        paymentOrderId: razorpayOrderId,
+        paymentId: paymentId,
+        paymentOrderId: orderId,
         walletBalance: 0,
         stats: { totalReferrals: 0, earnings: 0, activeListings: 0 }
       };
@@ -390,12 +417,12 @@ export default function RegistrationForm() {
               const referralsRef = collection(db, 'users', referrerDoc.id, 'referrals');
               await setDoc(doc(referralsRef, user.uid), {
                 referredUserId: user.uid,
-                referredUserName: formData.fullName,
+                referredUserName: currentData.fullName,
                 referredUserPhone: normalizedPhone,
                 joinedAt: new Date().toISOString(),
                 reward: 7,
                 paymentConfirmed: true,
-                paymentId: razorpayPaymentId,
+                paymentId: paymentId,
               });
             }
           }
@@ -633,25 +660,25 @@ export default function RegistrationForm() {
                               
                               <div className="flex justify-center">
                                 {countdown > 0 ? (
-                                  <p className="text-xs text-[#77574d]">
-                                    {dict.auth.wait_resend.replace('{seconds}', countdown.toString())}
-                                  </p>
+                                  <span className="text-xs text-[#77574d]">
+                                    {dict?.auth?.wait_resend?.replace('{seconds}', countdown.toString()) || `${countdown}s`}
+                                  </span>
                                 ) : (
                                   <button
-                                    onClick={async () => {
-                                      setOtpSent(false); // Temporarily reset to trigger nextStep resend
-                                      await nextStep();
+                                    onClick={() => {
+                                      setOtpSent(false);
+                                      nextStep();
                                     }}
                                     className="text-xs font-bold text-[#122c1f] hover:underline"
                                   >
-                                    {dict.auth.resend_otp}
+                                    {dict?.auth?.resend_otp || "Resend OTP"}
                                   </button>
                                 )}
                               </div>
                             </motion.div>
                           )}
                         </AnimatePresence>
-                        <div id="recaptcha-container"></div>
+                        {/* Recaptcha container removed from here and moved to persistent location */}
                       </div>
                     </div>
                   )}
@@ -829,7 +856,7 @@ export default function RegistrationForm() {
                         className="flex-1 py-4 px-6 border border-[#122c1f]/10 rounded-xl font-bold text-[#122c1f] flex items-center justify-center gap-2 hover:bg-[#122c1f]/5 transition-all disabled:opacity-50"
                       >
                         <ChevronLeft className="w-5 h-5" />
-                        {dict.register.back}
+                        {dict?.register?.back || "Back"}
                       </button>
                     )}
                     <button
@@ -845,9 +872,9 @@ export default function RegistrationForm() {
                         />
                       ) : (
                         <>
-                          {step === 1 && !otpSent ? dict.register.send_otp : 
-                           step === 1 && otpSent ? dict.register.verify_otp : 
-                           step === 4 ? dict.register.pay_securely : dict.register.continue}
+                          {step === 1 && !otpSent ? (dict?.register?.send_otp || "Send OTP") : 
+                           step === 1 && otpSent ? (dict?.register?.verify_otp || "Verify OTP") : 
+                           step === 4 ? (dict?.register?.pay_securely || "Pay Securely") : (dict?.register?.continue || "Continue")}
                           <ChevronRight className="w-5 h-5" />
                         </>
                       )}
@@ -857,6 +884,8 @@ export default function RegistrationForm() {
               </motion.div>
             )}
           </AnimatePresence>
+          {/* Persistent Recaptcha container to prevent DOM errors during step transitions */}
+          <div id="recaptcha-container"></div>
         </div>
       </div>
     </>

@@ -110,34 +110,10 @@ export interface Referral {
     status: 'pending' | 'completed';
 }
 
-interface RazorpayOptions {
-    key: string | undefined;
-    amount: number;
-    currency: string;
-    name: string;
-    description: string;
-    order_id: string;
-    handler: (response: any) => Promise<void>;
-    prefill: {
-        name: string;
-        contact: string;
-        email?: string;
-    };
-    theme: { color: string };
-    modal?: {
-        ondismiss: () => void;
-    };
-}
-
 declare global {
     interface Window {
         recaptchaVerifier: RecaptchaVerifier | undefined;
         confirmationResult: ConfirmationResult | undefined;
-        Razorpay: {
-            new (options: RazorpayOptions): {
-                open: () => void;
-            };
-        };
     }
 }
 

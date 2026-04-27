@@ -9,7 +9,7 @@ const cashfree = new Cashfree(
 
 export async function POST(req: Request) {
   try {
-    const { amount, customerId, customerPhone, customerName, customerEmail, lang = 'en' } = await req.json();
+    const { amount, customerId, customerPhone, customerName, customerEmail, lang = 'en', returnUrl } = await req.json();
 
     if (!amount || !customerId || !customerPhone) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
@@ -26,7 +26,7 @@ export async function POST(req: Request) {
         customer_email: customerEmail || 'test@example.com'
       },
       order_meta: {
-        return_url: `${req.headers.get('origin')}/${lang}/payment/verify?order_id={order_id}`
+        return_url: returnUrl || `${req.headers.get('origin')}/${lang}/payment/verify?order_id={order_id}`
       }
     };
 
