@@ -30,7 +30,7 @@ export async function POST(req: Request) {
       }
     };
 
-    const response = await cashfree.PGCreateOrder("2025-01-01", request);
+    const response = await cashfree.PGCreateOrder(request);
     
     return NextResponse.json({ 
       paymentSessionId: response.data.payment_session_id,
