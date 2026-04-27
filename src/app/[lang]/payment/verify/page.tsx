@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
 
-export default function PaymentVerifyPage({ params }: { params: { lang: string } }) {
+function VerifyContent({ params }: { params: { lang: string } }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const orderId = searchParams.get('order_id');
@@ -56,5 +56,18 @@ export default function PaymentVerifyPage({ params }: { params: { lang: string }
       <h1 className="text-2xl font-serif font-bold text-[#122c1f]">Verifying Payment</h1>
       <p className="text-[#77574d] mt-2">Please do not refresh or close this window.</p>
     </div>
+  );
+}
+
+export default function PaymentVerifyPage(props: { params: { lang: string } }) {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center">
+        <Loader2 className="w-12 h-12 text-[#122c1f] animate-spin mb-6" />
+        <h1 className="text-2xl font-serif font-bold text-[#122c1f]">Initialising...</h1>
+      </div>
+    }>
+      <VerifyContent {...props} />
+    </Suspense>
   );
 }
