@@ -19,7 +19,7 @@ export async function GET(req: Request) {
   }
 
   try {
-    const response = await cashfree.PGOrderFetchPayments(orderId);
+    const response = await cashfree.PGOrderFetchPayments("2025-01-01", orderId);
     const payments = response.data;
     
     // Check if any payment is successful
