@@ -16,6 +16,7 @@ import {
   Package
 } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { db, storage } from '@/lib/firebase';
@@ -26,7 +27,6 @@ export default function NewProductPage() {
   const router = useRouter();
   const { user, userData } = useAuth();
   const [loading, setLoading] = useState(false);
-  const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     name: '',
     category: 'Grains',
@@ -262,7 +262,7 @@ export default function NewProductPage() {
                 <div className="grid grid-cols-2 gap-4">
                     {images.map((img, i) => (
                         <div key={i} className="aspect-square rounded-2xl bg-[#fbf9f5] relative overflow-hidden group">
-                            <img src={img.url} alt="Preview" className="w-full h-full object-cover" />
+                            <Image src={img.url} alt="Preview" fill className="object-cover" />
                             <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
                                 <button onClick={() => setImages(images.filter((_, idx) => idx !== i))} className="p-2 bg-white rounded-full">
                                     <Trash2 className="w-4 h-4 text-red-500" />
@@ -284,7 +284,7 @@ export default function NewProductPage() {
                 </div>
                 <h4 className="text-lg font-serif font-bold relative z-10">Organic Promise</h4>
                 <p className="text-sm opacity-60 relative z-10 leading-relaxed">
-                    By listing this product, you certify that it follows the Samiti's Organic standards and ethical farming practices.
+                    By listing this product, you certify that it follows the Samiti&apos;s Organic standards and ethical farming practices.
                 </p>
                 <div className="flex items-center gap-2 text-xs font-bold text-green-400 relative z-10">
                     <Package className="w-4 h-4" />

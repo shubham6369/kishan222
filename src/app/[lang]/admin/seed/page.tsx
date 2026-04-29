@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Database, Sprout, CheckCircle2, AlertTriangle, ArrowRight } from 'lucide-react';
 import { seedProducts } from '@/lib/seed';
@@ -20,9 +21,10 @@ export default function SeedPage() {
     try {
       await seedProducts();
       setIsSuccess(true);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      setError(err.message || 'Seeding failed. Check console for details.');
+      const error = err as Error;
+      setError(error.message || 'Seeding failed. Check console for details.');
     } finally {
       setIsSeeding(false);
     }
@@ -107,9 +109,9 @@ export default function SeedPage() {
                     <p className="text-[#77574d] text-sm">The marketplace is now populated with premium heritage products.</p>
                   </div>
                   <div className="flex gap-4 justify-center pt-4">
-                    <a href="/marketplace" className="px-8 py-3 bg-[#122c1f] text-white rounded-xl font-bold hover:shadow-lg transition-all">
+                    <Link href="/marketplace" className="px-8 py-3 bg-[#122c1f] text-white rounded-xl font-bold hover:shadow-lg transition-all">
                       View Marketplace
-                    </a>
+                    </Link>
                     <button 
                       onClick={() => setIsSuccess(false)}
                       className="px-8 py-3 border border-[#122c1f]/10 text-[#122c1f] rounded-xl font-bold hover:bg-[#122c1f]/5 transition-all"

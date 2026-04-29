@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
 import {
   Users, Gift, Copy, Share2,
   Wallet, Clock, CheckCircle2, AlertCircle, ArrowRight
@@ -31,12 +30,15 @@ export default function ReferralsPage() {
   const walletBalance = userData?.walletBalance || 0;
   const referralCode = userData?.membershipId || '';
   const referralLink = referralCode
-    ? `${typeof window !== 'undefined' ? window.location.origin : ''}//${lang}/register?ref=${referralCode}`
+    ? `${typeof window !== 'undefined' ? window.location.origin : ''}/${lang}/register?ref=${referralCode}`
     : '';
 
   useEffect(() => {
-    if (!user?.uid) { setLoading(false); return; }
-    (async () => {
+    const fetchReferrals = async () => {
+      if (!user?.uid) {
+        setLoading(false);
+        return;
+      }
       try {
         const q = query(
           collection(db, 'users', user.uid, 'referrals'),
@@ -50,7 +52,8 @@ export default function ReferralsPage() {
       } finally {
         setLoading(false);
       }
-    })();
+    };
+    fetchReferrals();
   }, [user]);
 
   const copyLink = () => {

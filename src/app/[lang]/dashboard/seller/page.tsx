@@ -1,17 +1,18 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import {
-  ShoppingBag, TrendingUp, Package, Star, Plus,
+  ShoppingBag, TrendingUp, Package, Plus,
   ChevronRight, AlertCircle, BarChart3, ArrowUpRight,
-  Eye, Edit3, Trash2, ToggleLeft, ToggleRight, IndianRupee
+  Eye, Trash2, ToggleLeft, ToggleRight, IndianRupee
 } from 'lucide-react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { db } from '@/lib/firebase';
 import {
-  collection, query, where, getDocs, doc, updateDoc, deleteDoc, orderBy
+  collection, query, where, getDocs, doc, updateDoc, deleteDoc
 } from 'firebase/firestore';
 import { useAuth } from '@/context/AuthContext';
 import toast, { Toaster } from 'react-hot-toast';
@@ -26,7 +27,7 @@ interface Product {
   isActive: boolean;
   totalSold?: number;
   rating?: number;
-  createdAt?: any;
+  createdAt?: { toMillis: () => number };
 }
 
 interface OrderSummary {
@@ -34,7 +35,7 @@ interface OrderSummary {
   status: string;
   total: number;
   buyerName: string;
-  createdAt?: any;
+  createdAt?: { toMillis: () => number; toDate: () => Date };
 }
 
 const CARD = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => (
@@ -51,12 +52,7 @@ export default function SellerDashboard() {
   const [recentOrders, setRecentOrders] = useState<OrderSummary[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (!authLoading && !user) { router.push(`/${lang}/login`); return; }
-    if (user) fetchSellerData();
-  }, [user, authLoading]);
-
-  const fetchSellerData = async () => {
+  const fetchSellerData = useCallback(async () => {
     if (!user) return;
     try {
       // Fetch products
@@ -84,7 +80,17 @@ export default function SellerDashboard() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    if (!authLoading && !user) { router.push(`/${lang}/login`); return; }
+    if (user) {
+      const init = async () => {
+        await fetchSellerData();
+      };
+      init();
+    }
+  }, [user, authLoading, fetchSellerData, lang, router]);
 
   const toggleProduct = async (product: Product) => {
     try {
@@ -207,7 +213,13 @@ export default function SellerDashboard() {
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
                           {product.imageUrl ? (
-                            <img src={product.imageUrl} alt={product.name} className="w-10 h-10 rounded-xl object-cover" />
+                            <Image 
+                              src={product.imageUrl} 
+                              alt={product.name} 
+                              width={40} 
+                              height={40} 
+                              className="w-10 h-10 rounded-xl object-cover" 
+                            />
                           ) : (
                             <div className="w-10 h-10 rounded-xl bg-[#122c1f]/5 flex items-center justify-center">
                               <Package className="w-5 h-5 text-[#77574d]" />

@@ -4,8 +4,10 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { db } from '@/lib/firebase';
 import { collection, getDocs, doc, updateDoc, increment } from 'firebase/firestore';
 import toast from 'react-hot-toast';
-import { CheckCircle, XCircle, Clock, IndianRupee, User, CreditCard } from 'lucide-react';
+import { CheckCircle, XCircle, Clock, IndianRupee, User, CreditCard, History } from 'lucide-react';
 import { Withdrawal } from '@/types';
+import { motion, AnimatePresence } from 'framer-motion';
+import { cn } from '@/lib/utils';
 
 export default function WithdrawalsTab() {
     const [withdrawals, setWithdrawals] = useState<Withdrawal[]>([]);
@@ -34,17 +36,16 @@ export default function WithdrawalsTab() {
     }, []);
 
     useEffect(() => {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        fetchWithdrawals();
+        const init = async () => {
+            await fetchWithdrawals();
+        };
+        init();
     }, [fetchWithdrawals]);
 
     const approveWithdrawal = async (req: Withdrawal) => {
         setProcessing(req.id);
         try {
-            // 1. Mark withdrawal as completed
             await updateDoc(doc(db, 'withdrawals', req.id), { status: 'completed' });
-
-            // 2. Deduct the amount from user's walletBalance
             await updateDoc(doc(db, 'users', req.userId), {
                 walletBalance: increment(-req.amount),
             });
@@ -64,7 +65,6 @@ export default function WithdrawalsTab() {
     const rejectWithdrawal = async (req: Withdrawal) => {
         setProcessing(req.id);
         try {
-            // Reject — no balance change (user keeps the balance)
             await updateDoc(doc(db, 'withdrawals', req.id), { status: 'rejected' });
             setWithdrawals(prev =>
                 prev.map(w => w.id === req.id ? { ...w, status: 'rejected' } : w)
@@ -82,42 +82,47 @@ export default function WithdrawalsTab() {
     const resolved = withdrawals.filter(w => w.status !== 'pending');
 
     const StatusBadge = ({ status }: { status: string }) => (
-        <span className={`inline-flex items-center gap-1.5 px-2 py-1 rounded text-xs font-medium ${
-            status === 'completed' ? 'bg-green-100 text-green-800' :
-            status === 'rejected' ? 'bg-red-100 text-red-800' :
-            'bg-yellow-100 text-yellow-800'
-        }`}>
-            {status === 'completed' ? <CheckCircle className="w-3 h-3" /> :
-             status === 'rejected' ? <XCircle className="w-3 h-3" /> :
-             <Clock className="w-3 h-3" />}
-            {status.toUpperCase()}
+        <span className={cn(
+          "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border",
+          status === 'completed' ? 'bg-emerald-400/10 text-emerald-400 border-emerald-400/20' :
+          status === 'rejected' ? 'bg-red-400/10 text-red-400 border-red-400/20' :
+          'bg-orange-400/10 text-orange-400 border-orange-400/20'
+        )}>
+          <div className={cn("w-1.5 h-1.5 rounded-full animate-pulse", 
+            status === 'completed' ? "bg-emerald-400" : status === 'rejected' ? "bg-red-400" : "bg-orange-400"
+          )} />
+          {status}
         </span>
     );
 
-    const WithdrawalRow = ({ req }: { req: Withdrawal }) => (
-        <tr className="hover:bg-gray-50">
-            <td className="p-4 text-sm text-gray-500">
+    const WithdrawalRow = ({ req, isPending }: { req: Withdrawal, isPending: boolean }) => (
+        <motion.tr 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="group hover:bg-white/5 transition-all"
+        >
+            <td className="px-8 py-6 text-xs text-white/40 font-mono">
                 {req.requestedAt?.toDate?.()?.toLocaleDateString('en-IN', {
                     day: 'numeric', month: 'short', year: 'numeric'
                 }) || '—'}
             </td>
-            <td className="p-4">
-                <div className="flex items-center gap-2">
-                    <div className="w-7 h-7 rounded-full bg-gray-100 flex items-center justify-center">
-                        <User className="w-4 h-4 text-gray-500" />
+            <td className="px-8 py-6">
+                <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-xl bg-white/5 flex items-center justify-center border border-white/10 text-white/40">
+                        <User className="w-4 h-4" />
                     </div>
-                    <span className="font-medium text-gray-900 text-sm">{req.userName}</span>
+                    <span className="font-bold text-white text-sm">{req.userName}</span>
                 </div>
             </td>
-            <td className="p-4">
-                <div className="flex items-center gap-1 font-bold text-gray-900">
+            <td className="px-8 py-6">
+                <div className="flex items-center gap-1 font-black text-accent text-lg">
                     <IndianRupee className="w-4 h-4" />
                     {req.amount}
                 </div>
             </td>
-            <td className="p-4">
-                <div className="flex items-center gap-1.5 text-xs text-gray-500">
-                    <CreditCard className="w-3.5 h-3.5" />
+            <td className="px-8 py-6">
+                <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-white/40">
+                    <CreditCard className="w-3.5 h-3.5 text-accent" />
                     {req.upiId
                         ? `UPI: ${req.upiId}`
                         : req.bankAccount
@@ -125,104 +130,113 @@ export default function WithdrawalsTab() {
                             : 'No details'}
                 </div>
             </td>
-            <td className="p-4">
-                <div className="flex items-center gap-3">
+            <td className="px-8 py-6">
+                <div className="flex items-center justify-end gap-4">
                     <StatusBadge status={req.status} />
-                    {req.status === 'pending' && (
-                        <div className="flex gap-2">
+                    {isPending && (
+                        <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
                             <button
                                 onClick={() => approveWithdrawal(req)}
                                 disabled={processing === req.id}
-                                className="text-xs px-3 py-1.5 bg-green-50 text-green-700 hover:bg-green-100 rounded border border-green-200 transition-colors font-medium disabled:opacity-50"
+                                className="p-2 bg-emerald-400/10 text-emerald-400 rounded-xl hover:bg-emerald-400 hover:text-primary transition-all shadow-lg shadow-emerald-400/10"
+                                title="Approve & Pay"
                             >
-                                {processing === req.id ? '...' : '✓ Approve & Pay'}
+                                <CheckCircle className="w-5 h-5" />
                             </button>
                             <button
                                 onClick={() => rejectWithdrawal(req)}
                                 disabled={processing === req.id}
-                                className="text-xs px-3 py-1.5 bg-red-50 text-red-700 hover:bg-red-100 rounded border border-red-200 transition-colors font-medium disabled:opacity-50"
+                                className="p-2 bg-red-400/10 text-red-400 rounded-xl hover:bg-red-400 hover:text-white transition-all shadow-lg shadow-red-400/10"
+                                title="Reject Request"
                             >
-                                {processing === req.id ? '...' : '✗ Reject'}
+                                <XCircle className="w-5 h-5" />
                             </button>
                         </div>
                     )}
                 </div>
             </td>
-        </tr>
+        </motion.tr>
     );
 
     return (
-        <div className="space-y-8">
-            <div className="flex justify-between items-center">
+        <div className="space-y-10">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                 <div>
-                    <h2 className="text-xl font-bold text-gray-900">Wallet Withdrawals</h2>
-                    <p className="text-sm text-gray-500 mt-0.5">
-                        Approving a request deducts the amount from the user&apos;s wallet.
-                        Rejecting leaves the balance unchanged.
-                    </p>
+                    <h2 className="text-2xl font-serif font-bold text-white">Withdrawal Requests</h2>
+                    <p className="text-white/40 text-sm mt-1">Manage platform payouts and wallet settlements</p>
                 </div>
-                <div className="flex gap-3">
-                    <div className="flex items-center gap-2 px-4 py-2 bg-yellow-50 border border-yellow-200 rounded-lg text-sm font-medium text-yellow-800">
-                        <Clock className="w-4 h-4" />
-                        {pending.length} Pending
-                    </div>
+                <div className={cn(
+                  "px-6 py-3 rounded-2xl border flex items-center gap-3 transition-all",
+                  pending.length > 0 
+                    ? "bg-orange-400/10 border-orange-400/20 text-orange-400 shadow-[0_0_20px_rgba(251,146,60,0.1)]" 
+                    : "bg-white/5 border-white/10 text-white/40"
+                )}>
+                    <Clock className={cn("w-5 h-5", pending.length > 0 && "animate-pulse")} />
+                    <span className="text-xs font-black uppercase tracking-[0.2em]">{pending.length} Pending Approval</span>
                 </div>
             </div>
 
-            {/* Pending requests first */}
-            {pending.length > 0 && (
-                <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
-                    <div className="px-4 py-3 bg-yellow-50 border-b border-yellow-100">
-                        <p className="text-xs font-bold uppercase tracking-wider text-yellow-700">⏳ Pending Approval</p>
+            <AnimatePresence mode="wait">
+              {loading ? (
+                <div key="loading" className="py-20 flex flex-col items-center gap-4">
+                  <div className="w-12 h-12 border-4 border-accent border-t-transparent rounded-full animate-spin" />
+                  <p className="text-white/40 text-sm font-bold uppercase tracking-widest">Scanning Ledger...</p>
+                </div>
+              ) : (
+                <div key="content" className="space-y-12">
+                  {/* Pending requests */}
+                  {pending.length > 0 && (
+                    <div className="bg-white/5 border border-white/10 rounded-[40px] overflow-hidden backdrop-blur-xl">
+                        <div className="px-8 py-5 bg-orange-400/10 border-b border-orange-400/10 flex items-center justify-between">
+                            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-orange-400 flex items-center gap-2">
+                              <span className="w-1.5 h-1.5 bg-orange-400 rounded-full animate-ping" />
+                              Action Required
+                            </p>
+                        </div>
+                        <div className="overflow-x-auto">
+                          <table className="w-full text-left">
+                              <thead>
+                                  <tr className="border-b border-white/10">
+                                      <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-white/40">Date</th>
+                                      <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-white/40">Farmer</th>
+                                      <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-white/40">Amount</th>
+                                      <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-white/40">Payment Details</th>
+                                      <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-white/40 text-right">Decision</th>
+                                  </tr>
+                              </thead>
+                              <tbody className="divide-y divide-white/5">
+                                  {pending.map(req => <WithdrawalRow key={req.id} req={req} isPending={true} />)}
+                              </tbody>
+                          </table>
+                        </div>
                     </div>
-                    <table className="w-full text-left text-sm">
-                        <thead className="bg-gray-50 border-b">
-                            <tr>
-                                <th className="p-4 text-xs text-gray-500 font-medium">Date</th>
-                                <th className="p-4 text-xs text-gray-500 font-medium">Farmer</th>
-                                <th className="p-4 text-xs text-gray-500 font-medium">Amount</th>
-                                <th className="p-4 text-xs text-gray-500 font-medium">Payment Info</th>
-                                <th className="p-4 text-xs text-gray-500 font-medium">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y">
-                            {pending.map(req => <WithdrawalRow key={req.id} req={req} />)}
-                        </tbody>
-                    </table>
-                </div>
-            )}
+                  )}
 
-            {/* History */}
-            {resolved.length > 0 && (
-                <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
-                    <div className="px-4 py-3 bg-gray-50 border-b">
-                        <p className="text-xs font-bold uppercase tracking-wider text-gray-500">📋 History</p>
-                    </div>
-                    <table className="w-full text-left text-sm">
-                        <thead className="bg-gray-50 border-b">
-                            <tr>
-                                <th className="p-4 text-xs text-gray-500 font-medium">Date</th>
-                                <th className="p-4 text-xs text-gray-500 font-medium">Farmer</th>
-                                <th className="p-4 text-xs text-gray-500 font-medium">Amount</th>
-                                <th className="p-4 text-xs text-gray-500 font-medium">Payment Info</th>
-                                <th className="p-4 text-xs text-gray-500 font-medium">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y">
-                            {resolved.map(req => <WithdrawalRow key={req.id} req={req} />)}
-                        </tbody>
-                    </table>
+                  {/* History */}
+                  <div className="bg-white/5 border border-white/10 rounded-[40px] overflow-hidden backdrop-blur-xl opacity-80 hover:opacity-100 transition-opacity">
+                      <div className="px-8 py-5 border-b border-white/10 flex items-center gap-3 text-white/40">
+                          <History className="w-4 h-4" />
+                          <p className="text-[10px] font-black uppercase tracking-[0.3em]">Settlement History</p>
+                      </div>
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-left">
+                            <tbody className="divide-y divide-white/5">
+                                {resolved.length > 0 ? (
+                                  resolved.map(req => <WithdrawalRow key={req.id} req={req} isPending={false} />)
+                                ) : (
+                                  <tr>
+                                    <td className="px-8 py-10 text-center text-white/20 text-xs font-bold uppercase tracking-widest">
+                                      No historical data available
+                                    </td>
+                                  </tr>
+                                )}
+                            </tbody>
+                        </table>
+                      </div>
+                  </div>
                 </div>
-            )}
-
-            {loading && (
-                <div className="text-center py-10 text-gray-500">Loading withdrawal requests...</div>
-            )}
-            {!loading && withdrawals.length === 0 && (
-                <div className="bg-white rounded-xl border p-10 text-center text-gray-500">
-                    No withdrawal requests found.
-                </div>
-            )}
+              )}
+            </AnimatePresence>
         </div>
     );
 }

@@ -132,6 +132,8 @@ export interface Dictionary {
     links: {
       privacy: string;
       terms: string;
+      refunds: string;
+      shipping: string;
     };
   };
   checkout: {

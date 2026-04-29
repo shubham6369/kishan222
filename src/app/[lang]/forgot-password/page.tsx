@@ -9,8 +9,7 @@ import {
   Key,
   CheckCircle2,
   ArrowRight,
-  ArrowLeft,
-  Smartphone
+  ArrowLeft
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { 
@@ -18,7 +17,6 @@ import {
   signInWithPhoneNumber,
   ConfirmationResult,
   updatePassword,
-  getAuth,
   signOut
 } from 'firebase/auth';
 import { auth, db } from '@/lib/firebase';

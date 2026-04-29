@@ -102,9 +102,10 @@ export default function CheckoutPage({ params }: { params: { lang: string } }) {
         redirectTarget: "_self", // Redirect back to return_url defined in API
       });
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Checkout error:', error);
-      alert(error.message || 'Something went wrong during checkout');
+      const err = error as Error;
+      alert(err.message || 'Something went wrong during checkout');
       setLoading(false);
     }
   };

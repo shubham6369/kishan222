@@ -102,10 +102,12 @@ export default function Footer() {
         </div>
 
         <div className="pt-12 flex flex-col md:flex-row justify-between items-center gap-8 text-xs font-bold tracking-[0.2em] uppercase text-white/30">
-          <div className="flex gap-10">
-            <Link href={`/${lang}/privacy`} className="hover:text-accent transition-colors">{dict.footer?.privacy || "Privacy Charter"}</Link>
-            <Link href={`/${lang}/terms`} className="hover:text-accent transition-colors">{dict.footer?.terms || "Membership Terms"}</Link>
-            <Link href={`/${lang}/ethics`} className="hover:text-accent transition-colors">{dict.footer?.ethics || "Ethics & Transparency"}</Link>
+          <div className="flex flex-wrap gap-x-10 gap-y-4 justify-center md:justify-start">
+            <Link href={`/${lang}/privacy-policy`} className="hover:text-accent transition-colors">{dict.footer.links.privacy}</Link>
+            <Link href={`/${lang}/terms`} className="hover:text-accent transition-colors">{dict.footer.links.terms}</Link>
+            <Link href={`/${lang}/refund-policy`} className="hover:text-accent transition-colors">{dict.footer.links.refunds}</Link>
+            <Link href={`/${lang}/shipping-policy`} className="hover:text-accent transition-colors">{dict.footer.links.shipping}</Link>
+            <Link href={`/${lang}/contact`} className="hover:text-accent transition-colors">{dict.nav.contact}</Link>
           </div>
           <p>{dict.footer?.legal || `© ${new Date().getFullYear()} Kishan Seva Samiti. A Signature Rural Initiative.`}</p>
         </div>

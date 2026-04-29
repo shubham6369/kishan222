@@ -20,7 +20,7 @@ function FailureContent({ params }: { params: { lang: string } }) {
         
         <h1 className="text-4xl font-serif font-bold text-[#122c1f] mb-4">Payment Failed</h1>
         <p className="text-[#77574d] text-lg mb-10">
-          Oops! Something went wrong with your transaction. Don't worry, if any amount was deducted, it will be refunded automatically.
+          Oops! Something went wrong with your transaction. Don&apos;t worry, if any amount was deducted, it will be refunded automatically.
         </p>
 
         <div className="bg-white rounded-[32px] border border-black/5 p-8 mb-10 text-left space-y-4 shadow-sm">

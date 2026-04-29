@@ -4,14 +4,14 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, LogOut, LayoutDashboard, Globe } from "lucide-react";
+import { Menu, X, LogOut, LayoutDashboard, Globe, ShieldCheck } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { usePathname, useRouter } from "next/navigation";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const { user, logout } = useAuth();
+  const { user, userData, logout } = useAuth();
   const { lang, dict } = useLanguage();
   const pathname = usePathname();
   const router = useRouter();
@@ -101,6 +101,15 @@ export default function Navbar() {
           <div className="flex items-center gap-6 ml-6 pl-6 border-l border-white/10">
             {user ? (
               <>
+                {userData?.isAdmin && (
+                  <Link 
+                    href={`/${lang}/admin`} 
+                    className={`flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-accent hover:text-gold-500 transition-all`}
+                  >
+                    <ShieldCheck className="w-4 h-4" />
+                    <span>Admin</span>
+                  </Link>
+                )}
                 <Link 
                   href={`/${lang}/dashboard`} 
                   className={`flex items-center gap-2 text-sm font-bold uppercase tracking-widest hover:text-accent-dark transition-all ${hasScrolled ? "text-primary" : "text-white"}`}
@@ -182,6 +191,16 @@ export default function Navbar() {
               <div className="pt-8 border-t border-white/10 space-y-6">
                 {user ? (
                   <>
+                    {userData?.isAdmin && (
+                      <Link 
+                        href={`/${lang}/admin`} 
+                        className="flex items-center gap-4 text-xl text-accent font-body"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        <ShieldCheck className="w-6 h-6" />
+                        Master Admin
+                      </Link>
+                    )}
                     <Link 
                       href={`/${lang}/dashboard`} 
                       className="flex items-center gap-4 text-xl text-white font-body"

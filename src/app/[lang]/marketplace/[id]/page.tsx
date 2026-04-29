@@ -9,11 +9,9 @@ import {
   ShieldCheck, 
   MapPin, 
   Star, 
-  ShoppingCart, 
-  ArrowLeft, 
+  ShoppingCart,
   Truck, 
   RotateCcw,
-  Info,
   ChevronRight,
   CheckCheck
 } from 'lucide-react';
@@ -22,12 +20,32 @@ import { useCart } from '@/context/CartContext';
 import { db } from '@/lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 
+interface Product {
+    id: string;
+    name: string;
+    price: number;
+    category?: string;
+    rating?: number;
+    reviews?: number;
+    stock?: number;
+    unit?: string;
+    description?: string;
+    image?: string;
+    images?: string[];
+    sellerId?: string;
+    sellerName?: string;
+    sellerLocation?: string;
+    sellerPhoto?: string;
+    isOrganic?: boolean;
+    deliveryCharge?: number;
+}
+
 export default function ProductDetailsPage({ params }: { params: { id: string, lang: string } }) {
   const [quantity, setQuantity] = useState(1);
   const { addToCart } = useCart();
   const [added, setAdded] = useState(false);
   
-  const [product, setProduct] = useState<any>(null);
+  const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

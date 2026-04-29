@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   User, 
@@ -12,23 +12,19 @@ import {
   ChevronLeft, 
   Check, 
   Copy, 
-  Share2, 
   Sprout, 
   CheckCircle2,
   Landmark,
   CreditCard,
-  Mail,
   AlertCircle,
   Camera,
   Tractor,
-  Printer,
-  Loader2
+  Printer
 } from 'lucide-react';
 import { load } from '@cashfreepayments/cashfree-js';
 import MembershipCard from './MembershipCard';
 import { auth, db, storage } from '@/lib/firebase';
 import { 
-  createUserWithEmailAndPassword, 
   RecaptchaVerifier, 
   signInWithPhoneNumber,
   ConfirmationResult,
@@ -42,13 +38,8 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useLanguage } from '@/context/LanguageContext';
 
-import { Product } from '@/types';
 import Image from 'next/image';
 
-interface PaymentResponse {
-  paymentId: string;
-  orderId: string;
-}
 
 type Step = 1 | 2 | 3 | 4 | 'success';
 
@@ -66,6 +57,20 @@ export default function RegistrationForm() {
   const { dict } = useLanguage();
   const referrerId = searchParams.get('ref');
   
+  const [formData, setFormData] = useState({
+    fullName: "",
+    phone: "",
+    village: "",
+    district: "",
+    state: "Uttar Pradesh",
+    crops: "",
+    landSize: "",
+    password: "",
+    photoBase64: "",
+  });
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const [step, setStep] = useState<Step>(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
@@ -78,6 +83,128 @@ export default function RegistrationForm() {
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
   const [countdown, setCountdown] = useState(0);
+
+  const handleSubmit = useCallback(async (paymentId: string, orderId: string, recoveredData?: typeof formData) => {
+    const currentData = recoveredData || formData;
+    setIsSubmitting(true);
+    setError('');
+    
+    try {
+      const user = auth.currentUser;
+      if (!user) throw new Error(dict.register.errors.session_lost);
+
+      // Link the password to their phone account using EmailAuthProvider proxy
+      const emailProxy = `${currentData.phone.replace(/\D/g, '')}@kishanseva.in`;
+      
+      try {
+        const credential = EmailAuthProvider.credential(emailProxy, currentData.password);
+        await linkWithCredential(user, credential);
+      } catch (err: unknown) {
+        console.warn('Linking credential warning:', err);
+      }
+
+      await updateProfile(user, { displayName: currentData.fullName });
+
+      // Generate Membership ID
+      const newMemberId = 'KSS-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+      setMemberId(newMemberId);
+      setReferralLink(`${window.location.origin}/register?ref=${newMemberId}`);
+
+      // Upload Photo
+      let finalPhotoUrl = currentData.photoBase64;
+      if (photoFile) {
+        const fileExt = photoFile.name.split('.').pop() || 'jpg';
+        const storageRef = ref(storage, `farmers/${user.uid}/profile_${Date.now()}.${fileExt}`);
+        await uploadBytes(storageRef, photoFile);
+        finalPhotoUrl = await getDownloadURL(storageRef);
+      }
+
+      const normalizedPhone = currentData.phone.replace(/\D/g, '');
+
+      // Store Farmer Data — only after payment is confirmed
+      const userData = {
+        uid: user.uid,
+        fullName: currentData.fullName,
+        phone: normalizedPhone,
+        email: emailProxy,
+        village: currentData.village,
+        district: currentData.district,
+        state: currentData.state,
+        crops: currentData.crops,
+        landSize: currentData.landSize,
+        photoUrl: finalPhotoUrl,
+        photoBase64: finalPhotoUrl,
+        membershipId: newMemberId,
+        referralCode: newMemberId,
+        referredBy: referrerId || null,
+        registrationDate: new Date().toISOString(),
+        // Payment confirmation — card is unlocked only because payment succeeded
+        membershipFeePaid: 50,
+        membershipCardUnlocked: true,
+        paymentId: paymentId,
+        paymentOrderId: orderId,
+        walletBalance: 0,
+        stats: { totalReferrals: 0, earnings: 0, activeListings: 0 }
+      };
+
+      await setDoc(doc(db, 'users', user.uid), userData);
+
+      // Credit ₹7 referral reward ONLY if:
+      // 1. There is a referrer code
+      // 2. Payment is confirmed (we're inside the payment handler)
+      // 3. Referrer is a real, different user (fraud check)
+      if (referrerId) {
+        try {
+          const usersRef = collection(db, 'users');
+          const q = query(usersRef, where('membershipId', '==', referrerId));
+          const querySnapshot = await getDocs(q);
+          
+          if (!querySnapshot.empty) {
+            const referrerDoc = querySnapshot.docs[0];
+            const referrerData = referrerDoc.data();
+
+            // Fraud guard: referrer's phone must differ from new user's phone
+            const referrerPhone = (referrerData.phone || '').replace(/\D/g, '');
+            if (referrerPhone === normalizedPhone) {
+              console.warn('Self-referral attempt blocked:', referrerId);
+            } else {
+              // Credit ₹7 to referrer
+              await updateDoc(doc(db, 'users', referrerDoc.id), {
+                'stats.totalReferrals': increment(1),
+                'stats.earnings': increment(7),
+                'walletBalance': increment(7)
+              });
+
+              // Record referral details under referrer's subcollection
+              const referralsRef = collection(db, 'users', referrerDoc.id, 'referrals');
+              await setDoc(doc(referralsRef, user.uid), {
+                referredUserId: user.uid,
+                referredUserName: currentData.fullName,
+                referredUserPhone: normalizedPhone,
+                joinedAt: new Date().toISOString(),
+                reward: 7,
+                paymentConfirmed: true,
+                paymentId: paymentId,
+              });
+            }
+          }
+        } catch (refErr: unknown) {
+          // Non-fatal: referral credit failure should not block the user's card
+          console.error('Error rewarding referrer:', refErr);
+        }
+      }
+
+      setStep('success');
+    } catch (err: unknown) {
+      console.error(err);
+      const error = err as Error;
+      setError(error.message || 'Registration failed. Please try again.');
+      setStep(3);
+    } finally {
+      setIsSubmitting(false);
+      setPaymentProcessing(false);
+    }
+  }, [formData, dict.register.errors.session_lost, photoFile, referrerId, setMemberId, setReferralLink, setStep, setIsSubmitting, setError, setPaymentProcessing]);
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -119,7 +246,7 @@ export default function RegistrationForm() {
             setError(dict.register.errors.payment_failed);
             setStep(4);
           }
-        } catch (err) {
+        } catch (err: unknown) {
           console.error("Payment verification error:", err);
           setError("Payment verification failed. Please contact support.");
         } finally {
@@ -130,21 +257,7 @@ export default function RegistrationForm() {
       };
       finalizeAfterPayment();
     }
-  }, [searchParams]);
-
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const [formData, setFormData] = useState({
-    fullName: "",
-    phone: "",
-    village: "",
-    district: "",
-    state: "Uttar Pradesh",
-    crops: "",
-    landSize: "",
-    password: "",
-    photoBase64: "",
-  });
+  }, [searchParams, step, handleSubmit, dict.register.errors.payment_failed]);
 
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -292,7 +405,7 @@ export default function RegistrationForm() {
       if (typeof window !== 'undefined' && window.recaptchaVerifier) {
         try {
           window.recaptchaVerifier.clear();
-        } catch (e) {}
+        } catch {}
         window.recaptchaVerifier = undefined;
       }
     } finally {
@@ -334,127 +447,6 @@ export default function RegistrationForm() {
     }
   };
 
-  const handleSubmit = async (paymentId: string, orderId: string, recoveredData?: any) => {
-    const currentData = recoveredData || formData;
-    setIsSubmitting(true);
-    setError('');
-    
-    try {
-      const user = auth.currentUser;
-      if (!user) throw new Error(dict.register.errors.session_lost);
-
-      // Link the password to their phone account using EmailAuthProvider proxy
-      const emailProxy = `${currentData.phone.replace(/\D/g, '')}@kishanseva.in`;
-      
-      try {
-        const credential = EmailAuthProvider.credential(emailProxy, currentData.password);
-        await linkWithCredential(user, credential);
-      } catch (err: unknown) {
-        console.warn('Linking credential warning:', err);
-      }
-
-      await updateProfile(user, { displayName: currentData.fullName });
-
-      // Generate Membership ID
-      const newMemberId = 'KSS-' + Math.random().toString(36).substr(2, 6).toUpperCase();
-      setMemberId(newMemberId);
-      setReferralLink(`${window.location.origin}/register?ref=${newMemberId}`);
-
-      // Upload Photo
-      let finalPhotoUrl = currentData.photoBase64;
-      if (photoFile) {
-        const fileExt = photoFile.name.split('.').pop() || 'jpg';
-        const storageRef = ref(storage, `farmers/${user.uid}/profile_${Date.now()}.${fileExt}`);
-        await uploadBytes(storageRef, photoFile);
-        finalPhotoUrl = await getDownloadURL(storageRef);
-      }
-
-      const normalizedPhone = currentData.phone.replace(/\D/g, '');
-
-      // Store Farmer Data — only after payment is confirmed
-      const userData = {
-        uid: user.uid,
-        fullName: currentData.fullName,
-        phone: normalizedPhone,
-        email: emailProxy,
-        village: currentData.village,
-        district: currentData.district,
-        state: currentData.state,
-        crops: currentData.crops,
-        landSize: currentData.landSize,
-        photoUrl: finalPhotoUrl,
-        photoBase64: finalPhotoUrl,
-        membershipId: newMemberId,
-        referralCode: newMemberId,
-        referredBy: referrerId || null,
-        registrationDate: new Date().toISOString(),
-        // Payment confirmation — card is unlocked only because payment succeeded
-        membershipFeePaid: 50,
-        membershipCardUnlocked: true,
-        paymentId: paymentId,
-        paymentOrderId: orderId,
-        walletBalance: 0,
-        stats: { totalReferrals: 0, earnings: 0, activeListings: 0 }
-      };
-
-      await setDoc(doc(db, 'users', user.uid), userData);
-
-      // Credit ₹7 referral reward ONLY if:
-      // 1. There is a referrer code
-      // 2. Payment is confirmed (we're inside the payment handler)
-      // 3. Referrer is a real, different user (fraud check)
-      if (referrerId) {
-        try {
-          const usersRef = collection(db, 'users');
-          const q = query(usersRef, where('membershipId', '==', referrerId));
-          const querySnapshot = await getDocs(q);
-          
-          if (!querySnapshot.empty) {
-            const referrerDoc = querySnapshot.docs[0];
-            const referrerData = referrerDoc.data();
-
-            // Fraud guard: referrer's phone must differ from new user's phone
-            const referrerPhone = (referrerData.phone || '').replace(/\D/g, '');
-            if (referrerPhone === normalizedPhone) {
-              console.warn('Self-referral attempt blocked:', referrerId);
-            } else {
-              // Credit ₹7 to referrer
-              await updateDoc(doc(db, 'users', referrerDoc.id), {
-                'stats.totalReferrals': increment(1),
-                'stats.earnings': increment(7),
-                'walletBalance': increment(7)
-              });
-
-              // Record referral details under referrer's subcollection
-              const referralsRef = collection(db, 'users', referrerDoc.id, 'referrals');
-              await setDoc(doc(referralsRef, user.uid), {
-                referredUserId: user.uid,
-                referredUserName: currentData.fullName,
-                referredUserPhone: normalizedPhone,
-                joinedAt: new Date().toISOString(),
-                reward: 7,
-                paymentConfirmed: true,
-                paymentId: paymentId,
-              });
-            }
-          }
-        } catch (refErr) {
-          // Non-fatal: referral credit failure should not block the user's card
-          console.error('Error rewarding referrer:', refErr);
-        }
-      }
-
-      setStep('success');
-    } catch (err: unknown) {
-      console.error(err);
-      const error = err as Error;
-      setError(error.message || 'Registration failed. Please try again.');
-      setStep(3);
-    } finally {
-      setIsSubmitting(false);
-      setPaymentProcessing(false);
-    }
-  };
 
   const handlePrint = () => {
     window.print();

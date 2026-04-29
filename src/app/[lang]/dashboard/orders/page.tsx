@@ -4,9 +4,10 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { db } from '@/lib/firebase';
-import { collection, query, where, onSnapshot, doc, updateDoc, orderBy } from 'firebase/firestore';
+import { collection, query, where, onSnapshot, doc, updateDoc } from 'firebase/firestore';
 import { Order } from '@/types';
 import { toast } from 'react-hot-toast';
+import Image from 'next/image';
 
 export default function SellerOrdersPage() {
     const { user, loading } = useAuth();
@@ -137,8 +138,13 @@ export default function SellerOrdersPage() {
                                                 <div className="space-y-2">
                                                     {myItems.map((item, idx) => (
                                                         <div key={idx} className="flex items-center gap-3">
-                                                            <div className="w-10 h-10 rounded bg-gray-100 overflow-hidden shrink-0">
-                                                                <img src={item.image || 'https://placehold.co/100x100?text=No+Image'} alt={item.name} className="w-full h-full object-cover" />
+                                                            <div className="w-10 h-10 rounded bg-gray-100 overflow-hidden shrink-0 relative">
+                                                                <Image 
+                                                                    src={item.image || 'https://placehold.co/100x100?text=No+Image'} 
+                                                                    alt={item.name} 
+                                                                    fill 
+                                                                    className="object-cover" 
+                                                                />
                                                             </div>
                                                             <div>
                                                                 <div className="text-sm font-medium text-gray-900 line-clamp-1">{item.name}</div>

@@ -17,7 +17,7 @@ interface Transaction {
   amount: number;
   status: string;
   paymentStatus: string;
-  createdAt: any;
+  createdAt: unknown;
   paymentId?: string;
 }
 

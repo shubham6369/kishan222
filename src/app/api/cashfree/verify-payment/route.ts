@@ -22,8 +22,13 @@ export async function GET(req: Request) {
     const response = await cashfree.PGOrderFetchPayments(orderId);
     const payments = response.data;
     
+    interface CashfreePayment {
+      payment_status: string;
+      cf_payment_id: string;
+    }
+    
     // Check if any payment is successful
-    const successfulPayment = payments.find((p: any) => p.payment_status === 'SUCCESS');
+    const successfulPayment = (payments as unknown as CashfreePayment[]).find((p) => p.payment_status === 'SUCCESS');
 
     if (successfulPayment) {
       // Update order in Firestore
@@ -51,8 +56,8 @@ export async function GET(req: Request) {
       });
     }
 
-  } catch (error: any) {
-    console.error('Error fetching Cashfree payments:', error.response?.data || error);
+  } catch (error: unknown) {
+    console.error('Error fetching Cashfree payments:', error);
     return NextResponse.json({ error: 'Error verifying payment' }, { status: 500 });
   }
 }

@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Wallet, ArrowDownToLine, Clock, CheckCircle2, XCircle,
-  AlertCircle, IndianRupee, Gift, TrendingUp
+  AlertCircle, IndianRupee, TrendingUp
 } from 'lucide-react';
 import { db } from '@/lib/firebase';
 import { collection, query, getDocs, addDoc, serverTimestamp, orderBy } from 'firebase/firestore';
@@ -15,9 +15,10 @@ const MIN_WITHDRAWAL = 100;
 
 interface WithdrawalRequest {
   id: string;
+  userId: string;
   amount: number;
   status: 'pending' | 'completed' | 'rejected';
-  requestedAt: any;
+  requestedAt: { toDate: () => Date };
   upiId?: string;
 }
 
@@ -33,8 +34,11 @@ export default function WalletPage() {
   const walletBalance = userData?.walletBalance || 0;
 
   useEffect(() => {
-    if (!user?.uid) { setLoadingHistory(false); return; }
     (async () => {
+      if (!user?.uid) {
+        setLoadingHistory(false);
+        return;
+      }
       try {
         const q = query(
           collection(db, 'withdrawals'),
@@ -43,7 +47,7 @@ export default function WalletPage() {
         const snap = await getDocs(q);
         const myRequests = snap.docs
           .map(d => ({ id: d.id, ...d.data() } as WithdrawalRequest))
-          .filter(w => (w as any).userId === user.uid);
+          .filter(w => w.userId === user.uid);
         setWithdrawals(myRequests);
       } catch (e) {
         console.error(e);
@@ -87,7 +91,8 @@ export default function WalletPage() {
         requestedAt: { toDate: () => new Date() },
         upiId: upiId.trim(),
       }, ...prev]);
-    } catch (err: any) {
+    } catch (err) {
+      console.error('Withdrawal error:', err);
       toast.error('Failed to submit request. Please try again.');
     } finally {
       setSubmitting(false);

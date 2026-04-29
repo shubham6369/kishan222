@@ -37,8 +37,8 @@ export async function POST(req: Request) {
       orderId: response.data.order_id
     });
 
-  } catch (error: any) {
-    console.error('Error creating Cashfree order:', error.response?.data || error);
+  } catch (error: unknown) {
+    console.error('Error creating Cashfree order:', error);
     return NextResponse.json({ error: 'Error creating order' }, { status: 500 });
   }
 }

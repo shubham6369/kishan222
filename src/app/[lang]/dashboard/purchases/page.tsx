@@ -62,7 +62,7 @@ export default function BuyerPurchasesPage() {
         <div className="p-12 bg-white rounded-[32px] border border-black/5 text-center">
           <Package className="w-12 h-12 text-[#122c1f]/20 mx-auto mb-4" />
           <h3 className="text-xl font-serif font-bold text-[#122c1f]">No purchases yet</h3>
-          <p className="text-[#77574d] mt-2 mb-6">Looks like you haven't bought anything from the marketplace.</p>
+          <p className="text-[#77574d] mt-2 mb-6">Looks like you haven&apos;t bought anything from the marketplace.</p>
           <Link href="/en/marketplace" className="inline-block px-6 py-3 bg-[#122c1f] text-white rounded-xl font-bold uppercase tracking-widest text-xs">
             Browse Marketplace
           </Link>
