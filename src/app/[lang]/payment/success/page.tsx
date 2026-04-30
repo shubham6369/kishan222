@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { CheckCircle2, ArrowRight, ShoppingBag, Loader2 } from 'lucide-react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
+import { useLanguage } from '@/context/LanguageContext';
 
 function SuccessContent({ params }: { params: { lang: string } }) {
   const router = useRouter();
@@ -63,9 +64,10 @@ function SuccessContent({ params }: { params: { lang: string } }) {
 }
 
 export default function PaymentSuccessPage(props: { params: { lang: string } }) {
+  const { lang, dict } = useLanguage();
   return (
     <div className="min-h-screen bg-[#fbf9f5] flex flex-col">
-      <Navbar />
+      <Navbar lang={lang} dict={dict} />
       <Suspense fallback={
         <main className="flex-1 pt-40 pb-20 px-6 flex items-center justify-center">
           <Loader2 className="w-8 h-8 animate-spin text-[#122c1f]" />
@@ -73,7 +75,7 @@ export default function PaymentSuccessPage(props: { params: { lang: string } }) 
       }>
         <SuccessContent {...props} />
       </Suspense>
-      <Footer />
+      <Footer lang={lang} dict={dict} />
     </div>
   );
 }

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { ShoppingCart, Star, ArrowRight, ShieldCheck, CheckCheck } from 'lucide-react';
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
@@ -41,7 +41,7 @@ export default function ProductCard({ product }: ProductCardProps) {
   };
 
   return (
-    <motion.div
+    <m.div
       whileHover={{ y: -8 }}
       className="group bg-white rounded-[24px] overflow-hidden transition-all duration-500 hover:shadow-[0_20px_40px_rgba(18,44,31,0.08)] flex flex-col h-full border border-black/3"
     >
@@ -51,6 +51,8 @@ export default function ProductCard({ product }: ProductCardProps) {
           src={displayImage}
           alt={product.name}
           fill
+          sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 300px"
+          quality={75}
           className="object-cover transition-transform duration-700 group-hover:scale-110"
         />
         
@@ -65,7 +67,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         </div>
         
         {/* Quick Add Button */}
-        <motion.button
+        <m.button
           onClick={handleAddToCart}
           initial={{ opacity: 0, y: 10 }}
           whileHover={{ scale: 1.1 }}
@@ -74,7 +76,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           className={`absolute bottom-4 right-4 ${added ? 'bg-green-500 text-white' : 'bg-white text-[#122c1f] hover:bg-[#122c1f] hover:text-white'} p-3 rounded-xl shadow-xl transition-colors z-20 ${product.stock === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
           {added ? <CheckCheck className="w-5 h-5" /> : <ShoppingCart className="w-5 h-5" />}
-        </motion.button>
+        </m.button>
       </div>
 
       {/* Content */}
@@ -124,6 +126,6 @@ export default function ProductCard({ product }: ProductCardProps) {
           </Link>
         </div>
       </div>
-    </motion.div>
+    </m.div>
   );
 }

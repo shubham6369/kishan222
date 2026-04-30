@@ -6,7 +6,7 @@ import { collection, getDocs, doc, updateDoc, increment } from 'firebase/firesto
 import toast from 'react-hot-toast';
 import { CheckCircle, XCircle, Clock, IndianRupee, User, CreditCard, History } from 'lucide-react';
 import { Withdrawal } from '@/types';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
 export default function WithdrawalsTab() {
@@ -96,7 +96,7 @@ export default function WithdrawalsTab() {
     );
 
     const WithdrawalRow = ({ req, isPending }: { req: Withdrawal, isPending: boolean }) => (
-        <motion.tr 
+        <m.tr 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           className="group hover:bg-white/5 transition-all"
@@ -155,7 +155,7 @@ export default function WithdrawalsTab() {
                     )}
                 </div>
             </td>
-        </motion.tr>
+        </m.tr>
     );
 
     return (

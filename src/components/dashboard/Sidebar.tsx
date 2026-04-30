@@ -1,8 +1,6 @@
-'use client';
-
 import React from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { Dictionary } from '@/context/LanguageContext';
 import { 
   BarChart3, 
   Users, 
@@ -16,14 +14,14 @@ import {
   IdCard,
   CreditCard
 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import SidebarNav from './SidebarNav';
 
-import { useLanguage } from '@/context/LanguageContext';
+interface SidebarProps {
+  lang: string;
+  dict: Dictionary;
+}
 
-export default function Sidebar() {
-  const pathname = usePathname();
-  const { dict, lang } = useLanguage();
-
+export default function Sidebar({ lang, dict }: SidebarProps) {
   const NAV_ITEMS = [
     { name: dict.sidebar.overview, href: `/${lang}/dashboard`, icon: BarChart3 },
     { name: dict.sidebar.my_card, href: `/${lang}/dashboard/card`, icon: IdCard },
@@ -53,34 +51,8 @@ export default function Sidebar() {
         </Link>
       </div>
 
-      {/* Navigation */}
-      <nav className="flex-1 px-6 space-y-2 relative z-10 pt-4">
-        {NAV_ITEMS.map((item) => {
-          const isActive = pathname === item.href;
-          const Icon = item.icon;
-          
-          return (
-            <Link 
-              key={item.href}
-              href={item.href}
-              className={`group flex items-center gap-4 px-6 py-4 rounded-2xl transition-all duration-300 relative ${
-                isActive 
-                  ? 'bg-white/10 text-white' 
-                  : 'text-white/60 hover:text-white hover:bg-white/5'
-              }`}
-            >
-              {isActive && (
-                <motion.div 
-                    layoutId="sidebar-active"
-                    className="absolute left-0 w-1 h-6 bg-[#77574d] rounded-r-full"
-                />
-              )}
-              <Icon className={`w-5 h-5 transition-transform group-hover:scale-110 ${isActive ? 'text-[#77574d]' : ''}`} />
-              <span className="text-sm font-bold tracking-wide">{item.name}</span>
-            </Link>
-          );
-        })}
-      </nav>
+      {/* Navigation (Client Component for active states/animations) */}
+      <SidebarNav lang={lang} dict={dict} items={NAV_ITEMS} />
 
       {/* Quick Sell CTA */}
       <div className="px-6 py-10 relative z-10">

@@ -2,13 +2,15 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { Database, Sprout, CheckCircle2, AlertTriangle, ArrowRight } from 'lucide-react';
 import { seedProducts } from '@/lib/seed';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
+import { useLanguage } from '@/context/LanguageContext';
 
 export default function SeedPage() {
+  const { dict, lang } = useLanguage();
   const [isSeeding, setIsSeeding] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState('');
@@ -32,11 +34,11 @@ export default function SeedPage() {
 
   return (
     <main className="min-h-screen bg-[#fbf9f5]">
-      <Navbar />
+      <Navbar lang={lang} dict={dict} />
       
       <section className="pt-32 pb-20 px-6">
         <div className="max-w-2xl mx-auto">
-          <motion.div
+          <m.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-black/5"
@@ -86,7 +88,7 @@ export default function SeedPage() {
                     className="w-full py-4 bg-[#122c1f] text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:shadow-xl transition-all disabled:opacity-50"
                   >
                     {isSeeding ? (
-                      <motion.div
+                      <m.div
                         animate={{ rotate: 360 }}
                         transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
                         className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full"
@@ -122,11 +124,11 @@ export default function SeedPage() {
                 </div>
               )}
             </div>
-          </motion.div>
+          </m.div>
         </div>
       </section>
 
-      <Footer />
+      <Footer lang={lang} dict={dict} />
     </main>
   );
 }

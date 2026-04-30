@@ -1,12 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
 import { 
   Plus, 
-  Image as ImageIcon, 
   Type, 
-  Tag, 
   IndianRupee, 
   Info,
   ChevronRight,

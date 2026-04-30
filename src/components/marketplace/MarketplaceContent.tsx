@@ -1,19 +1,25 @@
 'use client';
 
-import React, { useState } from 'react';
-import Navbar from '@/components/layout/Navbar';
-import Footer from '@/components/layout/Footer';
+import React, { useState, useEffect } from 'react';
+import { Dictionary } from '@/context/LanguageContext';
+import dynamic from 'next/dynamic';
 import ProductCard from '@/components/marketplace/ProductCard';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Filter, Leaf, Droplets, Sun, Wind, ShoppingBasket, ArrowRight } from 'lucide-react';
-import { useLanguage } from '@/context/LanguageContext';
+import { m, AnimatePresence } from 'framer-motion';
+import { Search, Filter, Leaf } from 'lucide-react';
 import { db } from '@/lib/firebase';
 import { collection, onSnapshot } from 'firebase/firestore';
-import { useEffect } from 'react';
 import { Product } from '@/types';
 
-export default function MarketplacePage() {
-  const { dict } = useLanguage();
+const MarketplaceFeatures = dynamic(() => import('@/components/marketplace/MarketplaceFeatures'), {
+  loading: () => <div className="h-64 bg-[#122c1f] animate-pulse" />
+});
+
+interface MarketplaceContentProps {
+  lang: string;
+  dict: Dictionary;
+}
+
+export default function MarketplaceContent({ dict }: MarketplaceContentProps) {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -49,11 +55,8 @@ export default function MarketplacePage() {
     (p.name?.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
-
   return (
-    <div className="min-h-screen bg-[#fbf9f5]">
-      <Navbar />
-      
+    <>
       {/* Hero Header */}
       <section className="pt-32 pb-20 px-6 bg-[#122c1f] text-white overflow-hidden relative">
         <div className="absolute inset-0 opacity-10 pointer-events-none">
@@ -62,23 +65,23 @@ export default function MarketplacePage() {
         
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="flex flex-col items-center text-center space-y-6">
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               className="flex items-center gap-3 px-4 py-2 bg-white/10 rounded-full backdrop-blur-md border border-white/10"
             >
               <Leaf className="w-4 h-4 text-green-400" />
               <span className="text-[10px] font-bold uppercase tracking-[0.2em]">{dict.marketplace.organic_label}</span>
-            </motion.div>
+            </m.div>
             
-            <motion.h1 
+            <m.h1 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
               className="text-5xl md:text-7xl font-serif font-bold leading-tight mb-6"
             >
               {dict.marketplace.title}
-            </motion.h1>
+            </m.h1>
             <p className="text-white/70 text-xl leading-relaxed max-w-2xl">
               {dict.marketplace.subtitle}
             </p>
@@ -141,7 +144,7 @@ export default function MarketplacePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <AnimatePresence>
                 {filteredProducts.map((product, index) => (
-                    <motion.div
+                    <m.div
                         key={product.id}
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
@@ -149,12 +152,12 @@ export default function MarketplacePage() {
                         viewport={{ once: true }}
                     >
                         <ProductCard product={product} />
-                    </motion.div>
+                    </m.div>
                 ))}
             </AnimatePresence>
           </div>
 
-          {filteredProducts.length === 0 && (
+          {filteredProducts.length === 0 && !loading && (
             <div className="py-20 text-center space-y-4">
                 <div className="w-16 h-16 bg-[#122c1f]/5 rounded-full flex items-center justify-center mx-auto">
                     <Search className="w-8 h-8 text-[#122c1f]/20" />
@@ -168,44 +171,21 @@ export default function MarketplacePage() {
                 </button>
             </div>
           )}
+          
+          {loading && (
+            <div className="py-20 flex justify-center">
+              <m.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                className="w-10 h-10 border-4 border-primary/20 border-t-primary rounded-full"
+              />
+            </div>
+          )}
         </div>
       </section>
 
       {/* Sustainable Features */}
-      <section className="py-20 bg-[#122c1f] relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12 text-white">
-            <div className="space-y-4">
-                <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center">
-                    <Leaf className="w-6 h-6 text-green-400" />
-                </div>
-                <h4 className="text-xl font-serif font-bold">100% Organic</h4>
-                <p className="text-sm opacity-60">Every product is verified organic through traditional and modern checks.</p>
-            </div>
-            <div className="space-y-4">
-                <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center">
-                    <Droplets className="w-6 h-6 text-blue-400" />
-                </div>
-                <h4 className="text-xl font-serif font-bold">Pesticide Free</h4>
-                <p className="text-sm opacity-60">No chemicals, just nature. Healthy soil, healthy soul.</p>
-            </div>
-            <div className="space-y-4">
-                <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center">
-                    <Sun className="w-6 h-6 text-yellow-400" />
-                </div>
-                <h4 className="text-xl font-serif font-bold">Traceability</h4>
-                <p className="text-sm opacity-60">Know exactly where your food comes from and the farmer behind it.</p>
-            </div>
-            <div className="space-y-4">
-                <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center">
-                    <Wind className="w-6 h-6 text-purple-400" />
-                </div>
-                <h4 className="text-xl font-serif font-bold">Ethical Sourcing</h4>
-                <p className="text-sm opacity-60">Fair pricing for farmers, ensuring sustainable rural development.</p>
-            </div>
-        </div>
-      </section>
-
-      <Footer />
-    </div>
+      <MarketplaceFeatures />
+    </>
   );
 }

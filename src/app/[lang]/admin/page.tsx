@@ -8,10 +8,9 @@ import {
   CreditCard, 
   ShieldCheck, 
   TrendingUp,
-  ChevronRight,
-  LayoutDashboard
+  ChevronRight
 } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m } from 'framer-motion';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import FarmersTab from '@/components/admin/FarmersTab';
@@ -52,7 +51,7 @@ export default function AdminDashboard() {
         
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-          <motion.div 
+          <m.div 
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
           >
@@ -66,9 +65,9 @@ export default function AdminDashboard() {
             <p className="text-white/40 mt-2 font-body text-sm uppercase tracking-widest">
               Kishan Seva Samiti Operations Hub
             </p>
-          </motion.div>
+          </m.div>
 
-          <motion.div 
+          <m.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="flex items-center gap-4 bg-white/5 backdrop-blur-xl border border-white/10 p-6 rounded-[32px]"
@@ -80,7 +79,7 @@ export default function AdminDashboard() {
               <p className="text-white/40 text-[10px] font-bold uppercase tracking-widest">Platform Status</p>
               <p className="text-white font-bold">SYSTEM ACTIVE</p>
             </div>
-          </motion.div>
+          </m.div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -133,7 +132,7 @@ export default function AdminDashboard() {
 
           {/* Main Content Area */}
           <div className="lg:col-span-9">
-            <motion.div
+            <m.div
               key={activeTab}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -150,7 +149,7 @@ export default function AdminDashboard() {
                 {activeTab === 'orders' && <OrdersTab />}
                 {activeTab === 'withdrawals' && <WithdrawalsTab />}
               </div>
-            </motion.div>
+            </m.div>
           </div>
         </div>
       </div>

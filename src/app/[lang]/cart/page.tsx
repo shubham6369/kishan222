@@ -6,20 +6,20 @@ import Footer from '@/components/layout/Footer';
 import { useCart } from '@/context/CartContext';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { Trash2, ShoppingBag, ArrowRight } from 'lucide-react';
 
 import { useLanguage } from '@/context/LanguageContext';
 
 export default function CartPage({ params }: { params: { lang: string } }) {
   const { cart, removeFromCart, updateQuantity, subtotal, deliveryTotal, totalItems } = useCart();
-  const { dict } = useLanguage();
+  const { dict, lang } = useLanguage();
   
   const grandTotal = subtotal + deliveryTotal;
 
   return (
     <div className="min-h-screen bg-[#fbf9f5] flex flex-col">
-      <Navbar />
+      <Navbar lang={lang} dict={dict} />
       
       <main className="flex-1 pt-32 pb-20 px-6">
         <div className="max-w-7xl mx-auto">
@@ -48,7 +48,7 @@ export default function CartPage({ params }: { params: { lang: string } }) {
               {/* Cart Items */}
               <div className="lg:col-span-2 space-y-6">
                 {cart.map((item) => (
-                  <motion.div 
+                  <m.div 
                     layout
                     key={item.productId}
                     className="p-4 bg-white rounded-3xl border border-black/5 flex flex-col sm:flex-row items-start sm:items-center gap-6"
@@ -103,7 +103,7 @@ export default function CartPage({ params }: { params: { lang: string } }) {
                         </div>
                       </div>
                     </div>
-                  </motion.div>
+                  </m.div>
                 ))}
               </div>
 
@@ -148,7 +148,7 @@ export default function CartPage({ params }: { params: { lang: string } }) {
         </div>
       </main>
 
-      <Footer />
+      <Footer lang={lang} dict={dict} />
     </div>
   );
 }

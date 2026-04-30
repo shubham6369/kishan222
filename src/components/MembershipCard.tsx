@@ -4,7 +4,7 @@ import React from 'react';
 import Image from 'next/image';
 import { QRCodeSVG } from 'qrcode.react';
 import { Landmark, ShieldCheck, MapPin, Phone, Sprout, Tractor, User as UserIcon } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { useLanguage } from '@/context/LanguageContext';
 
 export interface MembershipCardProps {
@@ -25,7 +25,7 @@ export interface MembershipCardProps {
 export default function MembershipCard({ memberData }: MembershipCardProps) {
   const { dict } = useLanguage();
   return (
-    <motion.div
+    <m.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       // Ensure the card fills the print view and maintains dimensions
@@ -141,6 +141,6 @@ export default function MembershipCard({ memberData }: MembershipCardProps) {
 
       {/* Glossy Overlay */}
       <div className="absolute inset-0 bg-linear-to-tr from-transparent via-[#fbf9f5]/5 to-transparent pointer-events-none" />
-    </motion.div>
+    </m.div>
   );
 }

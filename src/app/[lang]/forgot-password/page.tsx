@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m, AnimatePresence } from 'framer-motion';
 import { 
   Phone as PhoneIcon, 
   ShieldCheck,
@@ -164,7 +164,7 @@ export default function ForgotPasswordPage() {
 
   return (
     <main className="min-h-screen bg-[#fbf9f5]">
-      <Navbar />
+      <Navbar lang={lang} dict={dict} />
       
       <div className="container mx-auto px-4 py-20">
         <div className="max-w-md mx-auto">
@@ -185,19 +185,19 @@ export default function ForgotPasswordPage() {
                 </div>
 
                 {error && (
-                  <motion.div 
+                  <m.div 
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     className="p-4 bg-red-50 border border-red-100 rounded-xl flex items-start gap-3 text-red-600 text-sm"
                   >
                     <AlertCircle className="w-5 h-5 shrink-0" />
                     <p>{error}</p>
-                  </motion.div>
+                  </m.div>
                 )}
 
                 <AnimatePresence mode="wait">
                   {step === 1 && (
-                    <motion.form
+                    <m.form
                       key="step1"
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
@@ -227,11 +227,11 @@ export default function ForgotPasswordPage() {
                         {isSubmitting ? "..." : dict.forgot.send_otp}
                         <ArrowRight className="w-4 h-4" />
                       </button>
-                    </motion.form>
+                    </m.form>
                   )}
 
                   {step === 2 && (
-                    <motion.form
+                    <m.form
                       key="step2"
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
@@ -283,11 +283,11 @@ export default function ForgotPasswordPage() {
                         {isSubmitting ? "..." : dict.forgot.verify_otp}
                         <ArrowRight className="w-4 h-4" />
                       </button>
-                    </motion.form>
+                    </m.form>
                   )}
 
                   {step === 3 && (
-                    <motion.form
+                    <m.form
                       key="step3"
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
@@ -317,14 +317,14 @@ export default function ForgotPasswordPage() {
                         {isSubmitting ? "..." : dict.forgot.reset_button}
                         <CheckCircle2 className="w-4 h-4" />
                       </button>
-                    </motion.form>
+                    </m.form>
                   )}
                 </AnimatePresence>
                 
                 <div id="recaptcha-container"></div>
               </div>
             ) : (
-              <motion.div 
+              <m.div 
                 initial={{ scale: 0.95, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 className="text-center space-y-6"
@@ -342,13 +342,13 @@ export default function ForgotPasswordPage() {
                 >
                   {dict.forgot.back_login}
                 </button>
-              </motion.div>
+              </m.div>
             )}
           </div>
         </div>
       </div>
 
-      <Footer />
+      <Footer lang={lang} dict={dict} />
     </main>
   );
 }

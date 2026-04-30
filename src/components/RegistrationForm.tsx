@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m, AnimatePresence } from 'framer-motion';
 import { 
   User, 
   MapPin, 
@@ -310,7 +310,7 @@ export default function RegistrationForm() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
-          amount: 50, // ₹50 membership fee
+          amount: 50, // ₹50 smart ID card issuance fee
           customerId: user.uid,
           customerPhone: formData.phone.replace(/\D/g, ''),
           customerName: formData.fullName,
@@ -506,7 +506,7 @@ export default function RegistrationForm() {
         <div className="p-6 md:p-12 print:p-0">
           <AnimatePresence mode="wait">
             {step === 'success' ? (
-              <motion.div
+              <m.div
                 key="success"
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -571,9 +571,9 @@ export default function RegistrationForm() {
                     {dict.register.go_dashboard}
                   </button>
                 </div>
-              </motion.div>
+              </m.div>
             ) : (
-              <motion.div
+              <m.div
                 key={step}
                 initial={{ x: 20, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
@@ -589,14 +589,14 @@ export default function RegistrationForm() {
                       </div>
 
                       {error && (
-                        <motion.div 
+                        <m.div 
                           initial={{ opacity: 0, y: -10 }}
                           animate={{ opacity: 1, y: 0 }}
                           className="p-4 bg-red-50 border border-red-100 rounded-xl flex items-start gap-3 text-red-600 text-sm"
                         >
                           <AlertCircle className="w-5 h-5 shrink-0" />
                           <p>{error}</p>
-                        </motion.div>
+                        </m.div>
                       )}
 
                       <div className="space-y-4">
@@ -631,7 +631,7 @@ export default function RegistrationForm() {
 
                         <AnimatePresence>
                           {otpSent && (
-                            <motion.div 
+                            <m.div 
                               key="otp-field"
                               initial={{ opacity: 0, height: 0, scale: 0.95 }}
                               animate={{ opacity: 1, height: 'auto', scale: 1 }}
@@ -678,7 +678,7 @@ export default function RegistrationForm() {
                                   </button>
                                 )}
                               </div>
-                            </motion.div>
+                            </m.div>
                           )}
                         </AnimatePresence>
                         {/* Recaptcha container removed from here and moved to persistent location */}
@@ -868,7 +868,7 @@ export default function RegistrationForm() {
                       className="flex-2 py-4 px-6 bg-[#122c1f] text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:shadow-xl transition-all disabled:opacity-50"
                     >
                       {isSubmitting || paymentProcessing ? (
-                        <motion.div
+                        <m.div
                           animate={{ rotate: 360 }}
                           transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
                           className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full"
@@ -884,7 +884,7 @@ export default function RegistrationForm() {
                     </button>
                   </div>
                 </div>
-              </motion.div>
+              </m.div>
             )}
           </AnimatePresence>
           {/* Persistent Recaptcha container to prevent DOM errors during step transitions */}

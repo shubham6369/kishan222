@@ -1,19 +1,29 @@
-'use client';
-
-import React from 'react';
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
-import RegistrationForm from "@/components/RegistrationForm";
+import React, { Suspense } from 'react';
+import dynamic from 'next/dynamic';
 import { UserCheck } from "lucide-react";
-import { useLanguage } from '@/context/LanguageContext';
+import { getDictionary } from "@/lib/get-dictionary";
 
-export default function RegisterPage() {
-  const { dict } = useLanguage();
+const RegistrationForm = dynamic(() => import("@/components/RegistrationForm"), {
+  loading: () => (
+    <div className="h-[600px] flex items-center justify-center bg-white rounded-3xl animate-pulse border border-black/5 shadow-sm">
+      <div className="flex flex-col items-center gap-4">
+        <div className="w-12 h-12 border-4 border-[#122c1f]/10 border-t-[#122c1f] rounded-full animate-spin" />
+        <p className="text-[#122c1f]/40 font-bold uppercase tracking-widest text-[10px]">Initializing Secure Form...</p>
+      </div>
+    </div>
+  )
+});
+
+export default async function RegisterPage({
+  params
+}: {
+  params: Promise<{ lang: string }>;
+}) {
+  const { lang } = await params;
+  const dict = await getDictionary(lang);
   
   return (
     <main className="min-h-screen bg-surface">
-      <Navbar />
-      
       <section className="pt-32 pb-20 md:pt-48 md:pb-32 px-6">
         <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-16 items-start">
           {/* Content side */}
@@ -46,14 +56,19 @@ export default function RegisterPage() {
 
           {/* Form side */}
           <div className="lg:w-2/3 w-full">
-            <React.Suspense fallback={<div className="h-96 flex items-center justify-center bg-white rounded-3xl animate-pulse">Loading registration...</div>}>
+            <Suspense fallback={
+              <div className="h-[600px] flex items-center justify-center bg-white rounded-3xl animate-pulse border border-black/5 shadow-sm">
+                <div className="flex flex-col items-center gap-4">
+                  <div className="w-12 h-12 border-4 border-[#122c1f]/10 border-t-[#122c1f] rounded-full animate-spin" />
+                  <p className="text-[#122c1f]/40 font-bold uppercase tracking-widest text-[10px]">Loading Form...</p>
+                </div>
+              </div>
+            }>
               <RegistrationForm />
-            </React.Suspense>
+            </Suspense>
           </div>
         </div>
       </section>
-
-      <Footer />
     </main>
   );
 }

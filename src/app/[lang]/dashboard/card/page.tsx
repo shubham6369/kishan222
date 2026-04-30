@@ -1,13 +1,14 @@
 'use client';
 
 import React, { useRef } from 'react';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import {
   Download, Printer, Share2, Shield, CheckCircle2, QrCode,
-  MapPin, Phone, Calendar, Leaf, AlertCircle
+  Phone, Leaf, AlertCircle
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useParams } from 'next/navigation';
 import QRCode from 'qrcode';
 
@@ -104,7 +105,7 @@ export default function FarmerCardPage() {
   return (
     <div className="max-w-4xl mx-auto px-6 py-16 space-y-12">
       {/* Header */}
-      <motion.div
+      <m.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="text-center"
@@ -112,10 +113,10 @@ export default function FarmerCardPage() {
         <p className="text-[10px] font-bold uppercase tracking-widest text-[#77574d] mb-3">Official Document</p>
         <h1 className="text-4xl font-serif font-bold text-[#122c1f]">Your Farmer Membership Card</h1>
         <p className="text-[#77574d] mt-2">Valid ID card issued by Kishan Seva Samiti</p>
-      </motion.div>
+      </m.div>
 
       {/* THE CARD */}
-      <motion.div
+      <m.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.1 }}
@@ -154,9 +155,11 @@ export default function FarmerCardPage() {
               {/* Photo */}
               <div className="shrink-0">
                 {userData.photoUrl ? (
-                  <img
+                  <Image
                     src={userData.photoUrl}
-                    alt={userData.fullName}
+                    alt={userData.fullName || 'Farmer Photo'}
+                    width={80}
+                    height={96}
                     className="w-20 h-24 rounded-2xl object-cover border-2 border-white/20"
                   />
                 ) : (
@@ -218,7 +221,14 @@ export default function FarmerCardPage() {
               {/* QR Code */}
               <div className="bg-white rounded-xl p-1.5">
                 {qrDataUrl ? (
-                  <img src={qrDataUrl} alt="QR Code" className="w-16 h-16" />
+                  <Image 
+                    src={qrDataUrl} 
+                    alt="QR Code" 
+                    width={64}
+                    height={64}
+                    unoptimized
+                    className="w-16 h-16" 
+                  />
                 ) : (
                   <div className="w-16 h-16 flex items-center justify-center">
                     <QrCode className="w-8 h-8 text-[#122c1f]" />
@@ -234,10 +244,10 @@ export default function FarmerCardPage() {
             <Shield className="w-4 h-4 text-white/20" />
           </div>
         </div>
-      </motion.div>
+      </m.div>
 
       {/* Action Buttons */}
-      <motion.div
+      <m.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.25 }}
@@ -267,7 +277,7 @@ export default function FarmerCardPage() {
           <Share2 className="w-5 h-5" />
           Share on WhatsApp
         </button>
-      </motion.div>
+      </m.div>
 
       {/* Info Note */}
       <div className="max-w-xl mx-auto bg-blue-50 border border-blue-100 rounded-2xl px-6 py-5 text-sm text-blue-800 flex items-start gap-3">

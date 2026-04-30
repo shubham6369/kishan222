@@ -13,10 +13,10 @@ import { MapPin, Loader2, CreditCard, ShieldCheck } from 'lucide-react';
 import { load } from '@cashfreepayments/cashfree-js';
 
 export default function CheckoutPage({ params }: { params: { lang: string } }) {
-  const { cart, subtotal, deliveryTotal, clearCart } = useCart();
+  const { cart, subtotal, deliveryTotal } = useCart();
   const { user } = useAuth();
   const router = useRouter();
-  const { dict } = useLanguage();
+  const { dict, lang } = useLanguage();
   
   const grandTotal = subtotal + deliveryTotal;
   
@@ -114,7 +114,7 @@ export default function CheckoutPage({ params }: { params: { lang: string } }) {
 
   return (
     <div className="min-h-screen bg-[#fbf9f5] flex flex-col">
-      <Navbar />
+      <Navbar lang={lang} dict={dict} />
       
       <main className="flex-1 pt-32 pb-20 px-6">
         <div className="max-w-7xl mx-auto">
@@ -212,7 +212,7 @@ export default function CheckoutPage({ params }: { params: { lang: string } }) {
         </div>
       </main>
 
-      <Footer />
+      <Footer lang={lang} dict={dict} />
     </div>
   );
 }

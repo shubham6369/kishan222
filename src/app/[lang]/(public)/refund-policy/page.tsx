@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { RefreshCcw, XCircle, AlertCircle, Info } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 
@@ -16,7 +16,7 @@ export default function RefundPolicyPage() {
           backgroundImage: 'radial-gradient(circle at 70% 50%, #77574d 0%, transparent 60%)',
         }} />
         <div className="max-w-4xl mx-auto px-6 relative z-10">
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
@@ -26,7 +26,7 @@ export default function RefundPolicyPage() {
             <p className="text-white/70 text-lg">
               {lang === 'en' ? 'Last updated: April 2026' : 'अंतिम अपडेट: अप्रैल 2026'}
             </p>
-          </motion.div>
+          </m.div>
         </div>
       </section>
 
@@ -35,7 +35,7 @@ export default function RefundPolicyPage() {
         <div className="bg-white rounded-[32px] p-8 md:p-12 shadow-sm border border-black/5">
           <div className="space-y-12">
             {/* Main Policy Statement */}
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               className="bg-orange-50 rounded-2xl p-6 border border-orange-100 flex gap-4"
@@ -51,7 +51,7 @@ export default function RefundPolicyPage() {
                     : 'किसान सेवा समिति में, हम अपने किसान समुदाय को सर्वोत्तम सेवाएं प्रदान करने का प्रयास करते हैं। कृपया ध्यान दें कि एक बार सदस्यता पंजीकृत होने या लेनदेन पूरा होने के बाद, रद्दीकरण या वापसी का कोई विकल्प नहीं है।'}
                 </p>
               </div>
-            </motion.div>
+            </m.div>
 
             <div className="space-y-8">
               <div>

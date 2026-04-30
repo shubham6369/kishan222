@@ -1,17 +1,20 @@
 import Sidebar from "@/components/dashboard/Sidebar";
+import { getDictionary } from "@/lib/get-dictionary";
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
+  params,
 }: {
   children: React.ReactNode;
+  params: Promise<{ lang: string }>;
 }) {
+  const { lang } = await params;
+  const dict = await getDictionary(lang);
+
   return (
     <div className="flex min-h-screen bg-[#fbf9f5]">
-      <Sidebar />
+      <Sidebar lang={lang} dict={dict} />
       <main className="flex-1 overflow-y-auto h-screen relative">
-        {/* Semi-transparent navbar for dashboard context if needed, 
-            but usually dashboard has its own header. 
-            I'll skip the main navbar here to keep it focused. */}
         <div className="p-8 md:p-12 lg:p-16">
             {children}
         </div>

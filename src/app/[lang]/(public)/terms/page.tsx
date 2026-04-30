@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'framer-motion';
-import { FileText, Shield, Scale, Info } from 'lucide-react';
+import { m } from 'framer-motion';
+import { Scale } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 
 export default function TermsPage() {
@@ -49,7 +49,7 @@ export default function TermsPage() {
           backgroundImage: 'radial-gradient(circle at 70% 50%, #77574d 0%, transparent 60%)',
         }} />
         <div className="max-w-4xl mx-auto px-6 relative z-10">
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
@@ -59,7 +59,7 @@ export default function TermsPage() {
             <p className="text-white/70 text-lg">
               {lang === 'en' ? 'Last updated: April 2026' : 'अंतिम अपडेट: अप्रैल 2026'}
             </p>
-          </motion.div>
+          </m.div>
         </div>
       </section>
 
@@ -68,7 +68,7 @@ export default function TermsPage() {
         <div className="bg-white rounded-[32px] p-8 md:p-12 shadow-sm border border-black/5">
           <div className="space-y-12">
             {sections.map((section, i) => (
-              <motion.div
+              <m.div
                 key={i}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -84,7 +84,7 @@ export default function TermsPage() {
                 <p className="text-[#77574d] leading-relaxed text-lg">
                   {section.content}
                 </p>
-              </motion.div>
+              </m.div>
             ))}
           </div>
 

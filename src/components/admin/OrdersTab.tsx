@@ -6,7 +6,7 @@ import { db } from '@/lib/firebase';
 import { collection, getDocs } from 'firebase/firestore';
 import { Order } from '@/types';
 import { toast } from 'react-hot-toast';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
 export default function OrdersTab() {
@@ -123,7 +123,7 @@ export default function OrdersTab() {
                                     </tr>
                                 ) : (
                                     filteredOrders.map((order) => (
-                                        <motion.tr 
+                                        <m.tr 
                                             key={order.id}
                                             initial={{ opacity: 0 }}
                                             animate={{ opacity: 1 }}
@@ -180,7 +180,7 @@ export default function OrdersTab() {
                                                     <StatusBadge status={order.status} type="global" />
                                                 </div>
                                             </td>
-                                        </motion.tr>
+                                        </m.tr>
                                     ))
                                 )}
                             </AnimatePresence>

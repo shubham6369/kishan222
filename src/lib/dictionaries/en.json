@@ -32,8 +32,8 @@
         "desc": "Sell products like cow dung, fertilizers & seeds directly to buyers."
       },
       "referral": {
-        "title": "Earn via Referrals",
-        "desc": "Invite other farmers and earn ₹7 instantly per successful registration."
+        "title": "Community Rewards",
+        "desc": "Invite fellow farmers to join our community and strengthen our collective impact together."
       }
     }
   },
@@ -94,7 +94,7 @@
     "hero_subtitle": "Kishan Seva Samiti was born from a simple belief — that every Indian farmer deserves dignity, a fair market, and a community that stands behind them.",
     "mission_tag": "Our Mission",
     "mission_title": "Empowering Farmers with Identity, Income & Independence",
-    "mission_p1": "We provide every registered farmer with an official membership card, a direct marketplace to sell organic produce, and a referral-based income system — all in one unified platform.",
+    "mission_p1": "We provide every registered farmer with an official membership card, a direct marketplace to sell organic produce, and a community-based reward system — all in one unified platform.",
     "mission_p2": "Our platform bridges the gap between rural farmers and urban consumers, eliminating middlemen and ensuring fair prices for quality organic products.",
     "join_movement": "Join the Movement",
     "stats": {
@@ -116,7 +116,7 @@
       },
       "community": {
         "title": "Community First",
-        "desc": "Building a powerful network where every farmer supports each other through referrals, knowledge sharing, and solidarity."
+        "desc": "Building a powerful network where every farmer supports each other through community growth, knowledge sharing, and solidarity."
       },
       "gaushala": {
         "title": "Gaushala Integration",
@@ -144,7 +144,7 @@
     "support_hours": "Mon - Sat, 9am - 6pm",
     "digital_support": "24/7 Digital Support",
     "privacy": "Privacy Charter",
-    "terms": "Membership Terms",
+    "terms": "ID Card & Membership Terms",
     "ethics": "Ethics & Transparency",
     "links": {
       "privacy": "Privacy Policy",
@@ -228,7 +228,7 @@
     "subtitle": "By joining the Kishan Seva Samiti, you are not just registering for a service—you are becoming part of a prestigious community of farmers.",
     "benefit_verified": "Verified Farmer Status & ID Card",
     "benefit_schemes": "Exclusive Government Scheme Alerts",
-    "benefit_referral": "Community Referral Rewards",
+    "benefit_referral": "Community Growth Rewards",
     "steps": {
       "identity": "Identity",
       "farming": "Farming",
@@ -237,9 +237,9 @@
       "card": "Card"
     },
     "success_title": "Transaction Successful!",
-    "success_desc": "Your membership is registered. Print your card and share your link to earn ₹7 per referral.",
+    "success_desc": "Your membership is successfully registered. You can now download your digital ID card.",
     "print_card": "Print Membership Card",
-    "referral_link_label": "Your Referral link (Earn ₹7 per sign up)",
+    "referral_link_label": "Your Community Link",
     "go_dashboard": "Go to Dashboard",
     "mobile_verification": "Mobile Verification",
     "mobile_desc": "Register with your mobile number to get started.",
@@ -264,9 +264,9 @@
     "passcode_desc": "Create a secure PIN/password to log in to your portal.",
     "secret_passcode": "Secret Passcode",
     "passcode_placeholder": "Minimum 6 characters",
-    "membership_fee": "Membership Fee",
-    "fee_desc": "One-time fee to generate your Official Farmer ID Card.",
-    "lifelong_card": "Lifelong Membership Card",
+    "membership_fee": "ID Card Processing",
+    "fee_desc": "Covers the cost of your official Smart ID Card and logistics.",
+    "lifelong_card": "Digital & Physical ID Card",
     "total_amount": "Total amount",
     "back": "Back",
     "continue": "Continue",
@@ -288,7 +288,7 @@
       "session_lost": "Authentication session lost. Please restart.",
       "link_copied": "Link copied!"
     },
-    "payment_desc": "Farmer Membership Card — One-time Fee",
+    "payment_desc": "Farmer ID Card Issuance Fee",
     "member_type_farmer": "Farmer",
     "card": {
       "official_member": "Official Member",
@@ -304,7 +304,7 @@
     "welcome": "Welcome back to your Seva Portal. Here's your impact today.",
     "premium_member": "Premium Member",
     "stats": {
-      "earnings": "Referral Earnings",
+      "earnings": "Growth Rewards",
       "referrals": "Total Referrals",
       "listings": "Active Listings",
       "today": "today",
@@ -331,13 +331,13 @@
     "wallet": {
       "title": "Your Wallet",
       "balance": "Available Balance",
-      "withdraw": "Withdraw Funds",
+      "withdraw": "Transfer to Bank",
       "min_fee": "Min ₹50",
       "withdraw_msg": "Withdrawal request verified. Funds will be transferred in 24 hours."
     },
     "referral_box": {
       "title": "Spread the Growth",
-      "subtitle": "Earn ₹50 for every verified farmer who joins through your link.",
+      "subtitle": "Strengthen our community network and receive verified member rewards.",
       "link_label": "Your Referral link",
       "copied": "Link copied!"
     },

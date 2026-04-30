@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState, useCallback } from 'react';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import Image from 'next/image';
 import {
   ShoppingBag, TrendingUp, Package, Plus,
@@ -157,7 +157,7 @@ export default function SellerDashboard() {
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((s, i) => (
-          <motion.div
+          <m.div
             key={i}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -170,7 +170,7 @@ export default function SellerDashboard() {
               <p className="text-2xl font-serif font-bold text-[#122c1f]">{s.value}</p>
               <p className="text-xs text-[#77574d] mt-1 font-medium">{s.label}</p>
             </CARD>
-          </motion.div>
+          </m.div>
         ))}
       </div>
 

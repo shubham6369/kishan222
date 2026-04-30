@@ -1,10 +1,9 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import {
-  Phone, Mail, MapPin, Clock, Send, MessageCircle,
-  ChevronRight, HelpCircle
+  Phone, Mail, MapPin, Send, HelpCircle
 } from 'lucide-react';
 import toast, { Toaster } from 'react-hot-toast';
 import { useLanguage } from '@/context/LanguageContext';
@@ -52,7 +51,6 @@ export default function ContactPage() {
   ];
   const [form, setForm] = React.useState({ name: '', phone: '', email: '', message: '' });
   const [sending, setSending] = React.useState(false);
-  const [openFaq, setOpenFaq] = React.useState<number | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -77,7 +75,7 @@ export default function ContactPage() {
           backgroundImage: 'radial-gradient(circle at 70% 50%, #77574d 0%, transparent 60%)',
         }} />
         <div className="max-w-6xl mx-auto px-6 relative z-10">
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
@@ -89,7 +87,7 @@ export default function ContactPage() {
             <p className="text-white/70 text-xl leading-relaxed max-w-2xl">
               {dict.contact.subtitle}
             </p>
-          </motion.div>
+          </m.div>
         </div>
       </section>
 
@@ -97,7 +95,7 @@ export default function ContactPage() {
         <div className="grid lg:grid-cols-5 gap-12">
           {/* Left: Contact Info */}
           <div className="lg:col-span-2 space-y-8">
-            <motion.div
+            <m.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6 }}
@@ -116,11 +114,11 @@ export default function ContactPage() {
                   </div>
                 </div>
               ))}
-            </motion.div>
+            </m.div>
           </div>
 
           {/* Right: Contact Form */}
-          <motion.div
+          <m.div
             className="lg:col-span-3"
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -151,7 +149,7 @@ export default function ContactPage() {
                 {sending ? (lang === 'en' ? 'Sending...' : 'भेज रहा है...') : dict.contact.form_submit}
               </button>
             </form>
-          </motion.div>
+          </m.div>
         </div>
 
         {/* FAQ Section */}
@@ -162,7 +160,7 @@ export default function ContactPage() {
           </div>
           <div className="max-w-3xl mx-auto space-y-3">
             {FAQS.map((faq, i) => (
-              <motion.div
+              <m.div
                 key={i}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -177,7 +175,7 @@ export default function ContactPage() {
                 <p className="text-[#77574d] leading-relaxed pl-8">
                   {faq.a}
                 </p>
-              </motion.div>
+              </m.div>
             ))}
           </div>
         </div>

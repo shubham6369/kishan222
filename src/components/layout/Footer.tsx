@@ -1,12 +1,9 @@
-"use client";
-
 import Link from "next/link";
 import Image from "next/image";
 import { Mail, Phone, ArrowUpRight, Globe, Users, ShieldCheck } from "lucide-react";
-import { useLanguage } from "@/context/LanguageContext";
+import { Dictionary } from "@/context/LanguageContext";
 
-export default function Footer() {
-  const { lang, dict } = useLanguage();
+export default function Footer({ lang, dict }: { lang: string, dict: Dictionary }) {
   return (
     <footer className="bg-primary text-white pt-32 pb-16 relative overflow-hidden">
       {/* Decorative Background Elements */}
@@ -23,6 +20,8 @@ export default function Footer() {
                   alt="Kishan Seva Samiti Logo" 
                   width={40} 
                   height={40} 
+                  sizes="40px"
+                  quality={80}
                   className="object-contain"
                 />
               </div>

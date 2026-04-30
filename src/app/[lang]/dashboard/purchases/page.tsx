@@ -6,7 +6,7 @@ import { db } from '@/lib/firebase';
 import { collection, query, where, orderBy, onSnapshot } from 'firebase/firestore';
 import { Package, Clock, CheckCircle2, XCircle } from 'lucide-react';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { Order, CartItem } from '@/types';
 import Image from 'next/image';
 
@@ -70,7 +70,7 @@ export default function BuyerPurchasesPage() {
       ) : (
         <div className="space-y-6">
           {orders.map((order, idx) => (
-            <motion.div 
+            <m.div 
               key={order.id}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -115,7 +115,7 @@ export default function BuyerPurchasesPage() {
                 <span className="text-sm font-bold text-[#122c1f]">Total Amount</span>
                 <span className="text-xl font-serif font-bold text-[#122c1f]">₹{order.totalAmount}</span>
               </div>
-            </motion.div>
+            </m.div>
           ))}
         </div>
       )}

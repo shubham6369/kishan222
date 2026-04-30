@@ -24,6 +24,7 @@ export async function generateStaticParams() {
 }
 
 import { LanguageProvider, Dictionary } from "@/context/LanguageContext";
+import FramerMotionProvider from "@/components/animations/FramerMotionProvider";
 
 const dictionaries: Record<string, () => Promise<Dictionary>> = {
   en: () => import('@/lib/dictionaries/en.json').then((module) => module.default as Dictionary),
@@ -42,11 +43,20 @@ export default async function LocaleLayout({
   
   return (
     <html lang={lang} className={`${notoSerif.variable} ${manrope.variable} h-full antialiased`}>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://images.unsplash.com" />
+        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+        <link rel="dns-prefetch" href="https://images.unsplash.com" />
+      </head>
       <body className="min-h-full flex flex-col font-body">
         <LanguageProvider lang={lang} dict={dict}>
           <AuthProvider>
             <CartProvider>
-              {children}
+              <FramerMotionProvider>
+                {children}
+              </FramerMotionProvider>
             </CartProvider>
           </AuthProvider>
         </LanguageProvider>

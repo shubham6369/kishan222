@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { 
   CreditCard, CheckCircle2, XCircle, Clock, 
   Search, Filter, IndianRupee, ExternalLink 
@@ -17,13 +17,35 @@ interface Transaction {
   amount: number;
   status: string;
   paymentStatus: string;
-  createdAt: unknown;
+  createdAt: any;
   paymentId?: string;
 }
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.5,
+      ease: [0.22, 1, 0.36, 1]
+    }
+  }
+} as const;
+
 export default function PaymentsPage() {
   const { user } = useAuth();
-  const { dict, lang } = useLanguage();
+  const { dict } = useLanguage();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -65,53 +87,58 @@ export default function PaymentsPage() {
   );
 
   return (
-    <div className="space-y-8">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <m.div 
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+      className="space-y-8"
+    >
+      <m.div variants={itemVariants} className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-serif font-bold text-[#122c1f]">Payment History</h1>
           <p className="text-[#77574d] mt-1">Track all your transactions and payment statuses.</p>
         </div>
-      </div>
+      </m.div>
 
       {/* Stats Overview */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white p-6 rounded-[32px] border border-black/5 shadow-sm">
+        <m.div variants={itemVariants} className="bg-white p-6 rounded-[32px] border border-black/5 shadow-sm">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-10 h-10 bg-green-50 rounded-2xl flex items-center justify-center text-green-600">
               <CheckCircle2 className="w-5 h-5" />
             </div>
-            <span className="text-sm font-bold text-[#77574d] uppercase tracking-wider">Successful</span>
+            <span className="text-sm font-bold text-[#77574d] uppercase tracking-wider">{dict.dashboard.payments.successful}</span>
           </div>
           <p className="text-3xl font-serif font-bold text-[#122c1f]">
             {transactions.filter(t => t.paymentStatus === 'paid').length}
           </p>
-        </div>
-        <div className="bg-white p-6 rounded-[32px] border border-black/5 shadow-sm">
+        </m.div>
+        <m.div variants={itemVariants} className="bg-white p-6 rounded-[32px] border border-black/5 shadow-sm">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-10 h-10 bg-yellow-50 rounded-2xl flex items-center justify-center text-yellow-600">
               <Clock className="w-5 h-5" />
             </div>
-            <span className="text-sm font-bold text-[#77574d] uppercase tracking-wider">Pending</span>
+            <span className="text-sm font-bold text-[#77574d] uppercase tracking-wider">{dict.dashboard.payments.pending}</span>
           </div>
           <p className="text-3xl font-serif font-bold text-[#122c1f]">
             {transactions.filter(t => t.paymentStatus === 'pending').length}
           </p>
-        </div>
-        <div className="bg-white p-6 rounded-[32px] border border-black/5 shadow-sm">
+        </m.div>
+        <m.div variants={itemVariants} className="bg-white p-6 rounded-[32px] border border-black/5 shadow-sm">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-10 h-10 bg-red-50 rounded-2xl flex items-center justify-center text-red-600">
               <XCircle className="w-5 h-5" />
             </div>
-            <span className="text-sm font-bold text-[#77574d] uppercase tracking-wider">Failed</span>
+            <span className="text-sm font-bold text-[#77574d] uppercase tracking-wider">{dict.dashboard.payments.failed}</span>
           </div>
           <p className="text-3xl font-serif font-bold text-[#122c1f]">
             {transactions.filter(t => t.paymentStatus === 'failed').length}
           </p>
-        </div>
+        </m.div>
       </div>
 
       {/* Transactions Table */}
-      <div className="bg-white rounded-[32px] border border-black/5 shadow-sm overflow-hidden">
+      <m.div variants={itemVariants} className="bg-white rounded-[32px] border border-black/5 shadow-sm overflow-hidden">
         <div className="p-6 border-b border-black/5 flex flex-col md:flex-row gap-4 justify-between items-center">
           <div className="relative w-full md:w-96">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#77574d]/40" />
@@ -208,7 +235,7 @@ export default function PaymentsPage() {
             </tbody>
           </table>
         </div>
-      </div>
-    </div>
+      </m.div>
+    </m.div>
   );
 }

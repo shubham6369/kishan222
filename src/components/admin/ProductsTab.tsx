@@ -7,7 +7,7 @@ import { collection, getDocs, doc, updateDoc } from 'firebase/firestore';
 import { toast } from 'react-hot-toast';
 import { Product } from '@/types';
 import Image from 'next/image';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
 export default function ProductsTab() {
@@ -131,7 +131,7 @@ export default function ProductsTab() {
                                     </tr>
                                 ) : (
                                     filteredProducts.map((product) => (
-                                        <motion.tr 
+                                        <m.tr 
                                             key={product.id}
                                             initial={{ opacity: 0 }}
                                             animate={{ opacity: 1 }}
@@ -197,7 +197,7 @@ export default function ProductsTab() {
                                                     )}
                                                 </div>
                                             </td>
-                                        </motion.tr>
+                                        </m.tr>
                                     ))
                                 )}
                             </AnimatePresence>

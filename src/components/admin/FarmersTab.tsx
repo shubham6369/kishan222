@@ -4,7 +4,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { Search, MapPin, CheckCircle, Clock, XCircle, Users, Filter, ArrowUpRight } from 'lucide-react';
 import { db } from '@/lib/firebase';
 import { collection, getDocs, doc, updateDoc } from 'firebase/firestore';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 
@@ -106,7 +106,7 @@ export default function FarmersTab() {
           { label: 'Verified', value: farmers.filter(f => f.status === 'verified').length, icon: CheckCircle, color: 'text-emerald-400', bg: 'bg-emerald-400/10' },
           { label: 'Pending Approval', value: farmers.filter(f => f.status !== 'verified' && f.status !== 'rejected').length, icon: Clock, color: 'text-orange-400', bg: 'bg-orange-400/10' },
         ].map((stat, i) => (
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
@@ -120,7 +120,7 @@ export default function FarmersTab() {
               <p className="text-[10px] font-black uppercase tracking-widest text-white/40">{stat.label}</p>
               <h3 className="text-2xl font-bold text-white mt-1">{stat.value}</h3>
             </div>
-          </motion.div>
+          </m.div>
         ))}
       </div>
 
@@ -154,7 +154,7 @@ export default function FarmersTab() {
                 </tr>
               ) : (
                 filteredFarmers.map((farmer, index) => (
-                  <motion.tr 
+                  <m.tr 
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: index * 0.05 }}
@@ -237,7 +237,7 @@ export default function FarmersTab() {
                         </button>
                       </div>
                     </td>
-                  </motion.tr>
+                  </m.tr>
                 ))
               )}
             </tbody>

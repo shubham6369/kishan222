@@ -3,16 +3,15 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import { Menu, X, LogOut, LayoutDashboard, Globe, ShieldCheck } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
-import { useLanguage } from "@/context/LanguageContext";
+import { Dictionary } from "@/context/LanguageContext";
 import { usePathname, useRouter } from "next/navigation";
 
-export default function Navbar() {
+export default function Navbar({ lang, dict }: { lang: string, dict: Dictionary }) {
   const [isOpen, setIsOpen] = useState(false);
   const { user, userData, logout } = useAuth();
-  const { lang, dict } = useLanguage();
   const pathname = usePathname();
   const router = useRouter();
   const [hasScrolled, setHasScrolled] = useState(false);
@@ -56,6 +55,9 @@ export default function Navbar() {
               src="/logo.png" 
               alt="Kishan Seva Samiti Logo" 
               fill 
+              priority
+              sizes="48px"
+              quality={85}
               className="object-cover p-2"
              />
           </div>
@@ -155,7 +157,7 @@ export default function Navbar() {
       {/* Mobile Menu */}
       <AnimatePresence>
         {isOpen && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
@@ -237,7 +239,7 @@ export default function Navbar() {
                 )}
               </div>
             </div>
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
     </nav>

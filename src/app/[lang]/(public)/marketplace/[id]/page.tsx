@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { 
   ShieldCheck, 
   MapPin, 
@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
+import { useLanguage } from '@/context/LanguageContext';
 import { db } from '@/lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 
@@ -41,6 +42,7 @@ interface Product {
 }
 
 export default function ProductDetailsPage({ params }: { params: { id: string, lang: string } }) {
+  const { dict, lang } = useLanguage();
   const [quantity, setQuantity] = useState(1);
   const { addToCart } = useCart();
   const [added, setAdded] = useState(false);
@@ -54,7 +56,7 @@ export default function ProductDetailsPage({ params }: { params: { id: string, l
         const docRef = doc(db, 'products', params.id);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-          setProduct({ id: docSnap.id, ...docSnap.data() });
+          setProduct({ id: docSnap.id, ...docSnap.data() } as Product);
         } else {
           console.error("Product not found");
         }
@@ -105,7 +107,7 @@ export default function ProductDetailsPage({ params }: { params: { id: string, l
 
   return (
     <div className="min-h-screen bg-[#fbf9f5]">
-      <Navbar />
+      <Navbar lang={lang} dict={dict} />
       
       <main className="pt-32 pb-20 px-6">
         <div className="max-w-7xl mx-auto">
@@ -118,7 +120,7 @@ export default function ProductDetailsPage({ params }: { params: { id: string, l
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
                 {/* Visuals Column */}
-                <motion.div 
+                <m.div 
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     className="space-y-6"
@@ -150,10 +152,10 @@ export default function ProductDetailsPage({ params }: { params: { id: string, l
                             </div>
                         ))}
                     </div>
-                </motion.div>
+                </m.div>
 
                 {/* Content Column */}
-                <motion.div 
+                <m.div 
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     className="flex flex-col"
@@ -259,12 +261,12 @@ export default function ProductDetailsPage({ params }: { params: { id: string, l
                             </div>
                         </div>
                     </div>
-                </motion.div>
+                </m.div>
             </div>
         </div>
       </main>
 
-      <Footer />
+      <Footer lang={lang} dict={dict} />
     </div>
   );
 }
