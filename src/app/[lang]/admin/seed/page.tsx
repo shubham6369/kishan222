@@ -46,10 +46,10 @@ export default function SeedPage() {
             <div className="bg-[#122c1f] p-8 text-white">
               <div className="flex items-center gap-4 mb-4">
                 <Database className="w-8 h-8 text-secondary" />
-                <h1 className="text-2xl font-serif font-bold">Samiti Database Control</h1>
+                <h1 className="text-2xl font-serif font-bold">Kishan Seva Database Control</h1>
               </div>
               <p className="text-white/70 text-sm">
-                Use this utility to populate the marketplace with initial organic products and committee essentials.
+                Use this utility to populate the marketplace with initial organic products and community essentials.
               </p>
             </div>
 

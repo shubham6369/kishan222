@@ -47,8 +47,8 @@ export default function RefundPolicyPage() {
                 </h2>
                 <p className="text-[#77574d] leading-relaxed">
                   {lang === 'en' 
-                    ? 'At Kishan Seva Samiti, we strive to provide the best services to our farming community. Please note that once a membership is registered or a transaction is completed, there is no option for cancellation or refund.'
-                    : 'किसान सेवा समिति में, हम अपने किसान समुदाय को सर्वोत्तम सेवाएं प्रदान करने का प्रयास करते हैं। कृपया ध्यान दें कि एक बार सदस्यता पंजीकृत होने या लेनदेन पूरा होने के बाद, रद्दीकरण या वापसी का कोई विकल्प नहीं है।'}
+                    ? 'At Kishan Seva, we strive to provide the best services to our farming community. Please note that once a membership is registered or a transaction is completed, there is no option for cancellation or refund.'
+                    : 'किसान सेवा में, हम अपने किसान समुदाय को सर्वोत्तम सेवाएं प्रदान करने का प्रयास करते हैं। कृपया ध्यान दें कि एक बार सदस्यता पंजीकृत होने या लेनदेन पूरा होने के बाद, रद्दीकरण या वापसी का कोई विकल्प नहीं है।'}
                 </p>
               </div>
             </m.div>

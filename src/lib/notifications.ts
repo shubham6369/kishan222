@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Notifications utility for sending SMS and WhatsApp messages.
  * This is a skeleton implementation. When ready to integrate a real provider 
  * (like Twilio, Gupshup, or MSG91), place the API calls here.
@@ -45,10 +45,10 @@ export const sendNotification = async (payload: NotificationPayload): Promise<bo
 // Ready-to-use notification templates
 export const NotificationTemplates = {
     registrationSuccess: (name: string) => 
-        `Welcome to Kishan Seva Samiti, ${name}! Your account has been created successfully.`,
+        `Welcome to Kishan Seva, ${name}! Your account has been created successfully.`,
         
     orderPlaced: (orderId: string, amount: number) => 
-        `Your order #${orderId.slice(-8).toUpperCase()} for ₹${amount} has been placed successfully. Thank you for shopping with Kishan Seva Samiti!`,
+        `Your order #${orderId.slice(-8).toUpperCase()} for ₹${amount} has been placed successfully. Thank you for shopping with Kishan Seva!`,
         
     orderStatusUpdate: (orderId: string, status: string) => 
         `Update on your order #${orderId.slice(-8).toUpperCase()}: The status is now ${status.toUpperCase()}.`,
@@ -59,3 +59,4 @@ export const NotificationTemplates = {
     referralBonus: (amount: number, referredUser: string) => 
         `Congratulations! You've earned a referral bonus of ₹${amount} because ${referredUser} joined using your code.`
 };
+

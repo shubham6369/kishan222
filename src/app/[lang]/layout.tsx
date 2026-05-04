@@ -15,8 +15,8 @@ const manrope = Manrope({
 });
 
 export const metadata: Metadata = {
-  title: "Kishan Seva Samiti | Modern Rural Empowerment",
-  description: "Premium services and organic marketplace for the modern farmer. Join the committee of heritage and health.",
+  title: "Kishan Seva | Modern Rural Empowerment",
+  description: "Premium services and organic marketplace for the modern farmer. Join the community of heritage and health.",
 };
 
 export async function generateStaticParams() {

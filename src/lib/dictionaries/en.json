@@ -14,8 +14,8 @@
   },
   "hero": {
     "title": "Empowering Farmers for a Sustainable Future",
-    "subtitle": "Join Kishan Seva Samiti to access exclusive benefits, sell organic products directly, and grow with a community dedicated to agricultural prosperity.",
-    "cta_join": "Join the Samiti",
+    "subtitle": "Join Kishan Seva to access exclusive benefits, sell organic products directly, and grow with a community dedicated to agricultural prosperity.",
+    "cta_join": "Join Kishan Seva",
     "cta_marketplace": "Visit Marketplace",
     "trust": "Trusted by"
   },
@@ -91,7 +91,7 @@
   "about": {
     "story_tag": "Our Story",
     "hero_title": "Rooted in the Soil of India",
-    "hero_subtitle": "Kishan Seva Samiti was born from a simple belief — that every Indian farmer deserves dignity, a fair market, and a community that stands behind them.",
+    "hero_subtitle": "Kishan Seva was born from a simple belief — that every Indian farmer deserves dignity, a fair market, and a community that stands behind them.",
     "mission_tag": "Our Mission",
     "mission_title": "Empowering Farmers with Identity, Income & Independence",
     "mission_p1": "We provide every registered farmer with an official membership card, a direct marketplace to sell organic produce, and a community-based reward system — all in one unified platform.",
@@ -133,7 +133,7 @@
     "cta_contact": "Contact Us"
   },
   "footer": {
-    "legal": "© 2026 Kishan Seva Samiti. All rights reserved.",
+    "legal": "© 2026 Kishan Seva. All rights reserved.",
     "established": "Est. Rural Empowerment 2024",
     "mission": "The premier collective for the modern Indian farmer. We facilitate a global transition to regenerative agriculture while preserving our rich rural heritage.",
     "exploration": "Exploration",
@@ -192,7 +192,7 @@
     "password_placeholder": "Enter your secret code",
     "signin": "Sign In",
     "no_account": "Don't have an account?",
-    "register": "Join the Samiti",
+    "register": "Join Kishan Seva",
     "badge": "Member Access",
     "otp_sent_to": "OTP sent to +91",
     "change": "Change",
@@ -225,7 +225,7 @@
   },
   "register": {
     "title": "Join the Heritage",
-    "subtitle": "By joining the Kishan Seva Samiti, you are not just registering for a service—you are becoming part of a prestigious community of farmers.",
+    "subtitle": "By joining Kishan Seva, you are not just registering for a service—you are becoming part of a prestigious community of farmers.",
     "benefit_verified": "Verified Farmer Status & ID Card",
     "benefit_schemes": "Exclusive Government Scheme Alerts",
     "benefit_referral": "Community Growth Rewards",
@@ -313,7 +313,7 @@
     },
     "identity": {
       "title": "Your Digital Identity",
-      "desc": "This card verifies your membership with the Samiti. Show the QR code at any Samiti collection center to avail services and list your products.",
+      "desc": "This card verifies your membership with Kishan Seva. Show the QR code at any Kishan Seva collection center to avail services and list your products.",
       "download": "Download / Print",
       "share": "Share Card"
     },
@@ -374,7 +374,8 @@
     "surplus_desc": "List your organic produce and reach thousands of buyers.",
     "sell_now": "Sell Now",
     "logout": "Logout",
-    "portal": "Samiti Portal",
+    "portal": "Kishan Seva Portal",
     "brand": "Kishan Seva"
   }
 }
+

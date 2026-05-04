@@ -16,7 +16,7 @@ export default function Footer({ lang, dict }: { lang: string, dict: Dictionary 
             <Link href={`/${lang}`} className="flex items-center gap-4 group">
               <div className="flex flex-col">
                 <span className="font-serif text-3xl font-bold tracking-tight">
-                  Kishan Seva <span className="text-accent italic">Samiti</span>
+                  Kishan Seva
                 </span>
                 <span className="text-[10px] uppercase tracking-[0.4em] text-white/40 font-bold">
                   {dict.footer?.established || "Est. Rural Empowerment 2024"}
@@ -104,10 +104,11 @@ export default function Footer({ lang, dict }: { lang: string, dict: Dictionary 
             <Link href={`/${lang}/shipping-policy`} className="hover:text-accent transition-colors">{dict.footer.links.shipping}</Link>
             <Link href={`/${lang}/contact`} className="hover:text-accent transition-colors">{dict.nav.contact}</Link>
           </div>
-          <p>{dict.footer?.legal || `© ${new Date().getFullYear()} Kishan Seva Samiti. A Signature Rural Initiative.`}</p>
+          <p>{dict.footer?.legal || `© ${new Date().getFullYear()} Kishan Seva. A Signature Rural Initiative.`}</p>
         </div>
       </div>
     </footer>
   );
 }
+
 

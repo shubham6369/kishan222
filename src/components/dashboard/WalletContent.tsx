@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect } from 'react';
 import { m, AnimatePresence } from 'framer-motion';
@@ -125,7 +125,7 @@ export default function WalletContent({}: WalletContentProps) {
               <Wallet className="w-6 h-6 text-green-300" />
             </div>
             <div>
-              <p className="text-xs uppercase tracking-widest text-white/50 font-bold">Samiti Wallet</p>
+              <p className="text-xs uppercase tracking-widest text-white/50 font-bold">Kishan Seva Wallet</p>
               <p className="text-sm text-white/70">Referral Earnings</p>
             </div>
           </div>
@@ -267,3 +267,4 @@ export default function WalletContent({}: WalletContentProps) {
     </div>
   );
 }
+

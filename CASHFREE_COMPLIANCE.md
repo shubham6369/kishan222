@@ -14,12 +14,12 @@ We have updated the platform to use compliant, society-based language. Below is 
 
 Dear Cashfree Compliance Team,
 
-I am writing to provide clarification regarding our business model and the nature of transactions on our platform, **Kishan Seva Samiti**, following the recent "Category Mismatch" flag.
+I am writing to provide clarification regarding our business model and the nature of transactions on our platform, **Kishan Seva**, following the recent "Category Mismatch" flag.
 
 We have audited our platform's messaging and made comprehensive updates to ensure absolute transparency and compliance with your merchant guidelines.
 
 ### 1. Business Nature: Registered Farmer Society
-Kishan Seva Samiti is a registered non-profit society dedicated to farmer empowerment and collective bargaining. We are NOT an investment platform or an MLM scheme. We operate as a marketplace and service provider for the agricultural community.
+Kishan Seva is a registered non-profit society dedicated to farmer empowerment and collective bargaining. We are NOT an investment platform or an MLM scheme. We operate as a marketplace and service provider for the agricultural community.
 
 ### 2. Nature of the ₹50 Payment
 The ₹50 transaction collected during registration is a one-time **"Smart ID Card Issuance & Logistics Fee"**. 

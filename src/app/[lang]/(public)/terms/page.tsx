@@ -36,8 +36,8 @@ export default function TermsPage() {
     {
       title: lang === 'en' ? '5. Limitation of Liability' : '5. दायित्व की सीमा',
       content: lang === 'en'
-        ? 'Kishan Seva Samiti is not liable for any direct or indirect damages arising from the use of this platform.'
-        : 'किसान सेवा समिति इस प्लेटफॉर्म के उपयोग से होने वाले किसी भी प्रत्यक्ष या अप्रत्यक्ष नुकसान के लिए उत्तरदायी नहीं है।'
+        ? 'Kishan Seva is not liable for any direct or indirect damages arising from the use of this platform.'
+        : 'किसान सेवा इस प्लेटफॉर्म के उपयोग से होने वाले किसी भी प्रत्यक्ष या अप्रत्यक्ष नुकसान के लिए उत्तरदायी नहीं है।'
     }
   ];
 

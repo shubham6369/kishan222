@@ -63,7 +63,7 @@ export default function AdminDashboard() {
               Admin <span className="text-accent italic">Portal</span>
             </h1>
             <p className="text-white/40 mt-2 font-body text-sm uppercase tracking-widest">
-              Kishan Seva Samiti Operations Hub
+              Kishan Seva Operations Hub
             </p>
           </m.div>
 

@@ -281,11 +281,11 @@ export default function NewProductPage() {
                 </div>
                 <h4 className="text-lg font-serif font-bold relative z-10">Organic Promise</h4>
                 <p className="text-sm opacity-60 relative z-10 leading-relaxed">
-                    By listing this product, you certify that it follows the Samiti&apos;s Organic standards and ethical farming practices.
+                    By listing this product, you certify that it follows our Organic standards and ethical farming practices.
                 </p>
                 <div className="flex items-center gap-2 text-xs font-bold text-green-400 relative z-10">
                     <Package className="w-4 h-4" />
-                    Samiti Verified Tag will be applied.
+                    Kishan Seva Verified Tag will be applied.
                 </div>
             </div>
         </div>

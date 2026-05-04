@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useEffect, useState } from 'react';
 import {
@@ -65,7 +65,7 @@ export default function ReferralsContent({ lang, dict }: ReferralsContentProps) 
 
   const shareWhatsApp = () => {
     const msg = encodeURIComponent(
-      `🌾 Join Kishan Seva Samiti — India's farmer community!\nGet your official Farmer ID card and sell organic products directly.\n\nUse my referral link: ${referralLink}`
+      `🌾 Join Kishan Seva — India's farmer community!\nGet your official Farmer ID card and sell organic products directly.\n\nUse my referral link: ${referralLink}`
     );
     window.open(`https://wa.me/?text=${msg}`, '_blank');
   };
@@ -109,7 +109,7 @@ export default function ReferralsContent({ lang, dict }: ReferralsContentProps) 
               <span className="text-green-400 italic font-medium">Earn ₹7 each time.</span>
             </h2>
             <p className="opacity-70 text-base leading-relaxed">
-              Share your unique link. When a farmer registers and pays the ₹50 membership fee, ₹7 is instantly credited to your Samiti wallet.
+              Share your unique link. When a farmer registers and pays the ₹50 membership fee, ₹7 is instantly credited to your Kishan Seva Wallet.
             </p>
             <div className="flex flex-wrap gap-3">
               <div className="flex items-center gap-2 bg-white/5 px-4 py-2 rounded-full border border-white/10 text-sm">
@@ -228,3 +228,4 @@ export default function ReferralsContent({ lang, dict }: ReferralsContentProps) 
     </div>
   );
 }
+

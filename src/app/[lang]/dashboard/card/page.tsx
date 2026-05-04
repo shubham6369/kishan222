@@ -112,7 +112,7 @@ export default function FarmerCardPage() {
       >
         <p className="text-[10px] font-bold uppercase tracking-widest text-[#77574d] mb-3">Official Document</p>
         <h1 className="text-4xl font-serif font-bold text-[#122c1f]">Your Farmer Membership Card</h1>
-        <p className="text-[#77574d] mt-2">Valid ID card issued by Kishan Seva Samiti</p>
+        <p className="text-[#77574d] mt-2">Valid ID card issued by Kishan Seva</p>
       </m.div>
 
       {/* THE CARD */}
@@ -140,7 +140,7 @@ export default function FarmerCardPage() {
               <div>
                 <div className="flex items-center gap-2 mb-1">
                   <Leaf className="w-4 h-4 text-green-400" />
-                  <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-white/60">Kishan Seva Samiti</span>
+                  <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-white/60">Kishan Seva</span>
                 </div>
                 <p className="text-[8px] uppercase tracking-widest text-white/40">Farmer Membership Card</p>
               </div>
@@ -269,7 +269,7 @@ export default function FarmerCardPage() {
         </button>
         <button
           onClick={() => {
-            const msg = encodeURIComponent(`🌾 My official Kishan Seva Samiti Farmer Card!\nID: ${userData.membershipId}\nVerify at: https://kishanseva.in/verify/${userData.membershipId}`);
+            const msg = encodeURIComponent(`🌾 My official Kishan Seva Farmer Card!\nID: ${userData.membershipId}\nVerify at: https://kishanseva.in/verify/${userData.membershipId}`);
             window.open(`https://wa.me/?text=${msg}`, '_blank');
           }}
           className="flex items-center justify-center gap-2 px-8 py-4 bg-green-600 text-white rounded-2xl font-bold hover:scale-105 transition-all"
@@ -283,7 +283,7 @@ export default function FarmerCardPage() {
       <div className="max-w-xl mx-auto bg-blue-50 border border-blue-100 rounded-2xl px-6 py-5 text-sm text-blue-800 flex items-start gap-3">
         <CheckCircle2 className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" />
         <p>
-          This card is your official identity as a registered Kishan Seva Samiti farmer. 
+          This card is your official identity as a registered Kishan Seva farmer. 
           Present it at mandis, cooperatives, or government offices to establish your verified farmer status. 
           The QR code can be scanned to verify authenticity online.
         </p>

@@ -1,4 +1,4 @@
-import Image from "next/image";
+﻿import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Star, Leaf, Trophy } from "lucide-react";
 import FadeIn from "@/components/animations/FadeIn";
@@ -44,7 +44,7 @@ export default function Hero({ lang, dict }: { lang: string, dict: Dictionary })
           
           <div className="flex flex-col sm:flex-row gap-6">
             <Link href={`/${lang}/register`} className="btn-premium group shadow-2xl shadow-accent/10">
-              {dict.hero?.cta_join || 'Join the Samiti'} <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              {dict.hero?.cta_join || 'Join Kishan Seva'} <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
             <Link href={`/${lang}/marketplace`} className="px-8 py-4 rounded-full font-bold border border-white/20 text-white hover:bg-white/10 transition-all flex items-center justify-center gap-2">
               {dict.hero?.cta_marketplace || 'Explore the Harvest'}
@@ -83,3 +83,4 @@ export default function Hero({ lang, dict }: { lang: string, dict: Dictionary })
     </section>
   );
 }
+

@@ -11,7 +11,7 @@ export default function FinalCTA({ lang, dict }: { lang: string, dict: Dictionar
       >
         <h2 className="text-5xl md:text-8xl leading-tight text-primary">Your Heritage <br /> Deserves a <span className="italic text-accent-dark">Signature</span></h2>
         <p className="text-primary/60 font-body text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed">
-          The committee currently has 49,820 active stewards. We only open 180 new membership slots each month to maintain quality of service and heritage preservation standards.
+          The community currently has 49,820 active stewards. We only open 180 new membership slots each month to maintain quality of service and heritage preservation standards.
         </p>
         <div className="flex flex-col sm:flex-row gap-8 justify-center pt-8">
            <Link href={`/${lang}/register`} className="btn-premium px-16 py-6 text-xl shadow-2xl shadow-accent/20">

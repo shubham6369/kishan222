@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import Image from 'next/image';
@@ -48,7 +48,7 @@ export default function MembershipCard({ memberData }: MembershipCardProps) {
         <div className="flex justify-between items-start">
           <div className="flex items-center gap-3">
             <div>
-              <h3 className="text-base sm:text-lg font-serif font-bold tracking-tight">Kishan Seva Samiti</h3>
+              <h3 className="text-base sm:text-lg font-serif font-bold tracking-tight">Kishan Seva</h3>
               <p className="text-[8px] sm:text-[10px] uppercase tracking-[0.2em] opacity-60">{dict.register.card.official_member}</p>
             </div>
           </div>
@@ -141,3 +141,4 @@ export default function MembershipCard({ memberData }: MembershipCardProps) {
     </m.div>
   );
 }
+

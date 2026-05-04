@@ -52,7 +52,7 @@ export default function Navbar({ lang, dict }: { lang: string, dict: Dictionary 
         <Link href="/" className="flex items-center gap-3 group">
           <div className="flex flex-col">
             <span className={`font-serif text-2xl font-bold tracking-tight leading-tight transition-colors ${hasScrolled ? "text-primary" : "text-white"}`}>
-              Kishan Seva <span className="text-accent italic">Samiti</span>
+              Kishan Seva
             </span>
             <span className={`text-[8px] uppercase tracking-[0.4em] font-bold ${hasScrolled ? "text-primary/60" : "text-white/80"}`}>
               {dict.nav?.tagline || "Rural Empowerment Collective"}
