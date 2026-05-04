@@ -91,8 +91,8 @@ export default function ShippingPolicyPage() {
           <div className="mt-16 pt-12 border-t border-black/5 text-center">
             <p className="text-[#77574d]">
               {lang === 'en'
-                ? 'For shipping queries, contact support@kishanseva.org'
-                : 'शिपिंग संबंधी पूछताछ के लिए, support@kishanseva.org पर संपर्क करें'}
+                ? 'For shipping queries, contact sandeepkumarchauhan805@gmail.com'
+                : 'शिपिंग संबंधी पूछताछ के लिए, sandeepkumarchauhan805@gmail.com पर संपर्क करें'}
             </p>
           </div>
         </div>

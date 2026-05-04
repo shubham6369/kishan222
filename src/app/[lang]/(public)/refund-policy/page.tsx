@@ -92,8 +92,8 @@ export default function RefundPolicyPage() {
           <div className="mt-16 pt-12 border-t border-black/5 text-center">
             <p className="text-[#77574d]">
               {lang === 'en'
-                ? 'For any clarifications, please contact support@kishanseva.org'
-                : 'किसी भी स्पष्टीकरण के लिए, कृपया support@kishanseva.org पर संपर्क करें'}
+                ? 'For any clarifications, please contact sandeepkumarchauhan805@gmail.com'
+                : 'किसी भी स्पष्टीकरण के लिए, कृपया sandeepkumarchauhan805@gmail.com पर संपर्क करें'}
             </p>
           </div>
         </div>

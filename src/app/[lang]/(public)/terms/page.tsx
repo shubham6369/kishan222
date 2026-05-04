@@ -91,8 +91,8 @@ export default function TermsPage() {
           <div className="mt-16 pt-12 border-t border-black/5 text-center">
             <p className="text-[#77574d]">
               {lang === 'en' 
-                ? 'For any questions regarding these terms, please contact us at support@kishanseva.org'
-                : 'इन शर्तों के संबंध में किसी भी प्रश्न के लिए, कृपया support@kishanseva.org पर हमसे संपर्क करें'}
+                ? 'For any questions regarding these terms, please contact us at sandeepkumarchauhan805@gmail.com'
+                : 'इन शर्तों के संबंध में किसी भी प्रश्न के लिए, कृपया sandeepkumarchauhan805@gmail.com पर हमसे संपर्क करें'}
             </p>
           </div>
         </div>

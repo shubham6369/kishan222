@@ -91,8 +91,8 @@ export default function PrivacyPolicyPage() {
           <div className="mt-16 pt-12 border-t border-black/5 text-center">
             <p className="text-[#77574d]">
               {lang === 'en'
-                ? 'For privacy concerns, reach out to privacy@kishanseva.org'
-                : 'गोपनीयता संबंधी चिंताओं के लिए, privacy@kishanseva.org पर संपर्क करें'}
+                ? 'For privacy concerns, reach out to sandeepkumarchauhan805@gmail.com'
+                : 'गोपनीयता संबंधी चिंताओं के लिए, sandeepkumarchauhan805@gmail.com पर संपर्क करें'}
             </p>
           </div>
         </div>

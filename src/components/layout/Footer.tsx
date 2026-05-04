@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Mail, Phone, ArrowUpRight, Globe, Users, ShieldCheck } from "lucide-react";
+import { Mail, Phone, ArrowUpRight, Globe, Users, ShieldCheck, MapPin } from "lucide-react";
 import { Dictionary } from "@/context/LanguageContext";
 
 export default function Footer({ lang, dict }: { lang: string, dict: Dictionary }) {
@@ -84,15 +84,22 @@ export default function Footer({ lang, dict }: { lang: string, dict: Dictionary 
                 <div className="flex items-start gap-4">
                   <Phone className="w-6 h-6 text-accent/50 shrink-0" />
                   <div className="space-y-1">
-                    <span className="block text-white font-bold">1800-KISHAN</span>
+                    <span className="block text-white font-bold">+91 91200 77139</span>
                     <span className="text-xs">{dict.footer?.support_hours || "Mon - Sat, 9am - 6pm"}</span>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
                   <Mail className="w-6 h-6 text-accent/50 shrink-0" />
                   <div className="space-y-1">
-                    <span className="block text-white font-bold">contact@kishan.org</span>
+                    <span className="block text-white font-bold">sandeepkumarchauhan805@gmail.com</span>
                     <span className="text-xs">{dict.footer?.digital_support || "24/7 Digital Support"}</span>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4">
+                  <MapPin className="w-6 h-6 text-accent/50 shrink-0" />
+                  <div className="space-y-1">
+                    <span className="block text-white font-bold">{dict.contact.visit}</span>
+                    <span className="text-xs max-w-[200px] block leading-relaxed">{dict.contact.visit_address}</span>
                   </div>
                 </div>
               </div>
