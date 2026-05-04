@@ -42,9 +42,6 @@ export default function Sidebar({ lang, dict }: SidebarProps) {
       {/* Logo */}
       <div className="p-10 relative z-10">
         <Link href={`/${lang}`} className="flex items-center gap-3">
-          <div className="p-2 bg-white/10 rounded-xl backdrop-blur-md border border-white/10">
-            <Landmark className="w-6 h-6" />
-          </div>
           <div>
             <h1 className="text-xl font-serif font-bold tracking-tight">{dict.sidebar.brand}</h1>
             <p className="text-[10px] uppercase tracking-[0.2em] opacity-40">{dict.sidebar.portal}</p>

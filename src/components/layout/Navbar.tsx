@@ -50,17 +50,6 @@ export default function Navbar({ lang, dict }: { lang: string, dict: Dictionary 
       <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
         {/* Brand/Logo */}
         <Link href="/" className="flex items-center gap-3 group">
-          <div className="relative w-12 h-12 bg-primary rounded-2xl flex items-center justify-center group-hover:scale-105 transition-transform duration-500 overflow-hidden shadow-xl">
-             <Image 
-              src="/logo.png" 
-              alt="Kishan Seva Samiti Logo" 
-              fill 
-              priority
-              sizes="48px"
-              quality={85}
-              className="object-cover p-2"
-             />
-          </div>
           <div className="flex flex-col">
             <span className={`font-serif text-2xl font-bold tracking-tight leading-tight transition-colors ${hasScrolled ? "text-primary" : "text-white"}`}>
               Kishan Seva <span className="text-accent italic">Samiti</span>

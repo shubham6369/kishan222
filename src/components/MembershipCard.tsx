@@ -47,9 +47,6 @@ export default function MembershipCard({ memberData }: MembershipCardProps) {
         {/* Card Header text */}
         <div className="flex justify-between items-start">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-[#fbf9f5]/10 rounded-xl backdrop-blur-sm print:bg-white/20">
-              <Landmark className="w-5 h-5 sm:w-6 sm:h-6 text-[#fbf9f5]" />
-            </div>
             <div>
               <h3 className="text-base sm:text-lg font-serif font-bold tracking-tight">Kishan Seva Samiti</h3>
               <p className="text-[8px] sm:text-[10px] uppercase tracking-[0.2em] opacity-60">{dict.register.card.official_member}</p>

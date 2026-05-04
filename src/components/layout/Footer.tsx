@@ -14,17 +14,6 @@ export default function Footer({ lang, dict }: { lang: string, dict: Dictionary 
           {/* Brand & Mission */}
           <div className="lg:col-span-5 space-y-10">
             <Link href={`/${lang}`} className="flex items-center gap-4 group">
-              <div className="relative w-14 h-14 bg-white rounded-2xl flex items-center justify-center p-2 shadow-2xl">
-                <Image 
-                  src="/logo.png" 
-                  alt="Kishan Seva Samiti Logo" 
-                  width={40} 
-                  height={40} 
-                  sizes="40px"
-                  quality={80}
-                  className="object-contain"
-                />
-              </div>
               <div className="flex flex-col">
                 <span className="font-serif text-3xl font-bold tracking-tight">
                   Kishan Seva <span className="text-accent italic">Samiti</span>
