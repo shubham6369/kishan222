@@ -45,7 +45,7 @@ const itemVariants = {
 
 export default function PaymentsPage() {
   const { user } = useAuth();
-  const { dict } = useLanguage();
+  const { dict, lang } = useLanguage();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
