@@ -413,45 +413,57 @@ export default function PaymentsPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8">
           {Object.entries(dict.marketplace.categories).filter(([key]) => key !== 'all').map(([key, label]) => {
-            const categoryProducts = [
-              {
-                seeds: [
-                  { name: 'Hybrid Paddy Seeds', price: 480, unit: '5kg' },
-                  { name: 'Mustard Seeds (Varuna)', price: 420, unit: '2kg' },
-                  { name: 'Wheat Seeds (Sonalika)', price: 550, unit: '40kg' }
-                ],
-                grains: [
-                  { name: 'Premium Basmati Rice', price: 120, unit: '1kg' },
-                  { name: 'Organic Black Gram', price: 160, unit: '1kg' },
-                  { name: 'Organic Moong Dal', price: 180, unit: '1kg' }
-                ],
-                fertilizers: [
-                  { name: 'NPK Granular (19:19:19)', price: 1350, unit: '50kg' },
-                  { name: 'Vermicompost Organic', price: 280, unit: '25kg' },
-                  { name: 'Bio-Fertilizer', price: 180, unit: '500ml' }
-                ],
-                pesticides: [
-                  { name: 'Neem Oil Bio-Pesticide', price: 320, unit: '1L' },
-                  { name: 'Trichoderma Viride', price: 240, unit: '500g' },
-                  { name: 'Garlic-Pepper Spray', price: 210, unit: '500ml' }
-                ],
-                machinery: [
-                  { name: 'Battery Knapsack Sprayer', price: 2850, unit: '16L' },
-                  { name: 'Manual Seed Drill', price: 4500, unit: 'Unit' },
-                  { name: 'Solar Water Pump', price: 45000, unit: 'Set' }
-                ],
-                cattle: [
-                  { name: 'Pure Desi Cow Ghee', price: 1250, unit: '1L' },
-                  { name: 'Gau Ark (Distilled)', price: 150, unit: '500ml' },
-                  { name: 'Cow Dung Cake (Upla)', price: 120, unit: '24pcs' }
-                ],
-                fresh: [
-                  { name: 'Organic Tomatoes', price: 45, unit: '1kg' },
-                  { name: 'Organic Turmeric Finger', price: 220, unit: '1kg' },
-                  { name: 'Organic Potatoes', price: 35, unit: '1kg' }
-                ]
-              }[key as string]
-            ].flat().filter(Boolean);
+            const categoryData = {
+              seeds: [
+                { name: 'Hybrid Paddy Seeds', price: 480, unit: '5kg', trend: 'up' },
+                { name: 'Mustard Seeds (Varuna)', price: 420, unit: '2kg', trend: 'stable' },
+                { name: 'Wheat Seeds (Sonalika)', price: 550, unit: '40kg', trend: 'down' },
+                { name: 'Bt Cotton Seeds', price: 860, unit: '450g', trend: 'up' },
+                { name: 'Sunflower Seeds', price: 750, unit: '1kg', trend: 'stable' }
+              ],
+              grains: [
+                { name: 'Premium Basmati Rice', price: 120, unit: '1kg', trend: 'up' },
+                { name: 'Organic Black Gram', price: 160, unit: '1kg', trend: 'stable' },
+                { name: 'Organic Moong Dal', price: 180, unit: '1kg', trend: 'up' },
+                { name: 'Organic Pearl Millet', price: 65, unit: '1kg', trend: 'down' },
+                { name: 'Wheat Grain (Sharbati)', price: 45, unit: '1kg', trend: 'stable' }
+              ],
+              fertilizers: [
+                { name: 'NPK Granular (19:19:19)', price: 1350, unit: '50kg', trend: 'stable' },
+                { name: 'Vermicompost Organic', price: 280, unit: '25kg', trend: 'up' },
+                { name: 'Bio-Fertilizer', price: 180, unit: '500ml', trend: 'stable' },
+                { name: 'Urea (Nitrogen)', price: 300, unit: '45kg', trend: 'down' },
+                { name: 'DAP Fertilizer', price: 1350, unit: '50kg', trend: 'stable' }
+              ],
+              pesticides: [
+                { name: 'Neem Oil Bio-Pesticide', price: 320, unit: '1L', trend: 'up' },
+                { name: 'Trichoderma Viride', price: 240, unit: '500g', trend: 'stable' },
+                { name: 'Garlic-Pepper Spray', price: 210, unit: '500ml', trend: 'stable' },
+                { name: 'Bio-Pest Control', price: 450, unit: '1L', trend: 'up' },
+                { name: 'Organic Neem Cake', price: 180, unit: '5kg', trend: 'stable' }
+              ],
+              machinery: [
+                { name: 'Battery Knapsack Sprayer', price: 2850, unit: '16L', trend: 'stable' },
+                { name: 'Manual Seed Drill', price: 4500, unit: 'Unit', trend: 'down' },
+                { name: 'Solar Water Pump', price: 45000, unit: 'Set', trend: 'stable' },
+                { name: 'Electric Grass Cutter', price: 12500, unit: 'Unit', trend: 'up' },
+                { name: 'Mini Power Tiller', price: 18500, unit: 'Unit', trend: 'stable' }
+              ],
+              cattle: [
+                { name: 'Pure Desi Cow Ghee', price: 1250, unit: '1L', trend: 'up' },
+                { name: 'Gau Ark (Distilled)', price: 150, unit: '500ml', trend: 'stable' },
+                { name: 'Cow Dung Cake (Upla)', price: 120, unit: '24pcs', trend: 'stable' },
+                { name: 'Cattle Feed (High Protein)', price: 1850, unit: '50kg', trend: 'up' },
+                { name: 'Mineral Mixture', price: 240, unit: '1kg', trend: 'stable' }
+              ],
+              fresh: [
+                { name: 'Organic Tomatoes', price: 45, unit: '1kg', trend: 'up' },
+                { name: 'Organic Turmeric Finger', price: 220, unit: '1kg', trend: 'stable' },
+                { name: 'Organic Potatoes', price: 35, unit: '1kg', trend: 'down' },
+                { name: 'Organic Onions', price: 40, unit: '1kg', trend: 'up' },
+                { name: 'Green Chillies', price: 80, unit: '1kg', trend: 'stable' }
+              ]
+            }[key as keyof typeof categoryData] || [];
 
             return (
               <div key={key} className="space-y-6">
@@ -468,11 +480,15 @@ export default function PaymentsPage() {
                   <h4 className="text-sm font-black text-[#122c1f] uppercase tracking-widest">{label}</h4>
                 </div>
                 <div className="space-y-3">
-                  {categoryProducts.map((p, i) => (
+                  {categoryData.map((p, i) => (
                     <div key={i} className="flex items-center justify-between p-4 bg-[#fbf9f5] rounded-2xl border border-black/5 hover:border-[#122c1f]/10 transition-all group cursor-default">
                       <div className="flex flex-col">
                         <span className="text-xs font-bold text-[#122c1f] leading-tight group-hover:text-[#122c1f] transition-colors">{p.name}</span>
-                        <span className="text-[10px] font-medium text-[#77574d]/50 mt-0.5">{p.unit}</span>
+                        <div className="flex items-center gap-2 mt-0.5">
+                          <span className="text-[10px] font-medium text-[#77574d]/50">{p.unit}</span>
+                          {p.trend === 'up' && <span className="text-[10px] font-bold text-emerald-600">↑</span>}
+                          {p.trend === 'down' && <span className="text-[10px] font-bold text-rose-600">↓</span>}
+                        </div>
                       </div>
                       <div className="flex flex-col items-end">
                         <span className="text-sm font-black text-[#122c1f]">₹{p.price.toLocaleString()}</span>

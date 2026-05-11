@@ -561,6 +561,38 @@ const MOCK_PRODUCTS = [
     description: 'High-oil content hybrid sunflower seeds. Suitable for all seasons with good irrigation.',
     benefits: ['High Oil Yield', 'All Season', 'Drought Tolerant'],
     deliveryCharge: 0
+  },
+  {
+    name: 'Bio-Pest Control Liquid',
+    category: 'pesticides',
+    price: 450,
+    unit: '1 litre',
+    rating: 4.8,
+    stock: 100,
+    status: 'approved',
+    sellerId: 'admin',
+    sellerName: 'Kishan Seva Store',
+    image: 'https://images.unsplash.com/photo-1585664811087-47f65abbad64?q=80&w=800&auto=format&fit=crop',
+    isOrganic: true,
+    description: 'Advanced biological pest control solution using specialized microbial strains. Effective against complex pests while maintaining soil biodiversity.',
+    benefits: ['Eco-Friendly', 'Multi-Pest Control', 'Soil Safe'],
+    deliveryCharge: 0
+  },
+  {
+    name: 'Organic Neem Cake Fertilizer',
+    category: 'pesticides',
+    price: 180,
+    unit: '5kg bag',
+    rating: 4.9,
+    stock: 200,
+    status: 'approved',
+    sellerId: 'admin',
+    sellerName: 'Kishan Seva Store',
+    image: 'https://images.unsplash.com/photo-1585664811087-47f65abbad64?q=80&w=800&auto=format&fit=crop',
+    isOrganic: true,
+    description: 'De-oiled neem cake residue. Acts as an excellent organic fertilizer and soil conditioner while protecting roots from nematodes and white ants.',
+    benefits: ['Natural Fertilizer', 'Nematode Control', 'Soil Conditioner'],
+    deliveryCharge: 30
   }
 ];
 
