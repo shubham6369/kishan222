@@ -47,7 +47,7 @@ const itemVariants = {
 
 // Helper to get products for dashboard catalog with images from seed data
 const getDashboardCatalog = () => {
-  const categories = ['seeds', 'grains', 'fertilizers', 'pesticides', 'machinery', 'cattle', 'fresh'];
+  const categories = ['seeds', 'grains', 'fertilizers', 'pesticides', 'fresh'];
   const catalog: Record<string, any[]> = {};
   
   // De-duplicate MOCK_PRODUCTS first to be safe
@@ -165,9 +165,7 @@ export default function PaymentsPage() {
         color: label === 'seeds' ? 'bg-emerald-500' : 
                label === 'grains' ? 'bg-amber-500' :
                label === 'fertilizers' ? 'bg-sky-500' : 
-               label === 'machinery' ? 'bg-rose-500' : 
                label === 'pesticides' ? 'bg-purple-500' :
-               label === 'cattle' ? 'bg-indigo-500' :
                'bg-slate-400'
       }))
       .sort((a, b) => b.amount - a.amount)
@@ -177,7 +175,6 @@ export default function PaymentsPage() {
       { label: dict.marketplace.categories.seeds, amount: 0, percent: 0, color: 'bg-emerald-500' },
       { label: dict.marketplace.categories.grains, amount: 0, percent: 0, color: 'bg-amber-500' },
       { label: dict.marketplace.categories.fertilizers, amount: 0, percent: 0, color: 'bg-sky-500' },
-      { label: dict.marketplace.categories.machinery, amount: 0, percent: 0, color: 'bg-rose-500' },
       { label: dict.dashboard.payments_intel.others, amount: 0, percent: 0, color: 'bg-slate-400' }
     ];
   };
@@ -189,7 +186,6 @@ export default function PaymentsPage() {
   const marketRates = [
     { category: dict.marketplace.categories.seeds, avgPrice: '₹450 - ₹850', trend: '+2.4%', icon: <Leaf className="w-4 h-4" /> },
     { category: dict.marketplace.categories.grains, avgPrice: '₹40 - ₹180', trend: '-1.2%', icon: <TrendingUp className="w-4 h-4" /> },
-    { category: dict.marketplace.categories.machinery, avgPrice: '₹1,800 - ₹45,000', trend: '+5.0%', icon: <Filter className="w-4 h-4" /> },
     { category: dict.marketplace.categories.fertilizers, avgPrice: '₹300 - ₹1,350', trend: dict.dashboard.payments_intel.stable, icon: <CreditCard className="w-4 h-4" /> },
   ];
 
@@ -458,9 +454,7 @@ export default function PaymentsPage() {
                     key === 'seeds' ? 'bg-emerald-500' : 
                     key === 'grains' ? 'bg-amber-500' :
                     key === 'fertilizers' ? 'bg-sky-500' : 
-                    key === 'machinery' ? 'bg-rose-500' : 
                     key === 'pesticides' ? 'bg-purple-500' :
-                    key === 'cattle' ? 'bg-indigo-500' :
                     'bg-slate-400'
                   }`} />
                   <h4 className="text-sm font-black text-[#122c1f] uppercase tracking-widest">{label}</h4>

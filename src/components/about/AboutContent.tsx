@@ -41,12 +41,6 @@ export default function AboutContent({ lang, dict }: AboutContentProps) {
       desc: dict.about.pillars.community.desc,
       color: 'bg-purple-50 text-purple-600',
     },
-    {
-      icon: Heart,
-      title: dict.about.pillars.gaushala.title,
-      desc: dict.about.pillars.gaushala.desc,
-      color: 'bg-orange-50 text-orange-600',
-    },
   ];
 
   const MILESTONES = [

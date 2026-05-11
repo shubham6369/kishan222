@@ -25,7 +25,7 @@
     "cards": {
       "market": {
         "title": "Direct Marketplace",
-        "desc": "Sell products like cow dung, fertilizers & seeds directly to buyers."
+        "desc": "Sell products like organic produce, fertilizers & seeds directly to buyers."
       },
       "referral": {
         "title": "Community Rewards",
@@ -66,8 +66,6 @@
       "grains": "Natural Grains",
       "fertilizers": "Organic Fertilizers",
       "pesticides": "Bio Pesticides",
-      "machinery": "Farming Machinery",
-      "cattle": "Cattle Care",
       "fresh": "Fresh Produce"
     }
   },
@@ -102,7 +100,7 @@
       "districts": "Districts Covered"
     },
     "pillars_title": "What We Stand For",
-    "pillars_subtitle": "Our Four Pillars",
+    "pillars_subtitle": "Our Core Pillars",
     "pillars": {
       "organic": {
         "title": "Organic Farming",
@@ -115,10 +113,6 @@
       "community": {
         "title": "Community First",
         "desc": "Building a powerful network where every farmer supports each other through community growth, knowledge sharing, and solidarity."
-      },
-      "gaushala": {
-        "title": "Gaushala Integration",
-        "desc": "Deeply rooted in our love for cows — connecting farmers with authentic panchgavya products for holistic farming."
       }
     },
     "milestones_title": "Our Journey",

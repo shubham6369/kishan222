@@ -32,13 +32,6 @@ export default function Services({ lang, dict }: { lang: string, dict: Dictionar
       desc: "Natural and safe solutions to protect your crops from pests without harmful chemicals.",
       link: `/${lang}/marketplace?category=pesticides`,
       color: "bg-rose-600"
-    },
-    {
-      icon: <Settings className="w-8 h-8" />,
-      title: dict.marketplace?.categories?.machinery || "Farming Machinery",
-      desc: "Essential tools and spray machines designed for efficient and modern farming.",
-      link: `/${lang}/marketplace?category=machinery`,
-      color: "bg-zinc-700"
     }
   ];
 
@@ -50,7 +43,7 @@ export default function Services({ lang, dict }: { lang: string, dict: Dictionar
         <FadeIn className="text-center max-w-3xl mx-auto space-y-6">
           <h2 className="text-4xl md:text-6xl">Essential Farming Products</h2>
           <p className="text-primary/60 font-body text-xl leading-relaxed">
-            Access high-quality agricultural inputs and equipment directly through our marketplace.
+            Access high-quality agricultural inputs directly through our marketplace.
           </p>
         </FadeIn>
 

@@ -51,22 +51,6 @@ export const MOCK_PRODUCTS = [
     deliveryCharge: 0
   },
   {
-    name: 'Battery-Powered Knapsack Sprayer (16L)',
-    category: 'machinery',
-    price: 2850,
-    unit: '1 unit',
-    rating: 4.6,
-    stock: 40,
-    status: 'approved',
-    sellerId: 'admin',
-    sellerName: 'Kishan Seva Store',
-    image: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?q=80&w=800&auto=format&fit=crop',
-    isOrganic: false,
-    description: '16-litre rechargeable battery knapsack sprayer with adjustable nozzle. 12V lithium battery with 6-8 hour run time. Perfect for pesticide and fertilizer application across all field sizes.',
-    benefits: ['Rechargeable Battery', '6-8 Hour Runtime', 'Adjustable Spray Nozzle'],
-    deliveryCharge: 100
-  },
-  {
     name: 'Premium Basmati Rice',
     category: 'grains',
     price: 120,
@@ -99,22 +83,6 @@ export const MOCK_PRODUCTS = [
     deliveryCharge: 0
   },
   {
-    name: 'Pure Desi Cow Ghee (A2)',
-    category: 'cattle',
-    price: 1250,
-    unit: '1 litre',
-    rating: 5.0,
-    stock: 100,
-    status: 'approved',
-    sellerId: 'admin',
-    sellerName: 'Kishan Seva Store',
-    image: 'https://images.unsplash.com/photo-1603401569434-8be080470557?q=80&w=800&auto=format&fit=crop',
-    isOrganic: true,
-    description: 'Authentic A2 Desi Cow Ghee made using the traditional Bilona method. High nutritional value and medicinal properties.',
-    benefits: ['Bilona Method', 'A2 Protein', 'Boosts Immunity'],
-    deliveryCharge: 0
-  },
-  {
     name: 'Organic Farm Fresh Tomatoes',
     category: 'fresh',
     price: 45,
@@ -131,22 +99,6 @@ export const MOCK_PRODUCTS = [
     deliveryCharge: 20
   },
   {
-    name: 'Gau Ark (Distilled Cow Urine)',
-    category: 'cattle',
-    price: 150,
-    unit: '500ml',
-    rating: 4.8,
-    stock: 150,
-    status: 'approved',
-    sellerId: 'admin',
-    sellerName: 'Kishan Seva Store',
-    image: 'https://images.unsplash.com/photo-1595079676339-1534801ad6cf?q=80&w=800&auto=format&fit=crop',
-    isOrganic: true,
-    description: 'Purified and distilled cow urine (Ark). Known for its detoxification and healing properties in traditional Ayurveda.',
-    benefits: ['Detoxification', 'Natural Healer', 'Ancient Formula'],
-    deliveryCharge: 0
-  },
-  {
     name: 'Organic Turmeric Finger',
     category: 'fresh',
     price: 220,
@@ -161,38 +113,6 @@ export const MOCK_PRODUCTS = [
     description: 'High-curcumin organic turmeric fingers. Directly sourced from farmers following traditional organic methods.',
     benefits: ['High Curcumin', 'Natural Antiseptic', 'Direct from Farm'],
     deliveryCharge: 0
-  },
-  {
-    name: 'Manual Seed Drill (Single Row)',
-    category: 'machinery',
-    price: 4500,
-    unit: '1 unit',
-    rating: 4.5,
-    stock: 25,
-    status: 'approved',
-    sellerId: 'admin',
-    sellerName: 'Kishan Seva Store',
-    image: 'https://images.unsplash.com/photo-1589923188900-85dae523342b?q=80&w=800&auto=format&fit=crop',
-    isOrganic: false,
-    description: 'Adjustable manual seed drill for uniform sowing of various seeds like wheat, mustard, and pulses. Improves labor efficiency.',
-    benefits: ['Uniform Sowing', 'Labor Saving', 'Easy to Use'],
-    deliveryCharge: 200
-  },
-  {
-    name: 'Cow Dung Cake (Upla)',
-    category: 'cattle',
-    price: 120,
-    unit: '24 pieces',
-    rating: 4.9,
-    stock: 500,
-    status: 'approved',
-    sellerId: 'admin',
-    sellerName: 'Kishan Seva Store',
-    image: 'https://images.unsplash.com/photo-1590483734724-383b85376532?q=80&w=800&auto=format&fit=crop',
-    isOrganic: true,
-    description: 'Sun-dried cow dung cakes made from indigenous cow dung. Ideal for havan, cooking, and as organic manure.',
-    benefits: ['Smoke Free', 'Natural Fuel', 'Rich Manure Source'],
-    deliveryCharge: 30
   },
   {
     name: 'Hybrid Mustard Seeds (Varuna)',
@@ -243,22 +163,6 @@ export const MOCK_PRODUCTS = [
     deliveryCharge: 0
   },
   {
-    name: 'Electric Grass Cutter',
-    category: 'machinery',
-    price: 12500,
-    unit: '1 unit',
-    rating: 4.4,
-    stock: 10,
-    status: 'approved',
-    sellerId: 'admin',
-    sellerName: 'Kishan Seva Store',
-    image: 'https://images.unsplash.com/photo-1592150621344-82d67bdb79ad?q=80&w=800&auto=format&fit=crop',
-    isOrganic: false,
-    description: 'Powerful 1500W electric grass cutter for maintaining fodder and lawns. Adjustable height settings and safety guard.',
-    benefits: ['Powerful Motor', 'Easy Storage', 'Safe Operation'],
-    deliveryCharge: 300
-  },
-  {
     name: 'Wheat Seeds (Sonalika)',
     category: 'seeds',
     price: 550,
@@ -289,22 +193,6 @@ export const MOCK_PRODUCTS = [
     description: 'Highly effective nitrogenous fertilizer. Essential for leafy growth and lush green color.',
     benefits: ['High Nitrogen', 'Affordable', 'Quick Acting'],
     deliveryCharge: 50
-  },
-  {
-    name: 'Mini Power Tiller (3HP)',
-    category: 'machinery',
-    price: 18500,
-    unit: '1 unit',
-    rating: 4.8,
-    stock: 15,
-    status: 'approved',
-    sellerId: 'admin',
-    sellerName: 'Kishan Seva Store',
-    image: 'https://images.unsplash.com/photo-1595113316349-9fa4ee24f884?q=80&w=800&auto=format&fit=crop',
-    isOrganic: false,
-    description: 'Compact and powerful 3HP petrol engine power tiller. Ideal for inter-cultivation and weeding in small farms, orchards, and vegetable gardens.',
-    benefits: ['Compact Design', 'Powerful Engine', 'Easy to Maneuver'],
-    deliveryCharge: 500
   },
   {
     name: 'Organic Moong Dal (Whole)',
@@ -387,22 +275,6 @@ export const MOCK_PRODUCTS = [
     deliveryCharge: 0
   },
   {
-    name: 'Solar Water Pump (5HP)',
-    category: 'machinery',
-    price: 45000,
-    unit: '1 set',
-    rating: 4.9,
-    stock: 10,
-    status: 'approved',
-    sellerId: 'admin',
-    sellerName: 'Kishan Seva Store',
-    image: 'https://images.unsplash.com/photo-1542601906990-b4d3fb773b09?q=80&w=800&auto=format&fit=crop',
-    isOrganic: false,
-    description: 'Efficient 5HP solar water pump system with panels and controller. Zero running cost and eco-friendly irrigation solution.',
-    benefits: ['Zero Running Cost', 'Eco-Friendly', 'Low Maintenance'],
-    deliveryCharge: 1000
-  },
-  {
     name: 'Organic Pearl Millet (Bajra)',
     category: 'grains',
     price: 65,
@@ -419,22 +291,6 @@ export const MOCK_PRODUCTS = [
     deliveryCharge: 0
   },
   {
-    name: 'Cattle Feed (High Protein)',
-    category: 'cattle',
-    price: 1850,
-    unit: '50kg bag',
-    rating: 4.6,
-    stock: 200,
-    status: 'approved',
-    sellerId: 'admin',
-    sellerName: 'Kishan Seva Store',
-    image: 'https://images.unsplash.com/photo-1516467508483-a7212febe31a?q=80&w=800&auto=format&fit=crop',
-    isOrganic: false,
-    description: 'Scientifically formulated cattle feed for high milk yield and animal health. Contains balanced minerals and vitamins.',
-    benefits: ['High Milk Yield', 'Balanced Nutrition', 'Easy Digestion'],
-    deliveryCharge: 100
-  },
-  {
     name: 'Farm Fresh Organic Potatoes',
     category: 'fresh',
     price: 35,
@@ -449,22 +305,6 @@ export const MOCK_PRODUCTS = [
     description: 'Soil-grown organic potatoes, harvested fresh. No synthetic fertilizers used.',
     benefits: ['Fresh Harvest', 'Chemical Free', 'Great Taste'],
     deliveryCharge: 10
-  },
-  {
-    name: 'Drip Irrigation Kit (1 Acre)',
-    category: 'machinery',
-    price: 12500,
-    unit: '1 set',
-    rating: 4.9,
-    stock: 5,
-    status: 'approved',
-    sellerId: 'admin',
-    sellerName: 'Kishan Seva Store',
-    image: 'https://images.unsplash.com/photo-1563514227147-6d2ff665a6a0?q=80&w=800&auto=format&fit=crop',
-    isOrganic: false,
-    description: 'Complete drip irrigation kit for 1 acre land. Includes main pipe, laterals, drippers, and connectors. Efficient water management for fruit crops and vegetables.',
-    benefits: ['Water Saving', 'Uniform Irrigation', 'Easy Installation'],
-    deliveryCharge: 500
   },
   {
     name: 'Organic Vermiwash Liquid',
@@ -531,22 +371,6 @@ export const MOCK_PRODUCTS = [
     deliveryCharge: 80
   },
   {
-    name: 'Manual Knapsack Sprayer (20L)',
-    category: 'machinery',
-    price: 1850,
-    unit: '1 unit',
-    rating: 4.5,
-    stock: 60,
-    status: 'approved',
-    sellerId: 'admin',
-    sellerName: 'Kishan Seva Store',
-    image: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?q=80&w=800&auto=format&fit=crop',
-    isOrganic: false,
-    description: 'Durable 20-litre manual knapsack sprayer. Ergonomic design for comfortable use. Comes with multiple nozzle types.',
-    benefits: ['Large Capacity', 'Ergonomic Design', 'Multiple Nozzles'],
-    deliveryCharge: 150
-  },
-  {
     name: 'Sunflower Seeds (Hybrid)',
     category: 'seeds',
     price: 750,
@@ -594,6 +418,7 @@ export const MOCK_PRODUCTS = [
     benefits: ['Natural Fertilizer', 'Nematode Control', 'Soil Conditioner'],
     deliveryCharge: 30
   }
+
 ];
 
 export async function seedProducts() {

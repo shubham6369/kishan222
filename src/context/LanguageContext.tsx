@@ -64,8 +64,6 @@ export interface Dictionary {
       grains: string;
       fertilizers: string;
       pesticides: string;
-      machinery: string;
-      cattle: string;
       fresh: string;
     };
   };
@@ -105,7 +103,6 @@ export interface Dictionary {
       organic: { title: string; desc: string };
       protection: { title: string; desc: string };
       community: { title: string; desc: string };
-      gaushala: { title: string; desc: string };
     };
     milestones_title: string;
     milestones_subtitle: string;

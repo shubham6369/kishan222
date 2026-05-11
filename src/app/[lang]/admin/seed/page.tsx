@@ -49,7 +49,7 @@ export default function SeedPage() {
                 <h1 className="text-2xl font-serif font-bold">Kishan Seva Database Control</h1>
               </div>
               <p className="text-white/70 text-sm">
-                Use this utility to populate the marketplace with over 20 essential agricultural products including seeds, fertilizers, machinery, and organic grains.
+                Use this utility to populate the marketplace with over 20 essential agricultural products including seeds, fertilizers, and organic grains.
               </p>
             </div>
 
@@ -73,7 +73,7 @@ export default function SeedPage() {
                   <div className="space-y-4">
                     <h3 className="text-[10px] font-bold uppercase tracking-widest text-[#77574d]">Categories to be Populated</h3>
                     <div className="grid grid-cols-2 gap-4">
-                       {['Seeds & Hybrids', 'Organic Fertilizers', 'Bio Pesticides', 'Modern Machinery', 'Organic Grains', 'Sustainable Inputs'].map((p) => (
+                       {['Seeds & Hybrids', 'Organic Fertilizers', 'Bio Pesticides', 'Fresh Produce', 'Organic Grains', 'Bio-Fertilizers'].map((p) => (
                          <div key={p} className="flex items-center gap-3 text-[#122c1f] font-medium text-sm">
                            <Sprout className="w-4 h-4 text-green-600" />
                            {p}

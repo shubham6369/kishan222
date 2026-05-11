@@ -166,7 +166,7 @@ export default function DashboardContent({ lang, dict }: DashboardContentProps) 
                     <div className="flex-1 space-y-4">
                         <h3 className="text-3xl font-serif font-bold italic">Kishan Seva Marketplace</h3>
                         <p className="opacity-70 text-sm leading-relaxed">
-                            Browse quality seeds, fertilizers, pesticides, and farming equipment sourced directly for Indian farmers.
+                            Browse quality seeds, fertilizers, pesticides, and organic produce sourced directly for Indian farmers.
                         </p>
                         <div className="flex gap-4">
                             <Link href={`/${lang}/marketplace`} className="px-6 py-3 bg-white text-[#122c1f] rounded-xl text-xs font-bold uppercase tracking-wider hover:scale-105 transition-all">
@@ -178,8 +178,8 @@ export default function DashboardContent({ lang, dict }: DashboardContentProps) 
                         {[
                           { label: 'Seeds', icon: '🌾', desc: 'Hybrid varieties' },
                           { label: 'Fertilizers', icon: '🧪', desc: 'NPK & organic' },
-                          { label: 'Sprayers', icon: '💧', desc: 'Battery powered' },
-                          { label: 'Compost', icon: '🌿', desc: 'Vermicompost' },
+                          { label: 'Fresh Produce', icon: '🍎', desc: 'Farm fresh' },
+                          { label: 'Organic Grains', icon: '🌾', desc: 'Natural quality' },
                         ].map((item) => (
                           <div key={item.label} className="p-4 bg-white/10 rounded-2xl border border-white/10 hover:bg-white/20 transition-colors">
                             <span className="text-2xl">{item.icon}</span>

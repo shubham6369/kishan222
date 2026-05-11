@@ -32,8 +32,6 @@ export default function MarketplaceContent({ dict }: MarketplaceContentProps) {
     { id: 'grains', label: dict.marketplace.categories.grains },
     { id: 'fertilizers', label: dict.marketplace.categories.fertilizers },
     { id: 'pesticides', label: dict.marketplace.categories.pesticides },
-    { id: 'machinery', label: dict.marketplace.categories.machinery },
-    { id: 'cattle', label: dict.marketplace.categories.cattle },
     { id: 'fresh', label: dict.marketplace.categories.fresh },
   ];
 
