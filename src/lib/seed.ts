@@ -1,7 +1,7 @@
 import { db } from './firebase';
 import { collection, doc, writeBatch } from 'firebase/firestore';
 
-const MOCK_PRODUCTS = [
+export const MOCK_PRODUCTS = [
   {
     name: 'Hybrid Paddy Seeds (PR-126)',
     category: 'seeds',

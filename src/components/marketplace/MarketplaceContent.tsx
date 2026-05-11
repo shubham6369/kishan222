@@ -9,6 +9,7 @@ import { Search, Filter, Leaf } from 'lucide-react';
 import { db } from '@/lib/firebase';
 import { collection, onSnapshot } from 'firebase/firestore';
 import { Product } from '@/types';
+import { MOCK_PRODUCTS } from '@/lib/seed';
 
 const MarketplaceFeatures = dynamic(() => import('@/components/marketplace/MarketplaceFeatures'), {
   loading: () => <div className="h-64 bg-[#122c1f] animate-pulse" />
@@ -41,11 +42,37 @@ export default function MarketplaceContent({ dict }: MarketplaceContentProps) {
     
     // Set up real-time listener
     const unsubscribe = onSnapshot(productsRef, (snapshot) => {
-      const items = snapshot.docs.map(doc => ({
+      const dbItems = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
       })) as Product[];
-      setProducts(items);
+      
+      // Combine with mock products if db is empty or just as a base
+      // This ensures images and products are always visible for the user
+      const mockItems = MOCK_PRODUCTS.map((p, index) => ({
+        id: `mock-${index}`,
+        ...p
+      })) as Product[];
+
+      // Only add mock products that aren't already in db (simple name check or just prepend)
+      const combined = [...dbItems];
+      if (dbItems.length === 0) {
+        combined.push(...mockItems);
+      } else {
+        // Optionally add mock items if they are unique
+        mockItems.forEach(mItem => {
+          if (!dbItems.some(dbItem => dbItem.name === mItem.name)) {
+            combined.push(mItem);
+          }
+        });
+      }
+
+      setProducts(combined);
+      setLoading(false);
+    }, (error) => {
+      console.error("Error fetching products:", error);
+      // Fallback to mock products on error
+      setProducts(MOCK_PRODUCTS.map((p, index) => ({ id: `mock-${index}`, ...p })) as Product[]);
       setLoading(false);
     });
 

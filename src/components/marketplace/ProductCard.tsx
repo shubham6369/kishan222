@@ -16,8 +16,12 @@ interface ProductCardProps {
 export default function ProductCard({ product }: ProductCardProps) {
   const { addToCart } = useCart();
   const [added, setAdded] = React.useState(false);
+  const [imgError, setImgError] = React.useState(false);
 
-  const displayImage = product.images?.[0] || product.image || '/placeholder.png';
+  const displayImage = imgError 
+    ? 'https://images.unsplash.com/photo-1586771107445-d3ca888129ff?q=80&w=800&auto=format&fit=crop' // Quality agricultural fallback
+    : (product.images?.[0] || product.image || '/placeholder.png');
+    
   const displayFarmer = product.sellerName || product.farmer || 'Farmer';
   const displayRating = product.rating || 5.0;
 
@@ -54,6 +58,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 300px"
           quality={75}
           className="object-cover transition-transform duration-700 group-hover:scale-110"
+          onError={() => setImgError(true)}
         />
         
         {/* Badges */}

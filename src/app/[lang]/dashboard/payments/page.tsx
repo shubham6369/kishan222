@@ -10,6 +10,7 @@ import { db } from '@/lib/firebase';
 import { collection, query, where, getDocs, orderBy } from 'firebase/firestore';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
+import { MOCK_PRODUCTS } from '@/lib/seed';
 
 interface Transaction {
   id: string;
@@ -44,57 +45,28 @@ const itemVariants = {
   }
 } as const;
 
-const PRODUCT_CATALOG_DATA = {
-  seeds: [
-    { name: 'Hybrid Paddy Seeds', price: 480, unit: '5kg', trend: 'up' },
-    { name: 'Mustard Seeds (Varuna)', price: 420, unit: '2kg', trend: 'stable' },
-    { name: 'Wheat Seeds (Sonalika)', price: 550, unit: '40kg', trend: 'down' },
-    { name: 'Bt Cotton Seeds', price: 860, unit: '450g', trend: 'up' },
-    { name: 'Sunflower Seeds', price: 750, unit: '1kg', trend: 'stable' }
-  ],
-  grains: [
-    { name: 'Premium Basmati Rice', price: 120, unit: '1kg', trend: 'up' },
-    { name: 'Organic Black Gram', price: 160, unit: '1kg', trend: 'stable' },
-    { name: 'Organic Moong Dal', price: 180, unit: '1kg', trend: 'up' },
-    { name: 'Organic Pearl Millet', price: 65, unit: '1kg', trend: 'down' },
-    { name: 'Wheat Grain (Sharbati)', price: 45, unit: '1kg', trend: 'stable' }
-  ],
-  fertilizers: [
-    { name: 'NPK Granular (19:19:19)', price: 1350, unit: '50kg', trend: 'stable' },
-    { name: 'Vermicompost Organic', price: 280, unit: '25kg', trend: 'up' },
-    { name: 'Bio-Fertilizer', price: 180, unit: '500ml', trend: 'stable' },
-    { name: 'Urea (Nitrogen)', price: 300, unit: '45kg', trend: 'down' },
-    { name: 'DAP Fertilizer', price: 1350, unit: '50kg', trend: 'stable' }
-  ],
-  pesticides: [
-    { name: 'Neem Oil Bio-Pesticide', price: 320, unit: '1L', trend: 'up' },
-    { name: 'Trichoderma Viride', price: 240, unit: '500g', trend: 'stable' },
-    { name: 'Garlic-Pepper Spray', price: 210, unit: '500ml', trend: 'stable' },
-    { name: 'Bio-Pest Control', price: 450, unit: '1L', trend: 'up' },
-    { name: 'Organic Neem Cake', price: 180, unit: '5kg', trend: 'stable' }
-  ],
-  machinery: [
-    { name: 'Battery Knapsack Sprayer', price: 2850, unit: '16L', trend: 'stable' },
-    { name: 'Manual Seed Drill', price: 4500, unit: 'Unit', trend: 'down' },
-    { name: 'Solar Water Pump', price: 45000, unit: 'Set', trend: 'stable' },
-    { name: 'Electric Grass Cutter', price: 12500, unit: 'Unit', trend: 'up' },
-    { name: 'Mini Power Tiller', price: 18500, unit: 'Unit', trend: 'stable' }
-  ],
-  cattle: [
-    { name: 'Pure Desi Cow Ghee', price: 1250, unit: '1L', trend: 'up' },
-    { name: 'Gau Ark (Distilled)', price: 150, unit: '500ml', trend: 'stable' },
-    { name: 'Cow Dung Cake (Upla)', price: 120, unit: '24pcs', trend: 'stable' },
-    { name: 'Cattle Feed (High Protein)', price: 1850, unit: '50kg', trend: 'up' },
-    { name: 'Mineral Mixture', price: 240, unit: '1kg', trend: 'stable' }
-  ],
-  fresh: [
-    { name: 'Organic Tomatoes', price: 45, unit: '1kg', trend: 'up' },
-    { name: 'Organic Turmeric Finger', price: 220, unit: '1kg', trend: 'stable' },
-    { name: 'Organic Potatoes', price: 35, unit: '1kg', trend: 'down' },
-    { name: 'Organic Onions', price: 40, unit: '1kg', trend: 'up' },
-    { name: 'Green Chillies', price: 80, unit: '1kg', trend: 'stable' }
-  ]
-} as const;
+// Helper to get products for dashboard catalog with images from seed data
+const getDashboardCatalog = () => {
+  const categories = ['seeds', 'grains', 'fertilizers', 'pesticides', 'machinery', 'cattle', 'fresh'];
+  const catalog: Record<string, any[]> = {};
+  
+  categories.forEach(cat => {
+    catalog[cat] = MOCK_PRODUCTS
+      .filter(p => p.category === cat)
+      .slice(0, 4)
+      .map(p => ({
+        name: p.name,
+        price: p.price,
+        unit: p.unit,
+        image: p.image,
+        trend: Math.random() > 0.5 ? 'up' : (Math.random() > 0.5 ? 'down' : 'stable')
+      }));
+  });
+  
+  return catalog;
+};
+
+const PRODUCT_CATALOG_DATA = getDashboardCatalog();
 
 export default function PaymentsPage() {
   const { user } = useAuth();
@@ -481,18 +453,30 @@ export default function PaymentsPage() {
                   }`} />
                   <h4 className="text-sm font-black text-[#122c1f] uppercase tracking-widest">{label}</h4>
                 </div>
-                <div className="space-y-3">
+                <div className="space-y-4">
                   {categoryData.map((p, i) => (
-                    <div key={i} className="flex items-center justify-between p-4 bg-[#fbf9f5] rounded-2xl border border-black/5 hover:border-[#122c1f]/10 transition-all group cursor-default">
-                      <div className="flex flex-col">
-                        <span className="text-xs font-bold text-[#122c1f] leading-tight group-hover:text-[#122c1f] transition-colors">{p.name}</span>
-                        <div className="flex items-center gap-2 mt-0.5">
-                          <span className="text-[10px] font-medium text-[#77574d]/50">{p.unit}</span>
-                          {p.trend === 'up' && <span className="text-[10px] font-bold text-emerald-600">↑</span>}
-                          {p.trend === 'down' && <span className="text-[10px] font-bold text-rose-600">↓</span>}
+                    <div key={i} className="flex items-center justify-between p-3 bg-[#fbf9f5] rounded-2xl border border-black/5 hover:border-[#122c1f]/10 transition-all group cursor-default">
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-xl overflow-hidden bg-white border border-black/5 shrink-0 relative">
+                          <img 
+                            src={p.image} 
+                            alt={p.name} 
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1594903582424-8146449a7a11?q=80&w=200&auto=format&fit=crop';
+                            }}
+                          />
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="text-[11px] font-bold text-[#122c1f] leading-tight group-hover:text-[#122c1f] transition-colors line-clamp-1">{p.name}</span>
+                          <div className="flex items-center gap-2 mt-0.5">
+                            <span className="text-[10px] font-medium text-[#77574d]/50">{p.unit}</span>
+                            {p.trend === 'up' && <span className="text-[10px] font-bold text-emerald-600">↑</span>}
+                            {p.trend === 'down' && <span className="text-[10px] font-bold text-rose-600">↓</span>}
+                          </div>
                         </div>
                       </div>
-                      <div className="flex flex-col items-end">
+                      <div className="flex flex-col items-end shrink-0">
                         <span className="text-sm font-black text-[#122c1f]">₹{p.price.toLocaleString()}</span>
                       </div>
                     </div>
