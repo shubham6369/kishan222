@@ -360,6 +360,9 @@ export interface Dictionary {
       status_paid: string;
       status_pending: string;
       status_failed: string;
+      product_catalog: string;
+      product_catalog_subtitle: string;
+      view_all_products: string;
     };
   };
   sidebar: {
