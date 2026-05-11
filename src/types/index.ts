@@ -10,6 +10,7 @@ export interface CartItem {
     sellerId: string;
     deliveryCharge: number;
     weight: string;
+    category?: string;
 }
 
 export interface UserData {
@@ -17,7 +18,6 @@ export interface UserData {
     fullName: string;
     phone: string;
     membershipId?: string;
-    membershipCardUnlocked?: boolean;
     registrationDate?: string;
     photoUrl?: string;
     photoBase64?: string;

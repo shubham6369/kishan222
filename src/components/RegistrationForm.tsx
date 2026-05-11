@@ -18,11 +18,9 @@ import {
   CreditCard,
   AlertCircle,
   Camera,
-  Tractor,
-  Printer
+  Tractor
 } from 'lucide-react';
 import { load } from '@cashfreepayments/cashfree-js';
-import MembershipCard from './MembershipCard';
 import { auth, db, storage } from '@/lib/firebase';
 import { 
   RecaptchaVerifier, 
@@ -48,7 +46,7 @@ const steps = [
   { id: 2, title: "Farming", icon: Sprout },
   { id: 3, title: "Security", icon: Landmark },
   { id: 4, title: "Payment", icon: CreditCard },
-  { id: 'success', title: "Card", icon: CheckCircle2 },
+  { id: 'success', title: "Complete", icon: CheckCircle2 },
 ];
 
 export default function RegistrationForm() {
@@ -140,7 +138,6 @@ export default function RegistrationForm() {
         registrationDate: new Date().toISOString(),
         // Payment confirmation — card is unlocked only because payment succeeded
         membershipFeePaid: 50,
-        membershipCardUnlocked: true,
         paymentId: paymentId,
         paymentOrderId: orderId,
         walletBalance: 0,
@@ -448,31 +445,8 @@ export default function RegistrationForm() {
   };
 
 
-  const handlePrint = () => {
-    window.print();
-  };
-
   return (
-    <>
-      <style dangerouslySetInnerHTML={{__html: `
-        @media print {
-          body * {
-            visibility: hidden;
-          }
-          .membership-card, .membership-card * {
-            visibility: visible;
-          }
-          .membership-card {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            width: 100%;
-            max-width: 500px;
-          }
-        }
-      `}} />
-      <div className="max-w-2xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border border-black/5 print:shadow-none print:border-transparent">
+    <div className="max-w-2xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border border-black/5 print:shadow-none print:border-transparent">
         {/* Premium Progress Header */}
         <div className="bg-[#122c1f]/5 p-6 md:p-8 flex justify-between items-center relative border-b border-[#122c1f]/10 print:hidden">
           <div className="absolute top-1/2 left-0 w-full h-[2px] bg-[#122c1f]/10 -translate-y-1/2 shrink-0 z-0"></div>
@@ -496,7 +470,7 @@ export default function RegistrationForm() {
                    s.id === 2 ? dict.register.steps.farming :
                    s.id === 3 ? dict.register.steps.security :
                    s.id === 4 ? dict.register.steps.payment :
-                   dict.register.steps.card}
+                   dict.register.steps.complete}
                 </span>
               </div>
             );
@@ -520,32 +494,19 @@ export default function RegistrationForm() {
                   <p className="text-[#77574d] text-sm">{dict.register.success_desc}</p>
                 </div>
                 
-                <div className="w-full flex justify-center py-4 print:py-0">
-                  <MembershipCard 
-                    memberData={{
-                      fullName: formData.fullName,
-                      membershipId: memberId,
-                      location: `${formData.village}, ${formData.state}`,
-                      phone: formData.phone,
-                      crops: formData.crops,
-                      landSize: formData.landSize,
-                      photoBase64: formData.photoBase64,
-                      registrationDate: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }),
-                      expiryDate: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }),
-                      memberType: dict.register.member_type_farmer
-                    }}
-                  />
+                <div className="w-full flex justify-center py-4">
+                  <div className="w-full max-w-sm bg-[#122c1f] rounded-2xl p-6 text-white text-center space-y-3">
+                    <div className="text-4xl">🌾</div>
+                    <h3 className="text-xl font-serif font-bold">Welcome to Kishan Seva!</h3>
+                    <p className="text-white/70 text-sm">Your membership is active</p>
+                    <div className="bg-white/10 rounded-xl px-4 py-3 font-mono text-lg font-bold tracking-widest">
+                      {memberId}
+                    </div>
+                    <p className="text-white/50 text-xs">Member ID — keep this safe</p>
+                  </div>
                 </div>
 
-                <div className="w-full max-w-md bg-[#fbf9f5] p-6 rounded-2xl border border-[#77574d]/10 space-y-4 print:hidden">
-                  <button 
-                    onClick={handlePrint}
-                    className="w-full py-4 bg-white border-2 border-[#122c1f] text-[#122c1f] rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#122c1f]/5 transition-all"
-                  >
-                    <Printer className="w-5 h-5" />
-                    {dict.register.print_card}
-                  </button>
-
+                <div className="w-full max-w-md bg-[#fbf9f5] p-6 rounded-2xl border border-[#77574d]/10 space-y-4">
                   <div className="pt-4 border-t border-black/5">
                     <p className="text-xs font-bold uppercase tracking-wider text-[#122c1f] mb-3">{dict.register.referral_link_label}</p>
                     <div className="flex gap-2">
@@ -887,10 +848,8 @@ export default function RegistrationForm() {
               </m.div>
             )}
           </AnimatePresence>
-          {/* Persistent Recaptcha container to prevent DOM errors during step transitions */}
           <div id="recaptcha-container"></div>
         </div>
-      </div>
-    </>
+    </div>
   );
 }

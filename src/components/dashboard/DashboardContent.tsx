@@ -16,7 +16,6 @@ import { db } from '@/lib/firebase';
 import { collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
 
 import { useAuth } from '@/context/AuthContext';
-import MembershipCard from '@/components/MembershipCard';
 import { Referral } from '@/types';
 import { Dictionary } from '@/context/LanguageContext';
 
@@ -29,29 +28,44 @@ export default function DashboardContent({ lang, dict }: DashboardContentProps) 
   const { user, userData, loading: authLoading } = useAuth();
   const [referrals, setReferrals] = useState<Referral[]>([]);
   const [loadingReferrals, setLoadingReferrals] = useState(true);
+  const [recentOrders, setRecentOrders] = useState<any[]>([]);
+  const [loadingOrders, setLoadingOrders] = useState(true);
 
   useEffect(() => {
-    async function fetchReferrals() {
+    async function fetchDashboardData() {
       if (!user?.uid) {
           setLoadingReferrals(false);
+          setLoadingOrders(false);
           return;
       }
+      
       try {
+        // Fetch Referrals
         const refQuery = query(
           collection(db, 'users', user.uid, 'referrals'),
           orderBy('createdAt', 'desc'),
           limit(5)
         );
-        const snapshot = await getDocs(refQuery);
-        const recs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Referral[];
-        setReferrals(recs);
+        const refSnapshot = await getDocs(refQuery);
+        setReferrals(refSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Referral[]);
+
+        // Fetch Recent Orders
+        const orderQuery = query(
+          collection(db, 'orders'),
+          where('buyerId', '==', user.uid),
+          orderBy('createdAt', 'desc'),
+          limit(5)
+        );
+        const orderSnapshot = await getDocs(orderQuery);
+        setRecentOrders(orderSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
       } catch (err) {
-        console.error("Error fetching referrals:", err);
+        console.error("Error fetching dashboard data:", err);
       } finally {
         setLoadingReferrals(false);
+        setLoadingOrders(false);
       }
     }
-    fetchReferrals();
+    fetchDashboardData();
   }, [user]);
   
   const stats = [
@@ -145,38 +159,34 @@ export default function DashboardContent({ lang, dict }: DashboardContentProps) 
         {/* Identity & Referral */}
         <div className="lg:col-span-2 space-y-12">
             
-            {/* Identity Card Section */}
+            {/* Shop Products Banner */}
             <div className="p-10 bg-[#122c1f] rounded-[40px] text-white relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-[#77574d]/20 blur-[80px]" />
-                <div className="relative z-10 flex flex-col md:flex-row gap-12 items-center">
-                    <div className="flex-1 space-y-6">
-                        <h3 className="text-3xl font-serif font-bold italic">{dict.dashboard.identity.title}</h3>
+                <div className="relative z-10 flex flex-col md:flex-row gap-8 items-center">
+                    <div className="flex-1 space-y-4">
+                        <h3 className="text-3xl font-serif font-bold italic">Kishan Seva Marketplace</h3>
                         <p className="opacity-70 text-sm leading-relaxed">
-                            {dict.dashboard.identity.desc}
+                            Browse quality seeds, fertilizers, pesticides, and farming equipment sourced directly for Indian farmers.
                         </p>
                         <div className="flex gap-4">
-                            <button onClick={() => window.print()} className="px-6 py-3 bg-white text-[#122c1f] rounded-xl text-xs font-bold uppercase tracking-wider hover:scale-105 transition-all print:hidden">
-                                {dict.dashboard.identity.download}
-                            </button>
-                            <button className="px-6 py-3 bg-white/10 text-white border border-white/20 rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-white/20 transition-all print:hidden">
-                                {dict.dashboard.identity.share}
-                            </button>
+                            <Link href={`/${lang}/marketplace`} className="px-6 py-3 bg-white text-[#122c1f] rounded-xl text-xs font-bold uppercase tracking-wider hover:scale-105 transition-all">
+                                Browse Products
+                            </Link>
                         </div>
                     </div>
-                    <div className="w-full max-w-sm transform rotate-2 hover:rotate-0 transition-transform duration-500 shadow-2xl">
-                        <MembershipCard 
-                            memberData={{
-                                fullName: userData?.fullName || 'User',
-                                membershipId: userData?.membershipId || 'KSS-PENDING',
-                                location: `${userData?.village || '...'}, ${userData?.state || '...'}`,
-                                phone: userData?.phone || '...',
-                                crops: userData?.crops || '...',
-                                landSize: userData?.landSize || '...',
-                                registrationDate: userData?.registrationDate ? new Date(userData.registrationDate).toLocaleDateString(lang === 'hi' ? 'hi-IN' : 'en-IN', { day: 'numeric', month: 'long', year: 'numeric' }) : '...',
-                                expiryDate: userData?.registrationDate ? new Date(new Date(userData.registrationDate).setFullYear(new Date(userData.registrationDate).getFullYear() + 1)).toLocaleDateString(lang === 'hi' ? 'hi-IN' : 'en-IN', { day: 'numeric', month: 'long', year: 'numeric' }) : '...',
-                                memberType: dict.dashboard.farmer
-                            }}
-                        />
+                    <div className="grid grid-cols-2 gap-3 w-full max-w-xs">
+                        {[
+                          { label: 'Seeds', icon: '🌾', desc: 'Hybrid varieties' },
+                          { label: 'Fertilizers', icon: '🧪', desc: 'NPK & organic' },
+                          { label: 'Sprayers', icon: '💧', desc: 'Battery powered' },
+                          { label: 'Compost', icon: '🌿', desc: 'Vermicompost' },
+                        ].map((item) => (
+                          <div key={item.label} className="p-4 bg-white/10 rounded-2xl border border-white/10 hover:bg-white/20 transition-colors">
+                            <span className="text-2xl">{item.icon}</span>
+                            <p className="text-sm font-bold mt-1">{item.label}</p>
+                            <p className="text-[10px] opacity-60">{item.desc}</p>
+                          </div>
+                        ))}
                     </div>
                 </div>
             </div>
@@ -200,9 +210,14 @@ export default function DashboardContent({ lang, dict }: DashboardContentProps) 
                         <div className="divide-y divide-black/5">
                             {referrals.map((referral) => (
                                 <div key={referral.id} className="p-6 flex justify-between items-center hover:bg-[#fbf9f5] transition-colors">
-                                    <div>
-                                        <p className="font-bold text-[#122c1f]">{referral.referredUserName || dict.dashboard.referrals.unknown}</p>
-                                        <p className="text-xs text-[#77574d]">{dict.dashboard.referrals.joined} {referral.createdAt ? new Date(referral.createdAt.seconds * 1000).toLocaleDateString(lang === 'hi' ? 'hi-IN' : 'en-IN') : dict.dashboard.referrals.recently}</p>
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
+                                            <Users className="w-5 h-5" />
+                                        </div>
+                                        <div>
+                                            <p className="font-bold text-[#122c1f]">{referral.referredUserName || dict.dashboard.referrals.unknown}</p>
+                                            <p className="text-[10px] text-[#77574d] uppercase tracking-wider">{referral.createdAt ? new Date(referral.createdAt.seconds * 1000).toLocaleDateString(lang === 'hi' ? 'hi-IN' : 'en-IN') : dict.dashboard.referrals.recently}</p>
+                                        </div>
                                     </div>
                                     <div className="text-right">
                                         <p className="font-bold text-green-600">+₹{referral.rewardAmount}</p>
@@ -214,6 +229,51 @@ export default function DashboardContent({ lang, dict }: DashboardContentProps) 
                     ) : (
                         <div className="p-12 text-center text-[#77574d] italic text-sm">
                             {dict.dashboard.referrals.none}
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            {/* Recent Transactions */}
+            <div className="space-y-6">
+                <div className="flex justify-between items-end">
+                    <div>
+                        <h3 className="text-2xl font-serif font-bold text-[#122c1f]">{dict.dashboard.payments.title}</h3>
+                        <p className="text-sm text-[#77574d]">{dict.dashboard.payments.subtitle}</p>
+                    </div>
+                    <Link href={`/${lang}/dashboard/payments`} className="text-xs font-bold uppercase tracking-widest text-[#122c1f] flex items-center gap-2 group">
+                        {dict.dashboard.referrals.view_all} <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </Link>
+                </div>
+                
+                <div className="bg-white rounded-[32px] border border-black/5 overflow-hidden shadow-sm">
+                    {loadingOrders ? (
+                        <div className="p-12 text-center text-[#77574d] italic text-sm">{dict.dashboard.payments.loading}</div>
+                    ) : recentOrders.length > 0 ? (
+                        <div className="divide-y divide-black/5">
+                            {recentOrders.map((order: any) => (
+                                <div key={order.id} className="p-6 flex justify-between items-center hover:bg-[#fbf9f5] transition-colors">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center text-orange-600">
+                                            <ShoppingBag className="w-5 h-5" />
+                                        </div>
+                                        <div>
+                                            <p className="font-bold text-[#122c1f]">Order #{order.id.slice(-6).toUpperCase()}</p>
+                                            <p className="text-[10px] text-[#77574d] uppercase tracking-wider">{order.createdAt ? new Date(order.createdAt).toLocaleDateString(lang === 'hi' ? 'hi-IN' : 'en-IN') : 'Recent'}</p>
+                                        </div>
+                                    </div>
+                                    <div className="text-right">
+                                        <p className="font-bold text-[#122c1f]">₹{order.totalAmount}</p>
+                                        <span className={`text-[10px] uppercase tracking-widest font-bold ${order.paymentStatus === 'paid' ? 'text-green-600' : 'text-yellow-600'}`}>
+                                            {order.paymentStatus === 'paid' ? dict.dashboard.payments.successful : dict.dashboard.payments.pending}
+                                        </span>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="p-12 text-center text-[#77574d] italic text-sm">
+                            {dict.dashboard.payments.none}
                         </div>
                     )}
                 </div>

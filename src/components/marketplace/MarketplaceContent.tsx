@@ -28,8 +28,10 @@ export default function MarketplaceContent({ dict }: MarketplaceContentProps) {
   const CATEGORIES = [
     { id: 'all', label: dict.marketplace.categories.all },
     { id: 'seeds', label: dict.marketplace.categories.seeds },
+    { id: 'grains', label: dict.marketplace.categories.grains },
     { id: 'fertilizers', label: dict.marketplace.categories.fertilizers },
     { id: 'pesticides', label: dict.marketplace.categories.pesticides },
+    { id: 'machinery', label: dict.marketplace.categories.machinery },
     { id: 'cattle', label: dict.marketplace.categories.cattle },
     { id: 'fresh', label: dict.marketplace.categories.fresh },
   ];

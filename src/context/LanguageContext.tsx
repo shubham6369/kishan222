@@ -27,7 +27,6 @@ export interface Dictionary {
     title: string;
     subtitle: string;
     cards: {
-      card: { title: string; desc: string };
       market: { title: string; desc: string };
       referral: { title: string; desc: string };
     };
@@ -62,8 +61,10 @@ export interface Dictionary {
     categories: {
       all: string;
       seeds: string;
+      grains: string;
       fertilizers: string;
       pesticides: string;
+      machinery: string;
       cattle: string;
       fresh: string;
     };
@@ -266,12 +267,6 @@ export interface Dictionary {
     };
     payment_desc: string;
     member_type_farmer: string;
-    card: {
-      official_member: string;
-      acres: string;
-      issued: string;
-      expires: string;
-    };
   };
   auth: {
     resend_otp: string;
@@ -285,7 +280,6 @@ export interface Dictionary {
     jai_kisan: string;
     farmer: string;
     welcome: string;
-    premium_member: string;
     stats: {
       earnings: string;
       referrals: string;
@@ -293,12 +287,6 @@ export interface Dictionary {
       today: string;
       lifetime: string;
       live_now: string;
-    };
-    identity: {
-      title: string;
-      desc: string;
-      download: string;
-      share: string;
     };
     referrals: {
       title: string;
@@ -342,11 +330,41 @@ export interface Dictionary {
       date: string;
       status: string;
       action: string;
+      total_spent: string;
+      avg_order: string;
+      recent_activity: string;
+    };
+    payments_intel: {
+      title: string;
+      subtitle: string;
+      live_updates: string;
+      synced: string;
+      market_rates: string;
+      market_rates_subtitle: string;
+      market_velocity: string;
+      market_velocity_desc: string;
+      capital_allocation: string;
+      total_payout: string;
+      avg_ticket: string;
+      ai_prediction: string;
+      ledger_title: string;
+      ledger_subtitle: string;
+      compiling: string;
+      prediction_msg: string;
+      prediction_none: string;
+      stable: string;
+      others: string;
+      ledger_no_tx: string;
+      ledger_no_tx_desc: string;
+      order_id: string;
+      items_count_label: string;
+      status_paid: string;
+      status_pending: string;
+      status_failed: string;
     };
   };
   sidebar: {
     overview: string;
-    my_card: string;
     marketplace: string;
     seller_hub: string;
     my_products: string;

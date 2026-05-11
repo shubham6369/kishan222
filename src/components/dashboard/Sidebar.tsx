@@ -12,7 +12,6 @@ import {
   Landmark,
   Wallet,
   Store,
-  IdCard,
   CreditCard
 } from 'lucide-react';
 import SidebarNav from './SidebarNav';
@@ -25,7 +24,6 @@ interface SidebarProps {
 export default function Sidebar({ lang, dict }: SidebarProps) {
   const NAV_ITEMS = [
     { name: dict.sidebar.overview, href: `/${lang}/dashboard`, icon: BarChart3 },
-    { name: dict.sidebar.my_card, href: `/${lang}/dashboard/card`, icon: IdCard },
     { name: dict.sidebar.marketplace, href: `/${lang}/marketplace`, icon: Home },
     { name: dict.sidebar.seller_hub, href: `/${lang}/dashboard/seller`, icon: Store },
     { name: dict.sidebar.my_products, href: `/${lang}/dashboard/products`, icon: ShoppingBag },

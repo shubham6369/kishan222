@@ -23,10 +23,6 @@
     "title": "Membership Benefits",
     "subtitle": "Everything you need to grow your farming business",
     "cards": {
-      "card": {
-        "title": "Official Farmer ID",
-        "desc": "Get your digital and physical membership card with unique QR code."
-      },
       "market": {
         "title": "Direct Marketplace",
         "desc": "Sell products like cow dung, fertilizers & seeds directly to buyers."
@@ -67,8 +63,10 @@
     "categories": {
       "all": "All Products",
       "seeds": "Organic Seeds",
+      "grains": "Natural Grains",
       "fertilizers": "Organic Fertilizers",
       "pesticides": "Bio Pesticides",
+      "machinery": "Farming Machinery",
       "cattle": "Cattle Care",
       "fresh": "Fresh Produce"
     }
@@ -93,8 +91,8 @@
     "hero_title": "Rooted in the Soil of India",
     "hero_subtitle": "Kishan Seva was born from a simple belief — that every Indian farmer deserves dignity, a fair market, and a community that stands behind them.",
     "mission_tag": "Our Mission",
-    "mission_title": "Empowering Farmers with Identity, Income & Independence",
-    "mission_p1": "We provide every registered farmer with an official membership card, a direct marketplace to sell organic produce, and a community-based reward system — all in one unified platform.",
+    "mission_title": "Empowering Farmers with Income & Independence",
+    "mission_p1": "We provide every registered farmer with a direct marketplace to sell organic produce and a community-based reward system — all in one unified platform.",
     "mission_p2": "Our platform bridges the gap between rural farmers and urban consumers, eliminating middlemen and ensuring fair prices for quality organic products.",
     "join_movement": "Join the Movement",
     "stats": {
@@ -137,14 +135,14 @@
     "established": "Est. Rural Empowerment 2024",
     "mission": "The premier collective for the modern Indian farmer. We facilitate a global transition to regenerative agriculture while preserving our rich rural heritage.",
     "exploration": "Exploration",
-    "exploration_links": ["Our Heritage", "Marketplace", "Membership", "Technical Support"],
+    "exploration_links": ["Our Heritage", "Marketplace", "Technical Support"],
     "intelligence": "Intelligence",
     "intelligence_links": ["Soil Analytics", "Market Trends", "Govt Schemes", "Climate Tech"],
     "assistance": "Assistance",
     "support_hours": "Mon - Sat, 9am - 6pm",
     "digital_support": "24/7 Digital Support",
     "privacy": "Privacy Charter",
-    "terms": "ID Card & Membership Terms",
+    "terms": "Membership Terms",
     "ethics": "Ethics & Transparency",
     "links": {
       "privacy": "Privacy Policy",
@@ -226,7 +224,7 @@
   "register": {
     "title": "Join the Heritage",
     "subtitle": "By joining Kishan Seva, you are not just registering for a service—you are becoming part of a prestigious community of farmers.",
-    "benefit_verified": "Verified Farmer Status & ID Card",
+    "benefit_verified": "Verified Farmer Status",
     "benefit_schemes": "Exclusive Government Scheme Alerts",
     "benefit_referral": "Community Growth Rewards",
     "steps": {
@@ -234,11 +232,10 @@
       "farming": "Farming",
       "security": "Security",
       "payment": "Payment",
-      "card": "Card"
+      "complete": "Complete"
     },
     "success_title": "Transaction Successful!",
-    "success_desc": "Your membership is successfully registered. You can now download your digital ID card.",
-    "print_card": "Print Membership Card",
+    "success_desc": "Your membership is successfully registered. You can now access your dashboard.",
     "referral_link_label": "Your Community Link",
     "go_dashboard": "Go to Dashboard",
     "mobile_verification": "Mobile Verification",
@@ -250,7 +247,7 @@
     "enter_otp": "Enter 6-Digit OTP",
     "otp_placeholder": "------",
     "farming_profile": "Farming Profile",
-    "farming_desc": "Details for your official membership card.",
+    "farming_desc": "Details for your official profile.",
     "upload_photo": "Upload Photo",
     "village": "Village",
     "village_placeholder": "Your Village",
@@ -264,9 +261,9 @@
     "passcode_desc": "Create a secure PIN/password to log in to your portal.",
     "secret_passcode": "Secret Passcode",
     "passcode_placeholder": "Minimum 6 characters",
-    "membership_fee": "ID Card Processing",
-    "fee_desc": "Covers the cost of your official Smart ID Card and logistics.",
-    "lifelong_card": "Digital & Physical ID Card",
+    "membership_fee": "Registration Fee",
+    "fee_desc": "Covers the cost of your digital profile and service access.",
+    "lifelong_card": "Lifetime Service Access",
     "total_amount": "Total amount",
     "back": "Back",
     "continue": "Continue",
@@ -288,21 +285,14 @@
       "session_lost": "Authentication session lost. Please restart.",
       "link_copied": "Link copied!"
     },
-    "payment_desc": "Farmer ID Card Issuance Fee",
-    "member_type_farmer": "Farmer",
-    "card": {
-      "official_member": "Official Member",
-      "acres": "Acres",
-      "issued": "Issued",
-      "expires": "Expires"
-    }
+    "payment_desc": "Service Registration Fee",
+    "member_type_farmer": "Farmer"
   },
   "dashboard": {
     "title": "Dashboard",
     "jai_kisan": "Jai Kisan",
     "farmer": "Farmer",
     "welcome": "Welcome back to your Seva Portal. Here's your impact today.",
-    "premium_member": "Premium Member",
     "stats": {
       "earnings": "Growth Rewards",
       "referrals": "Total Referrals",
@@ -310,12 +300,6 @@
       "today": "today",
       "lifetime": "Lifetime",
       "live_now": "Live Now"
-    },
-    "identity": {
-      "title": "Your Digital Identity",
-      "desc": "This card verifies your membership with Kishan Seva. Show the QR code at any Kishan Seva collection center to avail services and list your products.",
-      "download": "Download / Print",
-      "share": "Share Card"
     },
     "referrals": {
       "title": "Recent Referrals",
@@ -358,12 +342,42 @@
       "amount": "Amount",
       "date": "Date",
       "status": "Status",
-      "action": "Action"
+      "action": "Action",
+      "total_spent": "Total Spent",
+      "avg_order": "Avg. Order",
+      "recent_activity": "Recent Activity"
+    },
+    "payments_intel": {
+      "title": "Payment Intelligence",
+      "subtitle": "Advanced insights into your agricultural investments and category-wise spending.",
+      "live_updates": "Live Updates",
+      "synced": "Synced {time} ago",
+      "market_rates": "Live Market Rates",
+      "market_rates_subtitle": "Current price indices for agricultural categories.",
+      "market_velocity": "Market Velocity",
+      "market_velocity_desc": "Deep analysis of your agricultural capital flow. Peaks represent seasonal procurement cycles and infrastructure investments.",
+      "capital_allocation": "Capital Allocation",
+      "total_payout": "Total Payout",
+      "avg_ticket": "Avg. Ticket",
+      "ai_prediction": "AI Prediction",
+      "ledger_title": "Transaction Ledger",
+      "ledger_subtitle": "Detailed audit trail of all financial movements.",
+      "compiling": "Compiling Data...",
+      "prediction_msg": "Based on your current trajectory, your {category} investment will grow by 14% next quarter.",
+      "prediction_none": "Start transacting to unlock personalized investment predictions.",
+      "stable": "Stable",
+      "others": "Others",
+      "ledger_no_tx": "No transactions yet",
+      "ledger_no_tx_desc": "Your payment history will appear here once you make your first purchase.",
+      "order_id": "Order #",
+      "items_count_label": "{count} Items",
+      "status_paid": "Paid",
+      "status_pending": "Pending",
+      "status_failed": "Failed"
     }
   },
   "sidebar": {
     "overview": "Overview",
-    "my_card": "My Card",
     "marketplace": "Marketplace",
     "seller_hub": "Seller Hub",
     "my_products": "My Products",

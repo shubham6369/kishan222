@@ -49,7 +49,7 @@ export default function SeedPage() {
                 <h1 className="text-2xl font-serif font-bold">Kishan Seva Database Control</h1>
               </div>
               <p className="text-white/70 text-sm">
-                Use this utility to populate the marketplace with initial organic products and community essentials.
+                Use this utility to populate the marketplace with over 20 essential agricultural products including seeds, fertilizers, machinery, and organic grains.
               </p>
             </div>
 
@@ -60,7 +60,7 @@ export default function SeedPage() {
                     <AlertTriangle className="w-6 h-6 shrink-0 text-amber-600" />
                     <div>
                       <p className="font-bold mb-1">Attention Required</p>
-                      <p>This action will add 3 premium mock products to your Firestore collection. Ensure your Firebase configuration is active.</p>
+                      <p>This action will add the full catalog of agricultural products to your Firestore collection. Ensure your Firebase configuration is active.</p>
                     </div>
                   </div>
 
@@ -71,15 +71,15 @@ export default function SeedPage() {
                   )}
 
                   <div className="space-y-4">
-                    <h3 className="text-[10px] font-bold uppercase tracking-widest text-[#77574d]">Products to be Added</h3>
-                    <ul className="space-y-2">
-                       {['Pure Sharbati Wheat', 'Raw Forest Honey', 'Organic Desi Ghee'].map((p) => (
-                         <li key={p} className="flex items-center gap-3 text-[#122c1f] font-medium">
+                    <h3 className="text-[10px] font-bold uppercase tracking-widest text-[#77574d]">Categories to be Populated</h3>
+                    <div className="grid grid-cols-2 gap-4">
+                       {['Seeds & Hybrids', 'Organic Fertilizers', 'Bio Pesticides', 'Modern Machinery', 'Organic Grains', 'Sustainable Inputs'].map((p) => (
+                         <div key={p} className="flex items-center gap-3 text-[#122c1f] font-medium text-sm">
                            <Sprout className="w-4 h-4 text-green-600" />
                            {p}
-                         </li>
+                         </div>
                        ))}
-                    </ul>
+                    </div>
                   </div>
 
                   <button
@@ -95,7 +95,7 @@ export default function SeedPage() {
                       />
                     ) : (
                       <>
-                        Begin Seeding Process
+                        Begin Full Seeding Process
                         <ArrowRight className="w-5 h-5" />
                       </>
                     )}
@@ -108,7 +108,7 @@ export default function SeedPage() {
                   </div>
                   <div className="space-y-2">
                     <h2 className="text-2xl font-serif font-bold text-[#122c1f]">Seeding Complete!</h2>
-                    <p className="text-[#77574d] text-sm">The marketplace is now populated with premium heritage products.</p>
+                    <p className="text-[#77574d] text-sm">The marketplace is now populated with the full agricultural catalog for farmers.</p>
                   </div>
                   <div className="flex gap-4 justify-center pt-4">
                     <Link href="/marketplace" className="px-8 py-3 bg-[#122c1f] text-white rounded-xl font-bold hover:shadow-lg transition-all">
