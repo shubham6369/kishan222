@@ -211,11 +211,10 @@ export interface Dictionary {
       farming: string;
       security: string;
       payment: string;
-      card: string;
+      complete: string;
     };
     success_title: string;
     success_desc: string;
-    print_card: string;
     referral_link_label: string;
     go_dashboard: string;
     mobile_verification: string;

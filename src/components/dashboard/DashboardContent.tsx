@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { db } from '@/lib/firebase';
-import { collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
+import { collection, query, where, orderBy, limit, getDocs } from 'firebase/firestore';
 
 import { useAuth } from '@/context/AuthContext';
 import { Referral } from '@/types';
@@ -124,7 +124,7 @@ export default function DashboardContent({ lang, dict }: DashboardContentProps) 
                 </div>
                 <div>
                     <p className="text-xs font-bold text-[#122c1f]">{userData?.fullName || 'User'}</p>
-                    <p className="text-[10px] text-[#77574d]">{dict.dashboard.premium_member}</p>
+                    <p className="text-[10px] text-[#77574d]">{dict.dashboard.farmer}</p>
                 </div>
             </div>
         </div>
