@@ -50,8 +50,20 @@ const getDashboardCatalog = () => {
   const categories = ['seeds', 'grains', 'fertilizers', 'pesticides', 'machinery', 'cattle', 'fresh'];
   const catalog: Record<string, any[]> = {};
   
+  // De-duplicate MOCK_PRODUCTS first to be safe
+  const uniqueProducts: typeof MOCK_PRODUCTS = [];
+  const seen = new Set<string>();
+  
+  MOCK_PRODUCTS.forEach(p => {
+    const key = `${p.name.toLowerCase()}-${p.image}`;
+    if (!seen.has(key)) {
+      seen.add(key);
+      uniqueProducts.push(p);
+    }
+  });
+
   categories.forEach(cat => {
-    catalog[cat] = MOCK_PRODUCTS
+    catalog[cat] = uniqueProducts
       .filter(p => p.category === cat)
       .slice(0, 4)
       .map(p => ({

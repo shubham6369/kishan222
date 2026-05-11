@@ -47,27 +47,29 @@ export default function MarketplaceContent({ dict }: MarketplaceContentProps) {
         ...doc.data()
       })) as Product[];
       
-      // Combine with mock products if db is empty or just as a base
-      // This ensures images and products are always visible for the user
+      // Combine with mock products and de-duplicate based on name and image
       const mockItems = MOCK_PRODUCTS.map((p, index) => ({
         id: `mock-${index}`,
         ...p
       })) as Product[];
 
-      // Only add mock products that aren't already in db (simple name check or just prepend)
-      const combined = [...dbItems];
-      if (dbItems.length === 0) {
-        combined.push(...mockItems);
-      } else {
-        // Optionally add mock items if they are unique
-        mockItems.forEach(mItem => {
-          if (!dbItems.some(dbItem => dbItem.name === mItem.name)) {
-            combined.push(mItem);
-          }
-        });
-      }
+      // Create a consolidated list
+      const allItems = [...dbItems, ...mockItems];
+      
+      // De-duplicate based on name and image
+      const uniqueItems: Product[] = [];
+      const seen = new Set<string>();
 
-      setProducts(combined);
+      allItems.forEach(item => {
+        // Create a unique key for name + image combination
+        const key = `${item.name?.toLowerCase()}-${item.image}`;
+        if (!seen.has(key)) {
+          seen.add(key);
+          uniqueItems.push(item);
+        }
+      });
+
+      setProducts(uniqueItems);
       setLoading(false);
     }, (error) => {
       console.error("Error fetching products:", error);
