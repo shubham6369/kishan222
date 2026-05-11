@@ -371,6 +371,22 @@ const MOCK_PRODUCTS = [
     deliveryCharge: 0
   },
   {
+    name: 'Organic Garlic-Pepper Bio-Pesticide',
+    category: 'pesticides',
+    price: 210,
+    unit: '500ml',
+    rating: 4.8,
+    stock: 100,
+    status: 'approved',
+    sellerId: 'admin',
+    sellerName: 'Kishan Seva Store',
+    image: 'https://images.unsplash.com/photo-1585664811087-47f65abbad64?q=80&w=800&auto=format&fit=crop',
+    isOrganic: true,
+    description: 'Natural insect repellent made from garlic and chili extracts. Effective against caterpillars and larger pests. 100% biodegradable and safe.',
+    benefits: ['Natural Repellent', 'Non-Toxic', 'Easy to Apply'],
+    deliveryCharge: 0
+  },
+  {
     name: 'Solar Water Pump (5HP)',
     category: 'machinery',
     price: 45000,

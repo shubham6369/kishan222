@@ -377,7 +377,10 @@
       "items_count_label": "{count} आइटम",
       "status_paid": "भुगतान किया गया",
       "status_pending": "लंबित",
-      "status_failed": "विफल"
+      "status_failed": "विफल",
+      "product_catalog": "उत्पाद सूची",
+      "product_catalog_subtitle": "हर श्रेणी में वर्तमान मूल्य निर्धारण के साथ चुनिंदा उत्पाद।",
+      "view_all_products": "मार्केटप्लेस में सभी देखें"
     }
   },
 "sidebar": {

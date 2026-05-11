@@ -373,7 +373,10 @@
       "items_count_label": "{count} Items",
       "status_paid": "Paid",
       "status_pending": "Pending",
-      "status_failed": "Failed"
+      "status_failed": "Failed",
+      "product_catalog": "Product Catalog",
+      "product_catalog_subtitle": "Featured products with current pricing in every category.",
+      "view_all_products": "View All in Marketplace"
     }
   },
   "sidebar": {

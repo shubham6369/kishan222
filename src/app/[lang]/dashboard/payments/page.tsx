@@ -398,6 +398,94 @@ export default function PaymentsPage() {
         </m.div>
       </div>
 
+      {/* Product Catalog Section */}
+      <m.div variants={itemVariants} className="bg-white rounded-[56px] border border-black/5 p-12 shadow-sm relative overflow-hidden">
+        <div className="flex flex-col md:flex-row md:items-center justify-between mb-12 gap-4">
+          <div className="space-y-1">
+            <h3 className="text-3xl font-serif font-bold text-[#122c1f]">{dict.dashboard.payments_intel.product_catalog}</h3>
+            <p className="text-sm text-[#77574d]/60 font-medium font-body">{dict.dashboard.payments_intel.product_catalog_subtitle}</p>
+          </div>
+          <a href={`/${lang}/marketplace`} className="inline-flex items-center gap-2 px-6 py-3 bg-[#fbf9f5] text-[#122c1f] rounded-2xl text-xs font-black uppercase tracking-widest border border-black/5 hover:bg-[#122c1f] hover:text-white transition-all group">
+            {dict.dashboard.payments_intel.view_all_products}
+            <ExternalLink className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+          </a>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8">
+          {Object.entries(dict.marketplace.categories).filter(([key]) => key !== 'all').map(([key, label]) => {
+            const categoryProducts = [
+              {
+                seeds: [
+                  { name: 'Hybrid Paddy Seeds', price: 480, unit: '5kg' },
+                  { name: 'Mustard Seeds (Varuna)', price: 420, unit: '2kg' },
+                  { name: 'Wheat Seeds (Sonalika)', price: 550, unit: '40kg' }
+                ],
+                grains: [
+                  { name: 'Premium Basmati Rice', price: 120, unit: '1kg' },
+                  { name: 'Organic Black Gram', price: 160, unit: '1kg' },
+                  { name: 'Organic Moong Dal', price: 180, unit: '1kg' }
+                ],
+                fertilizers: [
+                  { name: 'NPK Granular (19:19:19)', price: 1350, unit: '50kg' },
+                  { name: 'Vermicompost Organic', price: 280, unit: '25kg' },
+                  { name: 'Bio-Fertilizer', price: 180, unit: '500ml' }
+                ],
+                pesticides: [
+                  { name: 'Neem Oil Bio-Pesticide', price: 320, unit: '1L' },
+                  { name: 'Trichoderma Viride', price: 240, unit: '500g' },
+                  { name: 'Garlic-Pepper Spray', price: 210, unit: '500ml' }
+                ],
+                machinery: [
+                  { name: 'Battery Knapsack Sprayer', price: 2850, unit: '16L' },
+                  { name: 'Manual Seed Drill', price: 4500, unit: 'Unit' },
+                  { name: 'Solar Water Pump', price: 45000, unit: 'Set' }
+                ],
+                cattle: [
+                  { name: 'Pure Desi Cow Ghee', price: 1250, unit: '1L' },
+                  { name: 'Gau Ark (Distilled)', price: 150, unit: '500ml' },
+                  { name: 'Cow Dung Cake (Upla)', price: 120, unit: '24pcs' }
+                ],
+                fresh: [
+                  { name: 'Organic Tomatoes', price: 45, unit: '1kg' },
+                  { name: 'Organic Turmeric Finger', price: 220, unit: '1kg' },
+                  { name: 'Organic Potatoes', price: 35, unit: '1kg' }
+                ]
+              }[key as string]
+            ].flat().filter(Boolean);
+
+            return (
+              <div key={key} className="space-y-6">
+                <div className="flex items-center gap-3">
+                  <div className={`w-2 h-6 rounded-full ${
+                    key === 'seeds' ? 'bg-emerald-500' : 
+                    key === 'grains' ? 'bg-amber-500' :
+                    key === 'fertilizers' ? 'bg-sky-500' : 
+                    key === 'machinery' ? 'bg-rose-500' : 
+                    key === 'pesticides' ? 'bg-purple-500' :
+                    key === 'cattle' ? 'bg-indigo-500' :
+                    'bg-slate-400'
+                  }`} />
+                  <h4 className="text-sm font-black text-[#122c1f] uppercase tracking-widest">{label}</h4>
+                </div>
+                <div className="space-y-3">
+                  {categoryProducts.map((p, i) => (
+                    <div key={i} className="flex items-center justify-between p-4 bg-[#fbf9f5] rounded-2xl border border-black/5 hover:border-[#122c1f]/10 transition-all group cursor-default">
+                      <div className="flex flex-col">
+                        <span className="text-xs font-bold text-[#122c1f] leading-tight group-hover:text-[#122c1f] transition-colors">{p.name}</span>
+                        <span className="text-[10px] font-medium text-[#77574d]/50 mt-0.5">{p.unit}</span>
+                      </div>
+                      <div className="flex flex-col items-end">
+                        <span className="text-sm font-black text-[#122c1f]">₹{p.price.toLocaleString()}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </m.div>
+
       {/* Transactions Table */}
       <m.div variants={itemVariants} className="bg-white rounded-[48px] border border-black/5 shadow-sm overflow-hidden">
         <div className="p-10 border-b border-black/5 flex flex-col xl:flex-row gap-8 justify-between items-center bg-[#fbf9f5]/30">
