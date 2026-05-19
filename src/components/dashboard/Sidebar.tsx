@@ -25,11 +25,6 @@ export default function Sidebar({ lang, dict }: SidebarProps) {
   const NAV_ITEMS = [
     { name: dict.sidebar.overview, href: `/${lang}/dashboard`, icon: BarChart3 },
     { name: dict.sidebar.marketplace, href: `/${lang}/marketplace`, icon: Home },
-    { name: dict.sidebar.seller_hub, href: `/${lang}/dashboard/seller`, icon: Store },
-    { name: dict.sidebar.my_products, href: `/${lang}/dashboard/products`, icon: ShoppingBag },
-    { name: dict.sidebar.referrals, href: `/${lang}/dashboard/referrals`, icon: Users },
-    { name: dict.sidebar.payments, href: `/${lang}/dashboard/payments`, icon: CreditCard },
-    { name: dict.sidebar.wallet, href: `/${lang}/dashboard/wallet`, icon: Wallet },
   ];
 
   return (
