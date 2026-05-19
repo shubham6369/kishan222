@@ -15,6 +15,7 @@ import {
   ChevronRight,
   CheckCheck
 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
 import { useLanguage } from '@/context/LanguageContext';
@@ -44,7 +45,8 @@ interface Product {
 export default function ProductDetailsPage({ params }: { params: { id: string, lang: string } }) {
   const { dict, lang } = useLanguage();
   const [quantity, setQuantity] = useState(1);
-  const { addToCart } = useCart();
+  const { addToCart, clearCart } = useCart();
+  const router = useRouter();
   const [added, setAdded] = useState(false);
   
   const [product, setProduct] = useState<Product | null>(null);
@@ -99,6 +101,21 @@ export default function ProductDetailsPage({ params }: { params: { id: string, l
     });
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
+  };
+
+  const handleBuyNow = () => {
+    clearCart();
+    addToCart({
+      productId: product.id,
+      name: product.name,
+      price: product.price,
+      quantity: quantity,
+      image: product.images?.[0] || product.image || '/placeholder.png',
+      sellerId: product.sellerId || '',
+      deliveryCharge: product.deliveryCharge || 0,
+      weight: product.unit || '1'
+    });
+    router.push(`/${params.lang}/checkout`);
   };
 
   const images = product.images || [product.image || 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?q=80&w=1200&auto=format&fit=crop'];
@@ -212,33 +229,42 @@ export default function ProductDetailsPage({ params }: { params: { id: string, l
 
                     {/* Purchase Controls */}
                     <div className="mt-auto space-y-8">
-                        <div className="flex items-center gap-6">
-                            <div className="flex items-center bg-white border border-black/5 rounded-2xl p-2 h-16">
+                        <div className="flex flex-col gap-4">
+                            <div className="flex items-center gap-6">
+                                <div className="flex items-center bg-white border border-black/5 rounded-2xl p-2 h-16">
+                                    <button 
+                                        onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                                        className="w-12 h-full flex items-center justify-center text-[#122c1f] hover:bg-[#fbf9f5] rounded-xl transition-colors font-bold"
+                                    >
+                                        -
+                                    </button>
+                                    <span className="w-12 text-center font-bold font-mono">{quantity}</span>
+                                    <button 
+                                        onClick={() => {
+                                            if (product.stock === undefined || quantity < product.stock) {
+                                                setQuantity(quantity + 1)
+                                            }
+                                        }}
+                                        className="w-12 h-full flex items-center justify-center text-[#122c1f] hover:bg-[#fbf9f5] rounded-xl transition-colors font-bold"
+                                    >
+                                        +
+                                    </button>
+                                </div>
                                 <button 
-                                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                                    className="w-12 h-full flex items-center justify-center text-[#122c1f] hover:bg-[#fbf9f5] rounded-xl transition-colors font-bold"
+                                    onClick={handleAddToCart}
+                                    disabled={product.stock === 0}
+                                    className={`flex-1 ${added ? 'bg-green-500 border-green-500 text-white' : 'bg-white text-[#122c1f] border-2 border-[#122c1f]'} h-16 rounded-[20px] font-bold uppercase tracking-[0.2em] flex items-center justify-center gap-3 transition-all hover:scale-[1.02] ${product.stock === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
                                 >
-                                    -
-                                </button>
-                                <span className="w-12 text-center font-bold font-mono">{quantity}</span>
-                                <button 
-                                    onClick={() => {
-                                        if (product.stock === undefined || quantity < product.stock) {
-                                            setQuantity(quantity + 1)
-                                        }
-                                    }}
-                                    className="w-12 h-full flex items-center justify-center text-[#122c1f] hover:bg-[#fbf9f5] rounded-xl transition-colors font-bold"
-                                >
-                                    +
+                                    {added ? <CheckCheck className="w-5 h-5" /> : <ShoppingCart className="w-5 h-5" />}
+                                    {added ? 'Added to Basket' : (product.stock === 0 ? 'Out of Stock' : 'Add to Basket')}
                                 </button>
                             </div>
                             <button 
-                                onClick={handleAddToCart}
+                                onClick={handleBuyNow}
                                 disabled={product.stock === 0}
-                                className={`flex-1 ${added ? 'bg-green-500' : 'bg-[#122c1f]'} text-white h-16 rounded-[20px] font-bold uppercase tracking-[0.2em] flex items-center justify-center gap-3 shadow-xl hover:shadow-[#122c1f]/20 transition-all hover:scale-[1.02] ${product.stock === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                className={`w-full bg-[#122c1f] text-white h-16 rounded-[20px] font-bold uppercase tracking-[0.2em] flex items-center justify-center gap-3 shadow-xl hover:shadow-[#122c1f]/20 transition-all hover:scale-[1.02] ${product.stock === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
                             >
-                                {added ? <CheckCheck className="w-5 h-5" /> : <ShoppingCart className="w-5 h-5" />}
-                                {added ? 'Added to Basket' : (product.stock === 0 ? 'Out of Stock' : 'Add to Basket')}
+                                Buy Now
                             </button>
                         </div>
                         

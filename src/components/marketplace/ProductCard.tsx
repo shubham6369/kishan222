@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { m } from 'framer-motion';
 import { ShoppingCart, Star, ArrowRight, ShieldCheck, CheckCheck } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter, useParams } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
 
 import { Product } from '@/types';
@@ -14,7 +15,9 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
-  const { addToCart } = useCart();
+  const { addToCart, clearCart } = useCart();
+  const router = useRouter();
+  const params = useParams();
   const [added, setAdded] = React.useState(false);
   const [imgError, setImgError] = React.useState(false);
 
@@ -44,6 +47,26 @@ export default function ProductCard({ product }: ProductCardProps) {
     setTimeout(() => setAdded(false), 2000);
   };
 
+  const handleBuyNow = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    clearCart();
+    addToCart({
+      productId: product.id,
+      name: product.name,
+      price: product.price,
+      quantity: 1,
+      image: displayImage,
+      sellerId: product.sellerId || '',
+      deliveryCharge: product.deliveryCharge || 0,
+      weight: product.unit || '1'
+    });
+
+    const lang = params?.lang || 'en';
+    router.push(`/${lang}/checkout`);
+  };
+
   return (
     <m.div
       whileHover={{ y: -8 }}
@@ -70,18 +93,6 @@ export default function ProductCard({ product }: ProductCardProps) {
             </div>
           )}
         </div>
-        
-        {/* Quick Add Button */}
-        <m.button
-          onClick={handleAddToCart}
-          initial={{ opacity: 0, y: 10 }}
-          whileHover={{ scale: 1.1 }}
-          animate={{ opacity: 1, y: 0 }}
-          disabled={product.stock === 0}
-          className={`absolute bottom-4 right-4 ${added ? 'bg-green-500 text-white' : 'bg-white text-[#122c1f] hover:bg-[#122c1f] hover:text-white'} p-3 rounded-xl shadow-xl transition-colors z-20 ${product.stock === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
-        >
-          {added ? <CheckCheck className="w-5 h-5" /> : <ShoppingCart className="w-5 h-5" />}
-        </m.button>
       </div>
 
       {/* Content */}
@@ -113,22 +124,46 @@ export default function ProductCard({ product }: ProductCardProps) {
           </p>
         )}
 
-        <div className="mt-auto flex justify-between items-end">
-          <div>
-            <p className="text-[10px] text-[#77574d] uppercase font-bold tracking-tight">Price</p>
-            <div className="flex items-baseline gap-1">
-              <span className="text-2xl font-serif font-bold text-[#122c1f]">₹{product.price}</span>
-              <span className="text-xs text-[#77574d]/60 font-medium">/ {product.unit || 'unit'}</span>
+        <div className="mt-auto flex flex-col gap-4">
+          <div className="flex justify-between items-end">
+            <div>
+              <p className="text-[10px] text-[#77574d] uppercase font-bold tracking-tight">Price</p>
+              <div className="flex items-baseline gap-1">
+                <span className="text-2xl font-serif font-bold text-[#122c1f]">₹{product.price}</span>
+                <span className="text-xs text-[#77574d]/60 font-medium">/ {product.unit || 'unit'}</span>
+              </div>
             </div>
+            <Link 
+              href={`/${params?.lang || 'en'}/marketplace/${product.id}`}
+              className="text-[10px] uppercase font-bold tracking-widest text-[#122c1f] flex items-center gap-2 group/btn"
+            >
+              Details
+              <ArrowRight className="w-3 h-3 transition-transform group-hover/btn:translate-x-1" />
+            </Link>
           </div>
           
-          <Link 
-            href={`/marketplace/${product.id}`}
-            className="text-[10px] uppercase font-bold tracking-widest text-[#122c1f] flex items-center gap-2 group/btn"
-          >
-            Details
-            <ArrowRight className="w-3 h-3 transition-transform group-hover/btn:translate-x-1" />
-          </Link>
+          <div className="flex gap-2 w-full">
+             <button 
+               onClick={handleAddToCart} 
+               disabled={product.stock === 0}
+               className={`flex-1 py-2.5 rounded-xl border border-[#122c1f] text-xs font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2
+                 ${added ? 'bg-green-500 border-green-500 text-white' : 'text-[#122c1f] hover:bg-[#122c1f] hover:text-white'}
+                 ${product.stock === 0 ? 'opacity-50 cursor-not-allowed' : ''}
+               `}
+             >
+               {added ? <CheckCheck className="w-4 h-4" /> : <ShoppingCart className="w-4 h-4" />}
+               {added ? 'Added' : 'Add to Cart'}
+             </button>
+             <button 
+               onClick={handleBuyNow} 
+               disabled={product.stock === 0}
+               className={`flex-1 py-2.5 rounded-xl bg-[#122c1f] text-white text-xs font-bold uppercase tracking-wider hover:bg-[#204c35] transition-colors
+                 ${product.stock === 0 ? 'opacity-50 cursor-not-allowed' : ''}
+               `}
+             >
+               Buy Now
+             </button>
+          </div>
         </div>
       </div>
     </m.div>
