@@ -294,10 +294,14 @@ export default function RegistrationForm() {
         // Post-authentication check: if user already has an active registration/paid fee,
         // bypass registration steps and redirect straight to the dashboard.
         if (result.user) {
-          const userDoc = await getDoc(doc(db, 'users', result.user.uid));
-          if (userDoc.exists() && userDoc.data()?.membershipId) {
-            router.push(`/${lang}/dashboard`);
-            return;
+          try {
+            const userDoc = await getDoc(doc(db, 'users', result.user.uid));
+            if (userDoc.exists() && userDoc.data()?.membershipId) {
+              router.push(`/${lang}/dashboard`);
+              return;
+            }
+          } catch (dbErr) {
+            console.warn("Firestore user check blocked or failed. Proceeding with registration:", dbErr);
           }
         }
 
