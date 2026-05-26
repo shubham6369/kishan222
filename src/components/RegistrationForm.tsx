@@ -49,6 +49,17 @@ const steps = [
   { id: 'success', title: "Complete", icon: CheckCircle2 },
 ];
 
+const get10DigitPhone = (phone: string): string => {
+  const digits = phone.replace(/\D/g, '');
+  if (digits.length === 12 && digits.startsWith('91')) {
+    return digits.slice(2);
+  }
+  if (digits.length === 11 && digits.startsWith('0')) {
+    return digits.slice(1);
+  }
+  return digits;
+};
+
 export default function RegistrationForm() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -92,7 +103,7 @@ export default function RegistrationForm() {
       if (!user) throw new Error(dict.register.errors.session_lost);
 
       // Link the password to their phone account using EmailAuthProvider proxy
-      const emailProxy = `${currentData.phone.replace(/\D/g, '')}@kishanseva.in`;
+      const emailProxy = `${get10DigitPhone(currentData.phone)}@kishanseva.in`;
       
       try {
         const credential = EmailAuthProvider.credential(emailProxy, currentData.password);
@@ -117,7 +128,7 @@ export default function RegistrationForm() {
         finalPhotoUrl = await getDownloadURL(storageRef);
       }
 
-      const normalizedPhone = currentData.phone.replace(/\D/g, '');
+      const normalizedPhone = get10DigitPhone(currentData.phone);
 
       // Store Farmer Data — only after payment is confirmed
       const userData = {
@@ -320,9 +331,9 @@ export default function RegistrationForm() {
         body: JSON.stringify({ 
           amount: 50, // ₹50 smart ID card issuance fee
           customerId: user.uid,
-          customerPhone: formData.phone.replace(/\D/g, ''),
+          customerPhone: get10DigitPhone(formData.phone),
           customerName: formData.fullName,
-          customerEmail: `${formData.phone.replace(/\D/g, '')}@kishanseva.in`,
+          customerEmail: `${get10DigitPhone(formData.phone)}@kishanseva.in`,
           lang: 'en',
           returnUrl: `${window.location.origin}/register?order_id={order_id}&payment_id={payment_id}`
         }),
@@ -355,7 +366,7 @@ export default function RegistrationForm() {
     setIsSubmitting(true);
     
     try {
-      const normalizedPhone = formData.phone.replace(/\D/g, '');
+      const normalizedPhone = get10DigitPhone(formData.phone);
       
       // Check for duplicate phone number
       try {
@@ -432,8 +443,9 @@ export default function RegistrationForm() {
     if (isSubmitting || paymentProcessing) return;
     setError('');
     if (step === 1) {
-      if (!formData.fullName || !formData.phone || formData.phone.length < 10) {
-        setError(dict.register.errors.valid_name_phone);
+      const localPhone = get10DigitPhone(formData.phone);
+      if (!formData.fullName || !formData.phone || localPhone.length !== 10) {
+        setError(dict.register.errors.valid_name_phone || "Please enter a valid 10-digit phone number");
         return;
       }
       if (!otpSent) {
