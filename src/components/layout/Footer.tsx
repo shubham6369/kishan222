@@ -5,7 +5,7 @@ import { Dictionary } from "@/context/LanguageContext";
 
 export default function Footer({ lang, dict }: { lang: string, dict: Dictionary }) {
   return (
-    <footer className="bg-primary text-white pt-32 pb-16 relative overflow-hidden">
+    <footer className="bg-[#070908] text-white pt-32 pb-16 relative overflow-hidden border-t border-white/5">
       {/* Decorative Background Elements */}
       <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-accent/5 rounded-full blur-[120px] -mb-64 -mr-64"></div>
       
