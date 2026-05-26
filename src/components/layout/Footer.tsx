@@ -42,13 +42,21 @@ export default function Footer({ lang, dict }: { lang: string, dict: Dictionary 
             <div>
               <h4 className="font-serif text-xl font-bold mb-8 text-accent">{dict.footer?.exploration || "Exploration"}</h4>
               <ul className="space-y-6 font-body text-white/50">
-                {(dict.footer?.exploration_links || ["Our Heritage", "Marketplace", "Membership", "Technical Support"]).map((item: string, i: number) => (
-                  <li key={i}>
-                    <Link href="#" className="hover:text-white transition-colors flex items-center gap-2 group">
-                      {item} <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                    </Link>
-                  </li>
-                ))}
+                <li>
+                  <Link href={`/${lang}/about`} className="hover:text-white transition-colors flex items-center gap-2 group">
+                    {dict.footer?.exploration_links?.[0] || "Our Heritage"} <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </Link>
+                </li>
+                <li>
+                  <Link href={`/${lang}/register`} className="hover:text-white transition-colors flex items-center gap-2 group">
+                    {dict.footer?.exploration_links?.[1] || "Generate Card"} <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </Link>
+                </li>
+                <li>
+                  <Link href={`/${lang}/contact`} className="hover:text-white transition-colors flex items-center gap-2 group">
+                    {dict.footer?.exploration_links?.[2] || "Technical Support"} <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </Link>
+                </li>
               </ul>
             </div>
 

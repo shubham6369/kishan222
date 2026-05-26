@@ -3,8 +3,8 @@
     "home": "Home",
     "features": "Features",
     "mission": "Mission",
-    "marketplace": "Marketplace",
-    "join": "Join as Farmer",
+    "marketplace": "Farmer Card",
+    "join": "Become a Member",
     "login": "Login Profile",
     "tagline": "Rural Empowerment Collective",
     "about": "About",
@@ -13,10 +13,10 @@
     "signout": "Sign Out"
   },
   "hero": {
-    "title": "Empowering Farmers for a Sustainable Future",
-    "subtitle": "Join Kishan Seva to access exclusive benefits, sell organic products directly, and grow with a community dedicated to agricultural prosperity.",
+    "title": "Get Your Digital Farmer ID Card & Earn Rewards",
+    "subtitle": "Register to instantly generate your verified digital Farmer ID Card with QR code verification for a one-time fee of ₹50. Invite other farmers to earn ₹7 per registration.",
     "cta_join": "Join Kishan Seva",
-    "cta_marketplace": "Visit Marketplace",
+    "cta_marketplace": "Farmer Login",
     "trust": "Trusted by"
   },
   "features": {
@@ -129,7 +129,7 @@
     "established": "Est. Rural Empowerment 2024",
     "mission": "The premier collective for the modern Indian farmer. We facilitate a global transition to regenerative agriculture while preserving our rich rural heritage.",
     "exploration": "Exploration",
-    "exploration_links": ["Our Heritage", "Marketplace", "Technical Support"],
+    "exploration_links": ["Our Heritage", "Farmer Card", "Technical Support"],
     "intelligence": "Intelligence",
     "intelligence_links": ["Soil Analytics", "Market Trends", "Govt Schemes", "Climate Tech"],
     "assistance": "Assistance",
@@ -375,7 +375,7 @@
   },
   "sidebar": {
     "overview": "Overview",
-    "marketplace": "Marketplace",
+    "marketplace": "Farmer Card",
     "seller_hub": "Seller Hub",
     "my_products": "My Products",
     "referrals": "Referrals",

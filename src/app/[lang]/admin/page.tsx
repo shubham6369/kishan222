@@ -3,8 +3,6 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Users, 
-  Package, 
-  FileText, 
   CreditCard, 
   ShieldCheck, 
   TrendingUp,
@@ -20,7 +18,7 @@ import WithdrawalsTab from '@/components/admin/WithdrawalsTab';
 import { cn } from '@/lib/utils';
 
 export default function AdminDashboard() {
-  const [activeTab, setActiveTab] = useState<'farmers' | 'products' | 'orders' | 'withdrawals'>('farmers');
+  const [activeTab, setActiveTab] = useState<'farmers' | 'withdrawals'>('farmers');
   const { userData, loading } = useAuth();
   const router = useRouter();
 
@@ -40,8 +38,6 @@ export default function AdminDashboard() {
 
   const menuItems = [
     { id: 'farmers', label: 'Farmers', icon: Users, description: 'Manage member database' },
-    { id: 'products', label: 'Marketplace', icon: Package, description: 'Approve & manage listings' },
-    { id: 'orders', label: 'Orders', icon: FileText, description: 'Track order fulfillment' },
     { id: 'withdrawals', label: 'Withdrawals', icon: CreditCard, description: 'Process payment requests' },
   ] as const;
 
@@ -145,8 +141,6 @@ export default function AdminDashboard() {
               
               <div className="relative z-10">
                 {activeTab === 'farmers' && <FarmersTab />}
-                {activeTab === 'products' && <ProductsTab />}
-                {activeTab === 'orders' && <OrdersTab />}
                 {activeTab === 'withdrawals' && <WithdrawalsTab />}
               </div>
             </m.div>

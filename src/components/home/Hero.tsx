@@ -1,6 +1,6 @@
-﻿import Image from "next/image";
+import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Star, Leaf, Trophy } from "lucide-react";
+import { ArrowRight, Star, CreditCard, Users } from "lucide-react";
 import FadeIn from "@/components/animations/FadeIn";
 import { Dictionary } from "@/context/LanguageContext";
 
@@ -46,8 +46,8 @@ export default function Hero({ lang, dict }: { lang: string, dict: Dictionary })
             <Link href={`/${lang}/register`} className="btn-premium group shadow-2xl shadow-accent/10">
               {dict.hero?.cta_join || 'Join Kishan Seva'} <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
-            <Link href={`/${lang}/marketplace`} className="px-8 py-4 rounded-full font-bold border border-white/20 text-white hover:bg-white/10 transition-all flex items-center justify-center gap-2">
-              {dict.hero?.cta_marketplace || 'Explore the Harvest'}
+            <Link href={`/${lang}/login`} className="px-8 py-4 rounded-full font-bold border border-white/20 text-white hover:bg-white/10 transition-all flex items-center justify-center gap-2">
+              {dict.nav?.login || 'Login Profile'}
             </Link>
           </div>
         </FadeIn>
@@ -60,21 +60,21 @@ export default function Hero({ lang, dict }: { lang: string, dict: Dictionary })
           <div className="glass-panel p-8 rounded-3xl space-y-8 max-w-md ml-auto">
             <div className="flex items-center gap-4">
               <div className="w-16 h-16 rounded-2xl bg-accent flex items-center justify-center">
-                <Leaf className="text-primary w-8 h-8" />
+                <CreditCard className="text-primary w-8 h-8" />
               </div>
               <div>
-                <h3 className="text-white text-xl">100% Regenerative</h3>
-                <p className="text-white/60 text-sm">Beyond Organic Standards</p>
+                <h3 className="text-white text-xl">Smart Farmer ID</h3>
+                <p className="text-white/60 text-sm">QR Verified Identity Card</p>
               </div>
             </div>
             <div className="h-px bg-white/10"></div>
             <div className="flex items-center gap-4">
               <div className="w-16 h-16 rounded-2xl bg-white/10 flex items-center justify-center">
-                <Trophy className="text-accent w-8 h-8" />
+                <Users className="text-accent w-8 h-8" />
               </div>
               <div>
-                <h3 className="text-white text-xl">Heritage Certified</h3>
-                <p className="text-white/60 text-sm">Empowering Local Lineage</p>
+                <h3 className="text-white text-xl">Referral Network</h3>
+                <p className="text-white/60 text-sm">Earn ₹7 per Registration</p>
               </div>
             </div>
           </div>

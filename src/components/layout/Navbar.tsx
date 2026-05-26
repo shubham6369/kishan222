@@ -71,10 +71,10 @@ export default function Navbar({ lang, dict }: { lang: string, dict: Dictionary 
           </button>
           
           <Link 
-            href={`/${lang}/marketplace`} 
+            href={`/${lang}/register`} 
             className={`text-sm font-bold uppercase tracking-widest hover:text-accent-dark transition-colors ${hasScrolled ? "text-primary" : "text-white"}`}
           >
-            {dict.nav?.marketplace || "Marketplace"}
+            {dict.nav?.join || "Generate Card"}
           </Link>
           <Link 
             href={`/${lang}/about`} 
@@ -165,11 +165,11 @@ export default function Navbar({ lang, dict }: { lang: string, dict: Dictionary 
               </button>
 
               <Link 
-                href={`/${lang}/marketplace`} 
+                href={`/${lang}/register`} 
                 className="block text-2xl font-serif text-white hover:text-accent transition-colors"
                 onClick={() => setIsOpen(false)}
               >
-                {dict.nav?.marketplace || "Marketplace"}
+                {dict.nav?.join || "Generate Card"}
               </Link>
               <Link 
                 href={`/${lang}/about`} 
