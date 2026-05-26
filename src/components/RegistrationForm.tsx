@@ -31,7 +31,7 @@ import {
   updateProfile,
   AuthError
 } from 'firebase/auth';
-import { collection, query, where, getDocs, doc, setDoc, updateDoc, increment } from 'firebase/firestore';
+import { collection, query, where, getDocs, doc, getDoc, setDoc, updateDoc, increment } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useLanguage } from '@/context/LanguageContext';
@@ -52,7 +52,7 @@ const steps = [
 export default function RegistrationForm() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const { dict } = useLanguage();
+  const { dict, lang } = useLanguage();
   const referrerId = searchParams.get('ref');
   
   const [formData, setFormData] = useState({
@@ -277,8 +277,19 @@ export default function RegistrationForm() {
     if (otpValue.length === 6 && confirmationResult) {
       try {
         setIsSubmitting(true);
-        await confirmationResult.confirm(otpValue);
+        const result = await confirmationResult.confirm(otpValue);
         setError('');
+        
+        // Post-authentication check: if user already has an active registration/paid fee,
+        // bypass registration steps and redirect straight to the dashboard.
+        if (result.user) {
+          const userDoc = await getDoc(doc(db, 'users', result.user.uid));
+          if (userDoc.exists() && userDoc.data()?.membershipId) {
+            router.push(`/${lang}/dashboard`);
+            return;
+          }
+        }
+
         // Successfully verified OTP, move to next step
         setStep(2);
       } catch (err: unknown) {
@@ -344,16 +355,23 @@ export default function RegistrationForm() {
     setIsSubmitting(true);
     
     try {
-      // Check for duplicate phone number
-      const usersRef = collection(db, 'users');
       const normalizedPhone = formData.phone.replace(/\D/g, '');
-      const q = query(usersRef, where('phone', '==', normalizedPhone));
-      const querySnapshot = await getDocs(q);
       
-      if (!querySnapshot.empty) {
-        setError(dict.register.errors.phone_registered);
-        setIsSubmitting(false);
-        return;
+      // Check for duplicate phone number
+      try {
+        const usersRef = collection(db, 'users');
+        const q = query(usersRef, where('phone', '==', normalizedPhone));
+        const querySnapshot = await getDocs(q);
+        
+        if (!querySnapshot.empty) {
+          setError(dict.register.errors.phone_registered);
+          setIsSubmitting(false);
+          return;
+        }
+      } catch (dbErr: any) {
+        // If Firestore rules restrict unauthenticated reads, log a warning and proceed.
+        // The duplicate check is performed securely post-authentication in verifyOTP.
+        console.warn("Firestore permissions blocked duplicate phone check. Proceeding to OTP verification:", dbErr);
       }
 
       // Setup Recaptcha
