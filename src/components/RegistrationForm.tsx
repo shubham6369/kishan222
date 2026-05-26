@@ -305,7 +305,18 @@ export default function RegistrationForm() {
         setStep(2);
       } catch (err: unknown) {
         console.error("OTP Error:", err);
-        setError(dict?.register?.errors?.invalid_otp || "Invalid OTP. Please try again.");
+        const authError = err as AuthError;
+        let msg = dict?.register?.errors?.invalid_otp || "Invalid OTP. Please try again.";
+        if (authError.code === 'auth/code-expired') {
+          msg = "OTP code has expired. Please request a new one.";
+        } else if (authError.code === 'auth/session-expired') {
+          msg = "Session has expired. Please request a new OTP.";
+        } else if (authError.code) {
+          msg = `${msg} (${authError.code.replace('auth/', '')})`;
+        } else if (authError.message) {
+          msg = `${msg} (${authError.message})`;
+        }
+        setError(msg);
       } finally {
         setIsSubmitting(false);
       }

@@ -142,7 +142,18 @@ export default function LoginForm({ lang, dict }: LoginFormProps) {
       router.push(`/${lang}/dashboard`);
     } catch (err: unknown) {
       console.error("OTP Verify Error:", err);
-      setError('Invalid OTP code. Please check and try again.');
+      const authError = err as AuthError;
+      let msg = 'Invalid OTP code. Please check and try again.';
+      if (authError.code === 'auth/code-expired') {
+        msg = "OTP code has expired. Please request a new one.";
+      } else if (authError.code === 'auth/session-expired') {
+        msg = "Session has expired. Please request a new OTP.";
+      } else if (authError.code) {
+        msg = `${msg} (${authError.code.replace('auth/', '')})`;
+      } else if (authError.message) {
+        msg = `${msg} (${authError.message})`;
+      }
+      setError(msg);
     } finally {
       setIsSubmitting(false);
     }
