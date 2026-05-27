@@ -20,7 +20,6 @@ import {
   Camera,
   Tractor
 } from 'lucide-react';
-import { load } from '@cashfreepayments/cashfree-js';
 import { auth, db, storage } from '@/lib/firebase';
 import { 
   RecaptchaVerifier, 
@@ -224,48 +223,16 @@ export default function RegistrationForm() {
     return () => clearInterval(timer);
   }, [countdown]);
 
-  // Handle return from Cashfree payment
+  // Dynamically load Razorpay Checkout script
   useEffect(() => {
-    const order_id = searchParams.get('order_id');
-    const cf_payment_id = searchParams.get('payment_id');
-    
-    if (order_id && step !== 'success') {
-      const finalizeAfterPayment = async () => {
-        setPaymentProcessing(true);
-        try {
-          // Verify payment status
-          const res = await fetch(`/api/cashfree/verify-payment?order_id=${order_id}`);
-          const data = await res.json();
-          
-          if (data.status === 'SUCCESS') {
-            // Retrieve saved form data
-            const savedData = localStorage.getItem('pending_registration');
-            if (savedData) {
-              const parsedData = JSON.parse(savedData);
-              // Update local state so handleSubmit has access to it
-              setFormData(parsedData);
-              await handleSubmit(cf_payment_id || data.paymentId, order_id, parsedData);
-            } else {
-              // Fallback: if localStorage is cleared, try to recover from current state
-              // but current state might be lost on redirect
-              await handleSubmit(cf_payment_id || data.paymentId, order_id);
-            }
-          } else {
-            setError(dict.register.errors.payment_failed);
-            setStep(4);
-          }
-        } catch (err: unknown) {
-          console.error("Payment verification error:", err);
-          setError("Payment verification failed. Please contact support.");
-        } finally {
-          setPaymentProcessing(false);
-          // Clear saved data
-          localStorage.removeItem('pending_registration');
-        }
-      };
-      finalizeAfterPayment();
+    if (document.querySelector('script[src="https://checkout.razorpay.com/v1/checkout.js"]')) {
+      return;
     }
-  }, [searchParams, step, handleSubmit, dict.register.errors.payment_failed]);
+    const script = document.createElement('script');
+    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+    script.async = true;
+    document.body.appendChild(script);
+  }, []);
 
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -336,11 +303,8 @@ export default function RegistrationForm() {
       const user = auth.currentUser;
       if (!user) throw new Error(dict.register.errors.session_lost);
 
-      // Save form data to localStorage before redirecting
-      localStorage.setItem('pending_registration', JSON.stringify(formData));
-
-      // Step 1: Create Cashfree order on server
-      const orderRes = await fetch('/api/cashfree/create-order', {
+      // Step 1: Create Razorpay order on server
+      const orderRes = await fetch('/api/razorpay/create-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -348,24 +312,72 @@ export default function RegistrationForm() {
           customerId: user.uid,
           customerPhone: get10DigitPhone(formData.phone),
           customerName: formData.fullName,
-          customerEmail: `${get10DigitPhone(formData.phone)}@kishanseva.in`,
-          lang: 'en',
-          returnUrl: `${window.location.origin}/register?order_id={order_id}&payment_id={payment_id}`
+          customerEmail: `${get10DigitPhone(formData.phone)}@kishanseva.in`
         }),
       });
       
       const orderData = await orderRes.json();
-      if (!orderData.paymentSessionId) throw new Error(orderData.error || dict.register.errors.payment_failed);
+      if (orderData.error) throw new Error(orderData.error);
+      if (!orderData.orderId) throw new Error(dict.register.errors.payment_failed || 'Failed to initialize payment order');
 
-      // Step 2: Open Cashfree Checkout
-      const cashfree = await load({
-        mode: process.env.NEXT_PUBLIC_CASHFREE_ENV === 'PRODUCTION' ? 'production' : 'sandbox'
-      });
+      // Step 2: Open Razorpay Checkout Modal
+      const RazorpayConstructor = (window as unknown as { Razorpay: new (options: Record<string, unknown>) => { open: () => void } }).Razorpay;
+      if (!RazorpayConstructor) {
+        throw new Error('Payment gateway failed to load. Please refresh the page and try again.');
+      }
 
-      await cashfree.checkout({
-        paymentSessionId: orderData.paymentSessionId,
-        redirectTarget: "_self", // Redirect to returnUrl after payment
-      });
+      const options = {
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+        amount: orderData.amount,
+        currency: orderData.currency || 'INR',
+        name: 'Kishan Seva Samiti',
+        description: 'Lifelong Smart Card Issuance Fee',
+        order_id: orderData.orderId,
+        handler: async function (response: { razorpay_order_id: string; razorpay_payment_id: string; razorpay_signature: string }) {
+          try {
+            setPaymentProcessing(true);
+            // Verify payment on backend
+            const verifyRes = await fetch('/api/razorpay/verify-payment', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+              }),
+            });
+
+            const verifyData = await verifyRes.json();
+            if (verifyData.status === 'SUCCESS') {
+              // Finalize registration
+              await handleSubmit(response.razorpay_payment_id, response.razorpay_order_id);
+            } else {
+              setError(verifyData.error || dict.register.errors.payment_failed || 'Payment verification failed');
+              setPaymentProcessing(false);
+            }
+          } catch (verifyErr: unknown) {
+            console.error('Verification error:', verifyErr);
+            setError('Payment verification failed. Please contact support.');
+            setPaymentProcessing(false);
+          }
+        },
+        prefill: {
+          name: formData.fullName,
+          email: `${get10DigitPhone(formData.phone)}@kishanseva.in`,
+          contact: get10DigitPhone(formData.phone),
+        },
+        theme: {
+          color: '#122c1f',
+        },
+        modal: {
+          ondismiss: function () {
+            setPaymentProcessing(false);
+          }
+        }
+      };
+
+      const rzp = new RazorpayConstructor(options);
+      rzp.open();
 
     } catch (err: unknown) {
       console.error('Payment error:', err);
@@ -394,7 +406,7 @@ export default function RegistrationForm() {
           setIsSubmitting(false);
           return;
         }
-      } catch (dbErr: any) {
+      } catch (dbErr: unknown) {
         // If Firestore rules restrict unauthenticated reads, log a warning and proceed.
         // The duplicate check is performed securely post-authentication in verifyOTP.
         console.warn("Firestore permissions blocked duplicate phone check. Proceeding to OTP verification:", dbErr);
