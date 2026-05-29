@@ -263,7 +263,7 @@
     "continue": "Continue",
     "send_otp": "Send OTP",
     "verify_otp": "Verify OTP",
-    "pay_securely": "Pay ₹50 securely",
+    "pay_securely": "Pay securely",
     "errors": {
       "photo_size": "Photo size must be less than 5MB",
       "invalid_otp": "Invalid OTP code. Please try again.",
