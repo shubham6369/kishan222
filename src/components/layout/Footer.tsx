@@ -37,7 +37,7 @@ export default function Footer({ lang, dict }: { lang: string, dict: Dictionary 
             </div>
           </div>
 
-          <div className="lg:col-span-7 grid grid-cols-2 md:grid-cols-3 gap-12">
+          <div className="lg:col-span-7 grid grid-cols-1 md:grid-cols-2 gap-12">
             {/* Exploration */}
             <div>
               <h4 className="font-serif text-xl font-bold mb-8 text-accent">{dict.footer?.exploration || "Exploration"}</h4>
@@ -60,22 +60,8 @@ export default function Footer({ lang, dict }: { lang: string, dict: Dictionary 
               </ul>
             </div>
 
-            {/* Intelligence */}
-            <div>
-              <h4 className="font-serif text-xl font-bold mb-8 text-accent">{dict.footer?.intelligence || "Intelligence"}</h4>
-              <ul className="space-y-6 font-body text-white/50">
-                {(dict.footer?.intelligence_links || ["Soil Analytics", "Market Trends", "Govt Schemes", "Climate Tech"]).map((item: string, i: number) => (
-                  <li key={i}>
-                    <Link href="#" className="hover:text-white transition-colors flex items-center gap-2 group">
-                      {item} <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
             {/* Assistance */}
-            <div className="col-span-2 md:col-span-1">
+            <div>
               <h4 className="font-serif text-xl font-bold mb-8 text-accent">{dict.footer?.assistance || "Assistance"}</h4>
               <div className="space-y-8 font-body text-white/50">
                 <div className="flex items-start gap-4">
