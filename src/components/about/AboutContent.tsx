@@ -52,11 +52,6 @@ export default function AboutContent({ lang, dict }: AboutContentProps) {
     { year: '2025', event: lang === 'en' ? 'Platform expanded pan-India with bilingual support' : 'द्विभाषी समर्थन के साथ पूरे भारत में मंच का विस्तार' },
   ];
 
-  const TEAM = [
-    { name: 'Shri Ramkishan Sharma', role: lang === 'en' ? 'Founder & President' : 'संस्थापक और अध्यक्ष', location: lang === 'en' ? 'Jaipur, Rajasthan' : 'जयपुर, राजस्थान' },
-    { name: 'Smt. Kamla Devi', role: lang === 'en' ? 'Secretary General' : 'महासचिव', location: lang === 'en' ? 'Ajmer, Rajasthan' : 'अजमेर, राजस्थान' },
-    { name: 'Dr. Vijay Gupta', role: lang === 'en' ? 'Chief Agricultural Advisor' : 'मुख्य कृषि सलाहकार', location: lang === 'en' ? 'Kota, Rajasthan' : 'कोटा, राजस्थान' },
-  ];
 
   return (
     <>
@@ -172,31 +167,6 @@ export default function AboutContent({ lang, dict }: AboutContentProps) {
         </div>
       </section>
 
-      {/* Team Section */}
-      <section className="bg-[#122c1f] py-24">
-        <div className="max-w-6xl mx-auto px-6">
-          <m.div {...fadeUp()} className="text-center mb-16">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-white/40 mb-3">{dict.about.team_title}</p>
-            <h2 className="text-4xl font-serif font-bold text-white">{dict.about.team_subtitle}</h2>
-          </m.div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {TEAM.map((member, i) => (
-              <m.div key={i} {...fadeUp(i * 0.1)}
-                className="bg-white/5 border border-white/10 rounded-3xl p-8 text-center hover:bg-white/10 transition-colors"
-              >
-                <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center text-2xl font-serif font-bold text-white mx-auto mb-5">
-                  {member.name.charAt(0)}
-                </div>
-                <h3 className="font-bold text-white text-lg">{member.name}</h3>
-                <p className="text-green-400 text-sm mt-1 font-medium">{member.role}</p>
-                <p className="text-white/40 text-xs mt-2 flex items-center justify-center gap-1">
-                  <MapPin className="w-3 h-3" /> {member.location}
-                </p>
-              </m.div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* CTA */}
       <section className="max-w-4xl mx-auto px-6 py-24 text-center">
