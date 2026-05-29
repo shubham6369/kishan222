@@ -44,7 +44,7 @@ export default function AboutContent({ lang, dict }: AboutContentProps) {
   ];
 
   const MILESTONES = [
-    { year: '2020', event: lang === 'en' ? 'Foundation of Kishan Seva in Rajasthan' : 'राजस्थान में किशन सेवा की स्थापना' },
+    { year: '2019', event: lang === 'en' ? 'Foundation of Kishan Seva in Lucknow' : 'लखनऊ में किशन सेवा की स्थापना' },
     { year: '2021', event: lang === 'en' ? 'First 500 farmers enrolled in membership programme' : 'सदस्यता कार्यक्रम में पहले 500 किसान नामांकित' },
     { year: '2022', event: lang === 'en' ? 'Organic Marketplace launched with 50+ product categories' : '50+ उत्पाद श्रेणियों के साथ जैविक बाजार शुरू किया गया' },
     { year: '2023', event: lang === 'en' ? 'Referral system introduced — ₹7 per verified farmer' : 'रेफरल प्रणाली शुरू की गई - ₹7 प्रति सत्यापित किसान' },
