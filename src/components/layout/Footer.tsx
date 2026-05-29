@@ -5,12 +5,12 @@ import { Dictionary } from "@/context/LanguageContext";
 
 export default function Footer({ lang, dict }: { lang: string, dict: Dictionary }) {
   return (
-    <footer className="bg-[#070908] text-white pt-32 pb-16 relative overflow-hidden border-t border-white/5">
+    <footer className="bg-[#070908] text-white pt-20 pb-10 relative overflow-hidden border-t border-white/5">
       {/* Decorative Background Elements */}
       <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-accent/5 rounded-full blur-[120px] -mb-64 -mr-64"></div>
       
       <div className="max-w-7xl mx-auto px-6 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-8 pb-20 border-b border-white/10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-8 pb-14 border-b border-white/10">
           {/* Brand & Mission */}
           <div className="lg:col-span-5 space-y-10">
             <Link href={`/${lang}`} className="flex items-center gap-4 group">
@@ -90,7 +90,7 @@ export default function Footer({ lang, dict }: { lang: string, dict: Dictionary 
           </div>
         </div>
 
-        <div className="pt-12 flex flex-col md:flex-row justify-between items-center gap-8 text-xs font-bold tracking-[0.2em] uppercase text-white/30">
+        <div className="pt-8 flex flex-col md:flex-row justify-between items-center gap-8 text-xs font-bold tracking-[0.2em] uppercase text-white/30">
           <div className="flex flex-wrap gap-x-10 gap-y-4 justify-center md:justify-start">
             <Link href={`/${lang}/privacy-policy`} className="hover:text-accent transition-colors">{dict.footer.links.privacy}</Link>
             <Link href={`/${lang}/terms`} className="hover:text-accent transition-colors">{dict.footer.links.terms}</Link>
