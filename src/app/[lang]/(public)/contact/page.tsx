@@ -3,7 +3,7 @@
 import React from 'react';
 import { m } from 'framer-motion';
 import {
-  Phone, Mail, MapPin, Send, HelpCircle
+  Phone, Mail, MapPin, Send
 } from 'lucide-react';
 import toast, { Toaster } from 'react-hot-toast';
 import { useLanguage } from '@/context/LanguageContext';
@@ -35,20 +35,7 @@ export default function ContactPage() {
     },
   ];
 
-  const FAQS = [
-    {
-      q: lang === 'en' ? 'How do I generate my membership card?' : 'मैं अपना सदस्यता कार्ड कैसे बनाऊं?',
-      a: lang === 'en' ? 'Register on our platform and pay the one-time fee of ₹50 to generate your digital card instantly.' : 'हमारे प्लेटफॉर्म पर पंजीकरण करें और तुरंत अपना डिजिटल कार्ड बनाने के लिए ₹50 का एक बार शुल्क दें।',
-    },
-    {
-      q: lang === 'en' ? 'When will I receive my referral commission?' : 'मुझे मेरा रेफरल कमीशन कब मिलेगा?',
-      a: lang === 'en' ? 'Commission is credited instantly to your wallet once your referred farmer successfully generates their card.' : 'एक बार जब आपका रेफ़र किया गया किसान सफलतापूर्वक अपना कार्ड बना लेता है, तो कमीशन आपके वॉलेट में तुरंत जमा कर दिया जाता है।',
-    },
-    {
-      q: lang === 'en' ? 'Can I sell my products directly here?' : 'क्या मैं अपने उत्पाद सीधे यहाँ बेच सकता हूँ?',
-      a: lang === 'en' ? 'Yes, verified members can list their organic products in our marketplace for direct consumer purchase.' : 'हाँ, सत्यापित सदस्य सीधे उपभोक्ता खरीद के लिए हमारे बाज़ार में अपने जैविक उत्पादों को सूचीबद्ध कर सकते हैं।',
-    },
-  ];
+
   const [form, setForm] = React.useState({ name: '', phone: '', email: '', message: '' });
   const [sending, setSending] = React.useState(false);
 
@@ -152,33 +139,7 @@ export default function ContactPage() {
           </m.div>
         </div>
 
-        {/* FAQ Section */}
-        <div className="mt-24">
-          <div className="text-center mb-12">
-            <HelpCircle className="w-8 h-8 text-[#77574d] mx-auto mb-4" />
-            <h2 className="text-3xl font-serif font-bold text-[#122c1f]">{dict.contact.faqs_title}</h2>
-          </div>
-          <div className="max-w-3xl mx-auto space-y-3">
-            {FAQS.map((faq, i) => (
-              <m.div
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="bg-[#fbf9f5] rounded-[32px] p-8 border border-black/5"
-              >
-                <h3 className="text-lg font-bold text-[#122c1f] mb-3 flex items-start gap-3">
-                  <span className="text-[#77574d]/40 font-serif">Q.</span>
-                  {faq.q}
-                </h3>
-                <p className="text-[#77574d] leading-relaxed pl-8">
-                  {faq.a}
-                </p>
-              </m.div>
-            ))}
-          </div>
-        </div>
+
       </div>
     </div>
   );
