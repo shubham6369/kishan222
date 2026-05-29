@@ -219,7 +219,7 @@
     "title": "Join the Heritage",
     "subtitle": "By joining Kishan Seva, you are not just registering for a service—you are becoming part of a prestigious community of farmers.",
     "benefit_verified": "Verified Farmer Status",
-    "benefit_schemes": "Exclusive Government Scheme Alerts",
+    "benefit_schemes": "Exclusive Welfare Scheme Alerts",
     "benefit_referral": "Community Growth Rewards",
     "steps": {
       "identity": "Identity",
@@ -310,7 +310,7 @@
       "title": "Your Wallet",
       "balance": "Available Balance",
       "withdraw": "Transfer to Bank",
-      "min_fee": "Min ₹50",
+      "min_fee": "Withdraw full balance",
       "withdraw_msg": "Withdrawal request verified. Funds will be transferred in 24 hours."
     },
     "referral_box": {

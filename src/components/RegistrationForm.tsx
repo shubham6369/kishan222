@@ -18,7 +18,8 @@ import {
   CreditCard,
   AlertCircle,
   Camera,
-  Tractor
+  Tractor,
+  Calendar
 } from 'lucide-react';
 import { auth, db, storage } from '@/lib/firebase';
 import { 
@@ -36,6 +37,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { useLanguage } from '@/context/LanguageContext';
 
 import Image from 'next/image';
+import FarmerCardVisual from './dashboard/FarmerCardVisual';
 
 
 type Step = 1 | 2 | 3 | 4 | 'success';
@@ -72,9 +74,13 @@ export default function RegistrationForm() {
     district: "",
     state: "Uttar Pradesh",
     crops: "",
-    landSize: "",
     password: "",
     photoBase64: "",
+    fatherName: "",
+    dob: "",
+    gender: "Male",
+    postOffice: "",
+    pincode: "",
   });
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -139,19 +145,22 @@ export default function RegistrationForm() {
         district: currentData.district,
         state: currentData.state,
         crops: currentData.crops,
-        landSize: currentData.landSize,
         photoUrl: finalPhotoUrl,
         photoBase64: finalPhotoUrl,
         membershipId: newMemberId,
         referralCode: newMemberId,
         referredBy: referrerId || null,
         registrationDate: new Date().toISOString(),
-        // Payment confirmation — card is unlocked only because payment succeeded
         membershipFeePaid: 50,
         paymentId: paymentId,
         paymentOrderId: orderId,
         walletBalance: 0,
-        stats: { totalReferrals: 0, earnings: 0, activeListings: 0 }
+        stats: { totalReferrals: 0, earnings: 0, activeListings: 0 },
+        fatherName: currentData.fatherName || "",
+        dob: currentData.dob || "",
+        gender: currentData.gender || "Male",
+        postOffice: currentData.postOffice || "",
+        pincode: currentData.pincode || ""
       };
 
       await setDoc(doc(db, 'users', user.uid), userData);
@@ -481,8 +490,17 @@ export default function RegistrationForm() {
         await verifyOTP();
       }
     } else if (step === 2) {
-      if (!formData.village || !formData.district || !formData.crops || !formData.landSize) {
-        setError(dict.register.errors.farming_details);
+      if (
+        !formData.village || 
+        !formData.district || 
+        !formData.crops || 
+        !formData.fatherName ||
+        !formData.dob ||
+        !formData.gender ||
+        !formData.postOffice ||
+        !formData.pincode
+      ) {
+        setError("कृपया सभी व्यक्तिगत और कृषि विवरण भरें / Please fill all details");
         return;
       }
       setStep(3);
@@ -551,17 +569,37 @@ export default function RegistrationForm() {
                   <p className="text-[#77574d] text-sm">{dict.register.success_desc}</p>
                 </div>
                 
-                <div className="w-full flex justify-center py-4">
-                  <div className="w-full max-w-sm bg-[#122c1f] rounded-2xl p-6 text-white text-center space-y-3">
-                    <div className="text-4xl">🌾</div>
-                    <h3 className="text-xl font-serif font-bold">Welcome to Kishan Seva!</h3>
-                    <p className="text-white/70 text-sm">Your membership is active</p>
-                    <div className="bg-white/10 rounded-xl px-4 py-3 font-mono text-lg font-bold tracking-widest">
-                      {memberId}
+                {(() => {
+                  const tempUserData = {
+                    uid: auth.currentUser?.uid || 'temp',
+                    fullName: formData.fullName,
+                    phone: formData.phone,
+                    membershipId: memberId,
+                    registrationDate: new Date().toISOString(),
+                    photoUrl: formData.photoBase64,
+                    photoBase64: formData.photoBase64,
+                    village: formData.village,
+                    district: formData.district,
+                    state: formData.state,
+                    crops: formData.crops,
+                    fatherName: formData.fatherName,
+                    dob: formData.dob,
+                    gender: formData.gender,
+                    postOffice: formData.postOffice,
+                    pincode: formData.pincode,
+                  };
+                  return (
+                    <div className="w-full flex flex-col items-center py-2">
+                      <div className="scale-85 sm:scale-100 origin-center">
+                        <FarmerCardVisual userData={tempUserData} lang={lang} />
+                      </div>
+                      <p className="text-[#77574d] text-xs mt-4 print:hidden text-center">
+                        सफलतापूर्वक कार्ड जनरेट हो गया है! आप इसे डैशबोर्ड से प्रिंट कर सकते हैं।<br/>
+                        Your identity card is generated! You can print it from your dashboard.
+                      </p>
                     </div>
-                    <p className="text-white/50 text-xs">Member ID — keep this safe</p>
-                  </div>
-                </div>
+                  );
+                })()}
 
                 <div className="w-full max-w-md bg-[#fbf9f5] p-6 rounded-2xl border border-[#77574d]/10 space-y-4">
                   <div className="pt-4 border-t border-black/5">
@@ -747,32 +785,53 @@ export default function RegistrationForm() {
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {/* Father Name */}
                         <div className="space-y-2">
-                          <label className="text-[10px] font-bold uppercase tracking-widest text-[#77574d]">{dict.register.village}</label>
+                          <label className="text-[10px] font-bold uppercase tracking-widest text-[#77574d]">पिता / पति का नाम / Father / Husband Name</label>
                           <div className="relative">
-                            <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#77574d]/30" />
+                            <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#77574d]/30" />
                             <input
                               type="text"
-                              value={formData.village}
-                              onChange={(e) => setFormData({...formData, village: e.target.value})}
+                              value={formData.fatherName}
+                              onChange={(e) => setFormData({...formData, fatherName: e.target.value})}
                               className="w-full pl-12 pr-4 py-4 bg-[#fbf9f5] border-none rounded-xl focus:ring-2 focus:ring-[#122c1f]/10 transition-all text-[#122c1f]"
-                              placeholder={dict.register.village_placeholder}
+                              placeholder="e.g. Shyamlal Sharma"
                             />
                           </div>
                         </div>
+
+                        {/* DOB */}
                         <div className="space-y-2">
-                          <label className="text-[10px] font-bold uppercase tracking-widest text-[#77574d]">{dict.register.district}</label>
+                          <label className="text-[10px] font-bold uppercase tracking-widest text-[#77574d]">जन्म तिथि / Date of Birth</label>
                           <div className="relative">
-                            <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#77574d]/30" />
+                            <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#77574d]/30" />
                             <input
-                              type="text"
-                              value={formData.district}
-                              onChange={(e) => setFormData({...formData, district: e.target.value})}
+                              type="date"
+                              value={formData.dob}
+                              onChange={(e) => setFormData({...formData, dob: e.target.value})}
                               className="w-full pl-12 pr-4 py-4 bg-[#fbf9f5] border-none rounded-xl focus:ring-2 focus:ring-[#122c1f]/10 transition-all text-[#122c1f]"
-                              placeholder={dict.register.district_placeholder}
                             />
                           </div>
                         </div>
+
+                        {/* Gender */}
+                        <div className="space-y-2">
+                          <label className="text-[10px] font-bold uppercase tracking-widest text-[#77574d]">लिंग / Gender</label>
+                          <div className="relative">
+                            <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#77574d]/30" />
+                            <select
+                              value={formData.gender}
+                              onChange={(e) => setFormData({...formData, gender: e.target.value})}
+                              className="w-full pl-12 pr-4 py-4 bg-[#fbf9f5] border-none rounded-xl focus:ring-2 focus:ring-[#122c1f]/10 transition-all text-[#122c1f] appearance-none"
+                            >
+                              <option value="Male">पुरुष / Male</option>
+                              <option value="Female">महिला / Female</option>
+                              <option value="Other">अन्य / Other</option>
+                            </select>
+                          </div>
+                        </div>
+
+                        {/* Primary Crops */}
                         <div className="space-y-2">
                           <label className="text-[10px] font-bold uppercase tracking-widest text-[#77574d]">{dict.register.crops}</label>
                           <div className="relative">
@@ -786,16 +845,80 @@ export default function RegistrationForm() {
                             />
                           </div>
                         </div>
+
+                        {/* State */}
                         <div className="space-y-2">
-                          <label className="text-[10px] font-bold uppercase tracking-widest text-[#77574d]">{dict.register.land_size}</label>
+                          <label className="text-[10px] font-bold uppercase tracking-widest text-[#77574d]">राज्य / State</label>
                           <div className="relative">
-                            <Tractor className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#77574d]/30" />
+                            <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#77574d]/30" />
                             <input
-                              type="number"
-                              value={formData.landSize}
-                              onChange={(e) => setFormData({...formData, landSize: e.target.value})}
+                              type="text"
+                              value={formData.state}
+                              onChange={(e) => setFormData({...formData, state: e.target.value})}
                               className="w-full pl-12 pr-4 py-4 bg-[#fbf9f5] border-none rounded-xl focus:ring-2 focus:ring-[#122c1f]/10 transition-all text-[#122c1f]"
-                              placeholder={dict.register.land_size_placeholder}
+                              placeholder="Uttar Pradesh"
+                            />
+                          </div>
+                        </div>
+
+                        {/* District */}
+                        <div className="space-y-2">
+                          <label className="text-[10px] font-bold uppercase tracking-widest text-[#77574d]">{dict.register.district}</label>
+                          <div className="relative">
+                            <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#77574d]/30" />
+                            <input
+                              type="text"
+                              value={formData.district}
+                              onChange={(e) => setFormData({...formData, district: e.target.value})}
+                              className="w-full pl-12 pr-4 py-4 bg-[#fbf9f5] border-none rounded-xl focus:ring-2 focus:ring-[#122c1f]/10 transition-all text-[#122c1f]"
+                              placeholder={dict.register.district_placeholder}
+                            />
+                          </div>
+                        </div>
+
+                        {/* Village */}
+                        <div className="space-y-2">
+                          <label className="text-[10px] font-bold uppercase tracking-widest text-[#77574d]">{dict.register.village}</label>
+                          <div className="relative">
+                            <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#77574d]/30" />
+                            <input
+                              type="text"
+                              value={formData.village}
+                              onChange={(e) => setFormData({...formData, village: e.target.value})}
+                              className="w-full pl-12 pr-4 py-4 bg-[#fbf9f5] border-none rounded-xl focus:ring-2 focus:ring-[#122c1f]/10 transition-all text-[#122c1f]"
+                              placeholder={dict.register.village_placeholder}
+                            />
+                          </div>
+                        </div>
+
+                        {/* Post Office */}
+                        <div className="space-y-2">
+                          <label className="text-[10px] font-bold uppercase tracking-widest text-[#77574d]">पोस्ट ऑफिस / Post Office</label>
+                          <div className="relative">
+                            <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#77574d]/30" />
+                            <input
+                              type="text"
+                              value={formData.postOffice}
+                              onChange={(e) => setFormData({...formData, postOffice: e.target.value})}
+                              className="w-full pl-12 pr-4 py-4 bg-[#fbf9f5] border-none rounded-xl focus:ring-2 focus:ring-[#122c1f]/10 transition-all text-[#122c1f]"
+                              placeholder="e.g. Malihabad"
+                            />
+                          </div>
+                        </div>
+
+                        {/* Pincode */}
+                        <div className="space-y-2">
+                          <label className="text-[10px] font-bold uppercase tracking-widest text-[#77574d]">पिनकोड / Pincode</label>
+                          <div className="relative">
+                            <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#77574d]/30" />
+                            <input
+                              type="text"
+                              pattern="[0-9]{6}"
+                              maxLength={6}
+                              value={formData.pincode}
+                              onChange={(e) => setFormData({...formData, pincode: e.target.value.replace(/\D/g, '')})}
+                              className="w-full pl-12 pr-4 py-4 bg-[#fbf9f5] border-none rounded-xl focus:ring-2 focus:ring-[#122c1f]/10 transition-all text-[#122c1f]"
+                              placeholder="e.g. 226017"
                             />
                           </div>
                         </div>

@@ -30,6 +30,12 @@ export interface UserData {
     walletBalance?: number;
     referralCode?: string;
     referredBy?: string;
+    fatherName?: string;
+    dob?: string;
+    gender?: string;
+    khasraNo?: string;
+    postOffice?: string;
+    pincode?: string;
     stats?: {
         earnings: number;
         totalReferrals: number;

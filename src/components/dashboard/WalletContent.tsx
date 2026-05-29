@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState, useEffect } from 'react';
 import { m, AnimatePresence } from 'framer-motion';
@@ -12,7 +12,7 @@ import { useAuth } from '@/context/AuthContext';
 import toast, { Toaster } from 'react-hot-toast';
 import { Dictionary } from '@/context/LanguageContext';
 
-const MIN_WITHDRAWAL = 100;
+
 
 interface WithdrawalRequest {
   id: string;
@@ -65,15 +65,10 @@ export default function WalletContent({}: WalletContentProps) {
 
   const handleWithdrawRequest = async (e: React.FormEvent) => {
     e.preventDefault();
-    const amount = parseFloat(withdrawAmount);
+    const amount = walletBalance;
 
     if (!upiId.trim()) { toast.error('Please enter your UPI ID.'); return; }
-    if (isNaN(amount) || amount <= 0) { toast.error('Enter a valid amount.'); return; }
-    if (amount > walletBalance) { toast.error(`You can't withdraw more than your balance ₹${walletBalance}.`); return; }
-    if (walletBalance < MIN_WITHDRAWAL) {
-      toast.error(`Minimum withdrawal balance is ₹${MIN_WITHDRAWAL}. Your current balance is ₹${walletBalance}.`);
-      return;
-    }
+    if (amount <= 0) { toast.error('Your balance must be greater than ₹0 to request a withdrawal.'); return; }
 
     setSubmitting(true);
     try {
@@ -88,7 +83,6 @@ export default function WalletContent({}: WalletContentProps) {
       toast.success('Withdrawal request submitted! Admin will process it within 24 hours.');
       setShowForm(false);
       setUpiId('');
-      setWithdrawAmount('');
       // Optimistically add to local state
       setWithdrawals(prev => [{
         id: Date.now().toString(),
@@ -106,7 +100,7 @@ export default function WalletContent({}: WalletContentProps) {
     }
   };
 
-  const canWithdraw = walletBalance >= MIN_WITHDRAWAL;
+  const canWithdraw = walletBalance > 0;
 
   return (
     <div className="max-w-3xl mx-auto space-y-10">
@@ -139,8 +133,7 @@ export default function WalletContent({}: WalletContentProps) {
             <div className="flex items-center gap-2 bg-yellow-500/20 border border-yellow-500/30 rounded-2xl px-5 py-3 mb-6">
               <AlertCircle className="w-4 h-4 text-yellow-300 shrink-0" />
               <p className="text-yellow-200 text-sm">
-                Minimum ₹{MIN_WITHDRAWAL} required to withdraw. 
-                You need ₹{(MIN_WITHDRAWAL - walletBalance).toFixed(2)} more.
+                You need a balance greater than ₹0 to request a withdrawal.
               </p>
             </div>
           )}
@@ -187,18 +180,15 @@ export default function WalletContent({}: WalletContentProps) {
 
             <div className="space-y-2">
               <label className="text-[10px] font-bold uppercase tracking-widest text-[#77574d]">
-                Amount (Max: ₹{walletBalance})
+                Amount (Full Balance Withdrawal / पूर्ण राशि निकासी)
               </label>
               <div className="relative">
                 <IndianRupee className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#77574d]/40" />
                 <input
                   type="number"
-                  value={withdrawAmount}
-                  onChange={e => setWithdrawAmount(e.target.value)}
-                  placeholder="Enter amount"
-                  max={walletBalance}
-                  min={1}
-                  className="w-full pl-12 pr-4 py-4 bg-[#fbf9f5] rounded-2xl text-[#122c1f] focus:ring-2 focus:ring-[#122c1f]/10 border-none outline-none"
+                  value={walletBalance}
+                  readOnly
+                  className="w-full pl-12 pr-4 py-4 bg-[#122c1f]/5 rounded-2xl text-[#122c1f] font-bold outline-none cursor-not-allowed border-none"
                   required
                 />
               </div>
@@ -237,7 +227,7 @@ export default function WalletContent({}: WalletContentProps) {
           <div className="bg-white rounded-[32px] border border-black/5 p-10 text-center">
             <TrendingUp className="w-10 h-10 text-[#122c1f]/20 mx-auto mb-3" />
             <p className="text-[#77574d] text-sm">No withdrawal requests yet.</p>
-            <p className="text-[#77574d]/60 text-xs mt-1">Earn ₹7 per referral and withdraw when you reach ₹100.</p>
+            <p className="text-[#77574d]/60 text-xs mt-1">Earn ₹7 per referral and withdraw your full balance anytime.</p>
           </div>
         ) : (
           <div className="bg-white rounded-[32px] border border-black/5 overflow-hidden shadow-sm divide-y divide-black/5">

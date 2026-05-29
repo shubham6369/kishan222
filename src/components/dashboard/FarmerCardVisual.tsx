@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { QRCodeSVG } from 'qrcode.react';
-import { Calendar, MapPin, Sprout, Tractor, Phone, CreditCard, ShieldCheck } from 'lucide-react';
 import Image from 'next/image';
 import { UserData } from '@/types';
 
@@ -11,131 +10,295 @@ interface FarmerCardVisualProps {
   lang: string;
 }
 
+// 1. Custom Private Society Security Shield Badge SVG (Replaces the state emblem)
+const PrivateSecurityBadge = () => (
+  <svg viewBox="0 0 100 100" className="w-[34px] h-[34px] text-[#d4af37] fill-current shrink-0 select-none">
+    {/* Outer Shield */}
+    <path d="M50 5 L85 18 V50 C85 70 70 88 50 95 C30 88 15 70 15 50 V18 Z" fill="none" stroke="#d4af37" strokeWidth="4.5" />
+    {/* Inner Shield Fill */}
+    <path d="M50 10 L80 21 V50 C80 67 67 83 50 90 C33 83 20 67 20 50 V21 Z" fill="#122c1f" />
+    {/* Checkmark */}
+    <path d="M35 50 L45 60 L65 38" fill="none" stroke="#d4af37" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" />
+    {/* Mini letters KSS */}
+    <text x="50" y="76" textAnchor="middle" fill="#d4af37" fontSize="12" fontWeight="black" fontFamily="sans-serif" letterSpacing="1">KSS</text>
+  </svg>
+);
+
+// 2. Custom Farmer Collective Logo SVG
+const FarmerLogo = () => (
+  <svg viewBox="0 0 100 100" className="w-[38px] h-[38px] shrink-0 fill-current text-white select-none">
+    <circle cx="50" cy="50" r="46" fill="none" stroke="white" strokeWidth="4.5"/>
+    <circle cx="50" cy="50" r="41" fill="#122c1f"/>
+    {/* Stylized Farmer Icon */}
+    {/* Turban (Pagri) */}
+    <path d="M35 34 C35 24 65 24 65 34 C60 30 40 30 35 34 Z" fill="#ffffff" />
+    <path d="M37 31 C37 25 63 25 63 31 C57 28 43 28 37 31 Z" fill="#d4af37" />
+    {/* Head */}
+    <circle cx="50" cy="41" r="9" fill="#ffffff"/>
+    {/* Mustache */}
+    <path d="M44 45 Q50 49 56 45 Q50 43 44 45 Z" fill="#122c1f"/>
+    {/* Body / Shoulders */}
+    <path d="M50 54 C35 54 28 62 28 72 V74 H72 V72 C72 62 65 54 50 54 Z" fill="#ffffff"/>
+    {/* Green T-Shirt Line */}
+    <path d="M45 54 L50 62 L55 54 Z" fill="#122c1f" />
+    {/* Mini wheat icon inside body */}
+    <path d="M48 68 L50 64 L52 68 M50 64 V74" stroke="#122c1f" strokeWidth="1" fill="none" />
+  </svg>
+);
+
+// 3. Wheat Stalk Silhouette for Front Card Background
+const WheatStalk = () => (
+  <svg viewBox="0 0 60 160" className="w-[85px] h-[190px] text-green-700/10 fill-current absolute right-1 bottom-4 pointer-events-none select-none">
+    {/* Main Stem */}
+    <path d="M15 150 C28 110, 32 70, 25 15" stroke="currentColor" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
+    {/* Wheat Grains */}
+    <path d="M22 120 C18 114, 12 114, 9 122 C12 129, 18 129, 22 120 Z"/>
+    <path d="M28 126 C32 120, 38 120, 41 128 C38 135, 32 135, 28 126 Z"/>
+    <path d="M23 94 C19 88, 13 88, 10 96 C13 103, 19 103, 23 94 Z"/>
+    <path d="M29 100 C33 94, 39 94, 42 102 C39 109, 33 109, 29 100 Z"/>
+    <path d="M22 68 C18 62, 12 62, 9 70 C12 77, 18 77, 22 68 Z"/>
+    <path d="M28 74 C32 68, 38 68, 41 76 C38 83, 32 83, 28 74 Z"/>
+    <path d="M20 42 C16 36, 10 36, 7 44 C10 51, 16 51, 20 42 Z"/>
+    <path d="M26 48 C30 42, 36 42, 39 50 C36 57, 30 57, 26 48 Z"/>
+    <path d="M24 20 C21 14, 23 8, 25 8 C27 8, 28 14, 24 20 Z"/>
+  </svg>
+);
+
+// 4. Plowing Farmer with Oxen Background SVG for Card Back
+const PlowingBackdrop = () => (
+  <svg viewBox="0 0 200 100" className="w-[170px] h-[85px] text-green-800/5 fill-current absolute bottom-8 right-2 pointer-events-none select-none">
+    {/* Ox 1 (Back) */}
+    <path d="M20 62 C 20 48, 38 43, 47 43 C 51 43, 55 46, 59 49 C 63 47, 68 49, 70 52 C 72 54, 72 57, 70 59 C 68 61, 63 63, 59 63 L 57 84 L 53 84 L 55 63 L 37 63 L 35 84 L 31 84 L 33 63 L 20 62 Z"/>
+    {/* Ox 2 (Front) */}
+    <path d="M47 67 C 47 53, 64 48, 73 48 C 77 48, 81 51, 85 54 C 89 52, 94 54, 96 57 Q98 60, 96 62 C 93 64, 89 66, 85 66 L 83 87 L 79 87 L 81 66 L 64 66 L 62 87 L 58 87 L 60 66 L 47 67 Z"/>
+    {/* Connecting Harness bar */}
+    <path d="M59 52 L 120 72" stroke="currentColor" strokeWidth="1.8" fill="none"/>
+    {/* The Plow blade */}
+    <path d="M120 72 L 132 75 L 135 59 L 137 59 L 134 77 L 118 73 Z"/>
+    {/* Farmer silhouette */}
+    <circle cx="145" cy="48" r="4.5" />
+    <path d="M145 52.5 L 143 65 L 136 82 L 140 82 L 146 68 L 151 82 L 155 82 L 148 65 L 148 52.5 Z"/>
+    <path d="M145 57 L 134 60 M 145 57 L 134 67" stroke="currentColor" strokeWidth="1.8" fill="none"/>
+    {/* Ground Soil Line */}
+    <line x1="5" y1="85" x2="190" y2="85" stroke="currentColor" strokeWidth="1.2" strokeDasharray="4,4"/>
+  </svg>
+);
+
 export default function FarmerCardVisual({ userData, lang }: FarmerCardVisualProps) {
   if (!userData) return null;
 
+  // Verification URL for QR code
   const verificationUrl = typeof window !== 'undefined' 
     ? `${window.location.origin}/${lang}/dashboard/card?id=${userData.membershipId}`
     : `https://kishanseva.in/verify-card?id=${userData.membershipId}`;
 
-  const isVerified = userData.isAdmin || userData.walletBalance !== undefined; // standard verified logic or custom verification status in firestore
+  // Date Formatter helper (DD/MM/YYYY)
+  const formatDate = (dateStr?: string) => {
+    if (!dateStr) return '';
+    try {
+      const d = new Date(dateStr);
+      if (isNaN(d.getTime())) {
+        const parts = dateStr.split('-');
+        if (parts.length === 3) {
+          return `${parts[2]}/${parts[1]}/${parts[0]}`;
+        }
+        return dateStr;
+      }
+      const day = String(d.getDate()).padStart(2, '0');
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const year = d.getFullYear();
+      return `${day}/${month}/${year}`;
+    } catch {
+      return dateStr;
+    }
+  };
+
+  const verificationData = `--- KISHAN SEVA SAMITI ---
+MEMBER VERIFICATION
+
+Member ID: ${userData.membershipId}
+Name: ${userData.fullName}
+Father/Husband: ${userData.fatherName || '—'}
+DOB: ${formatDate(userData.dob) || '—'}
+Gender: ${userData.gender || 'Male'}
+Mobile: +91 ${userData.phone}
+Address: ${userData.village || '—'}, Post ${userData.postOffice || '—'}, ${userData.district || '—'}, ${userData.state || 'Uttar Pradesh'} - ${userData.pincode || '—'}
+Issue Date: ${formatDate(userData.registrationDate) || '01/05/2026'}
+Status: Active Verified Member
+
+Verify: ${verificationUrl}`;
 
   return (
-    <div className="flex flex-col lg:flex-row gap-8 items-center justify-center p-2 sm:p-6 print:p-0 print:flex-col print:gap-12">
+    <div className="flex flex-col lg:flex-row gap-8 items-center justify-center p-2 sm:p-6 print:p-0 print:flex-col print:gap-12 select-none">
       
-      {/* CARD FRONT */}
-      <div className="relative w-full max-w-[350px] aspect-[1.586/1] sm:aspect-auto sm:h-[220px] sm:w-[350px] bg-[#122c1f] text-white rounded-2xl overflow-hidden border border-white/10 shadow-xl flex flex-col justify-between p-5 shrink-0 print:shadow-none print:border-black/20">
-        {/* Background Gradients */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(212,175,55,0.15),transparent_60%)]"></div>
-        <div className="absolute bottom-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-2xl"></div>
+      {/* -------------------- CARD FRONT -------------------- */}
+      <div className="relative h-[260px] w-[420px] bg-white text-zinc-800 rounded-2xl overflow-hidden border border-zinc-200 shadow-xl flex flex-col justify-between shrink-0 print:shadow-none print:border-black/30">
         
-        {/* Card Header */}
-        <div className="relative flex justify-between items-start border-b border-white/10 pb-3">
-          <div>
-            <h3 className="font-serif text-base font-black tracking-tight text-white leading-none">Kishan Seva Samiti</h3>
-            <p className="text-[6px] uppercase tracking-[0.2em] text-accent font-black mt-1">Smart Farmer Identity Card</p>
+        {/* Wheat backdrop stalk */}
+        <WheatStalk />
+        
+        {/* Solid Green Header Bar */}
+        <div className="bg-[#122c1f] text-white px-4 py-2.5 flex justify-between items-center relative z-10 select-none">
+          <div className="flex items-center gap-2">
+            <FarmerLogo />
+            <div className="leading-tight">
+              <h3 className="font-serif text-sm font-extrabold tracking-wide text-white">सदस्य पहचान पत्र</h3>
+              <p className="text-[9px] font-bold tracking-widest text-[#d4af37] uppercase">MEMBER IDENTITY CARD</p>
+            </div>
           </div>
-          <div className="flex items-center gap-1.5 bg-accent/15 border border-accent/20 px-2 py-0.5 rounded-full shrink-0">
-            <ShieldCheck className="w-2.5 h-2.5 text-accent" />
-            <span className="text-[6px] font-black uppercase tracking-wider text-accent">
-              {lang === 'hi' ? 'सत्यापित सदस्य' : 'Verified Member'}
-            </span>
+          
+          <div className="flex items-center justify-center pr-1 select-none">
+            <PrivateSecurityBadge />
           </div>
         </div>
 
-        {/* Card Core Profile Info */}
-        <div className="relative flex gap-4 items-center my-auto">
-          <div className="w-16 h-16 rounded-xl bg-white/10 border border-white/20 overflow-hidden relative shrink-0 flex items-center justify-center">
+        {/* Card Body Profile Area */}
+        <div className="flex-1 px-4 py-3 flex gap-4 items-center relative z-0">
+          
+          {/* Farmer Photo */}
+          <div className="w-[100px] h-[120px] rounded-lg bg-zinc-50 border border-zinc-300 overflow-hidden relative shrink-0 flex items-center justify-center shadow-inner">
             {userData.photoUrl || userData.photoBase64 ? (
               <Image 
                 src={userData.photoUrl || userData.photoBase64 || ''} 
                 alt={userData.fullName} 
                 fill
-                className="object-cover"
+                sizes="100px"
+                className="object-cover object-center"
                 unoptimized
               />
             ) : (
-              <span className="text-2xl">👨‍🌾</span>
+              <span className="text-4xl select-none">👨‍🌾</span>
             )}
           </div>
-          <div className="space-y-1">
-            <p className="text-[6px] uppercase tracking-widest text-white/40 font-bold leading-none">Name / नाम</p>
-            <h4 className="text-sm font-bold font-serif text-white truncate max-w-[150px] leading-tight">{userData.fullName}</h4>
-            <p className="text-[6px] uppercase tracking-widest text-white/40 font-bold leading-none mt-1.5">Member ID / सदस्य संख्या</p>
-            <p className="font-mono font-bold text-accent text-[9px] leading-none">{userData.membershipId}</p>
+
+          {/* User Details Grid */}
+          <div className="flex-1 min-w-0 space-y-1.5 text-[#122c1f]">
+            {/* Name */}
+            <div>
+              <p className="text-[8px] uppercase tracking-wider text-zinc-500 font-bold leading-none">किसान का नाम / Name</p>
+              <h4 className="text-xs font-serif font-black truncate leading-tight mt-0.5">{userData.fullName}</h4>
+            </div>
+
+            {/* Father's Name */}
+            <div>
+              <p className="text-[8px] uppercase tracking-wider text-zinc-500 font-bold leading-none">पिता / पति का नाम / Father / Husband Name</p>
+              <p className="text-[10px] font-bold truncate leading-tight mt-0.5">{userData.fatherName || '—'}</p>
+            </div>
+
+            {/* Side-by-side Details */}
+            <div className="grid grid-cols-2 gap-x-2 gap-y-1.5">
+              <div>
+                <p className="text-[7px] uppercase tracking-wider text-zinc-500 font-bold leading-none">जन्म तिथि / DOB</p>
+                <p className="text-[9px] font-bold font-mono leading-none mt-0.5">{formatDate(userData.dob) || '—'}</p>
+              </div>
+              <div>
+                <p className="text-[7px] uppercase tracking-wider text-zinc-500 font-bold leading-none">लिंग / Gender</p>
+                <p className="text-[9px] font-bold leading-none mt-0.5">{userData.gender === 'Female' ? 'महिला / Female' : userData.gender === 'Other' ? 'अन्य / Other' : 'पुरुष / Male'}</p>
+              </div>
+              <div>
+                <p className="text-[7px] uppercase tracking-wider text-zinc-500 font-bold leading-none">राज्य / State</p>
+                <p className="text-[9px] font-bold leading-none mt-0.5">{userData.state || 'Uttar Pradesh'}</p>
+              </div>
+              <div>
+                <p className="text-[7px] uppercase tracking-wider text-zinc-500 font-bold leading-none">जिला / District</p>
+                <p className="text-[9px] font-bold truncate leading-none mt-0.5">{userData.district || '—'}</p>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Card Front Footer with QR */}
-        <div className="relative border-t border-white/10 pt-2.5 flex justify-between items-center gap-2">
-          <div className="space-y-0.5">
-            <p className="text-[5px] uppercase tracking-widest text-white/30 font-bold leading-none">Live Verification</p>
-            <p className="text-[7px] text-white/50 font-body leading-none">Scan to verify farmer credentials</p>
+        {/* Card Front Footer Block with QR & ID */}
+        <div className="border-t border-zinc-200 px-4 py-2 flex justify-between items-center bg-zinc-50 relative z-10 select-none">
+          <div className="leading-tight">
+            <p className="text-[7px] uppercase tracking-widest text-zinc-500 font-bold">सदस्य संख्या / Member ID</p>
+            <p className="font-mono font-black text-[#122c1f] text-xs leading-none mt-0.5 tracking-wider">{userData.membershipId}</p>
           </div>
-          <div className="w-9 h-9 bg-white rounded-lg p-0.5 shrink-0 flex items-center justify-center shadow-md">
-            <QRCodeSVG 
-              value={verificationUrl}
-              size={36}
-              level="M"
-              includeMargin={false}
-            />
+          
+          <div className="flex items-center gap-2 select-none">
+            <span className="text-[7px] text-right font-extrabold text-[#122c1f] uppercase tracking-wider leading-tight">
+              सदस्यता सत्यापन<br />
+              <span className="text-zinc-500 font-normal">Member Verify</span>
+            </span>
+            <div className="w-[44px] h-[44px] bg-white rounded border border-zinc-200 p-0.5 shrink-0 flex items-center justify-center shadow-sm select-none">
+              <QRCodeSVG 
+                value={verificationData}
+                size={38}
+                level="L"
+                includeMargin={false}
+              />
+            </div>
           </div>
         </div>
       </div>
 
-      {/* CARD BACK */}
-      <div className="relative w-full max-w-[350px] aspect-[1.586/1] sm:aspect-auto sm:h-[220px] sm:w-[350px] bg-[#fbf9f5] text-[#122c1f] rounded-2xl overflow-hidden border border-[#122c1f]/10 shadow-xl flex flex-col justify-between p-5 shrink-0 print:shadow-none print:border-black/20">
-        {/* Background Gradients */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(18,44,31,0.03),transparent_50%)]"></div>
+      {/* -------------------- CARD BACK -------------------- */}
+      <div className="relative h-[260px] w-[420px] bg-white text-[#122c1f] rounded-2xl overflow-hidden border border-zinc-200 shadow-xl flex flex-col justify-between shrink-0 print:shadow-none print:border-black/30">
         
-        {/* Card Header Back */}
-        <div className="relative flex justify-between items-center border-b border-[#122c1f]/10 pb-2">
-          <div className="flex items-center gap-1">
-            <CreditCard className="w-3.5 h-3.5 text-[#122c1f]" />
-            <span className="text-[8px] font-black uppercase tracking-wider text-[#122c1f]">Card Details</span>
+        {/* Ox plowing farmer backdrop */}
+        <PlowingBackdrop />
+        
+        {/* Solid Green Header Bar */}
+        <div className="bg-[#122c1f] text-white px-4 py-3 select-none">
+          <h3 className="font-serif text-xs font-extrabold tracking-widest text-center select-none uppercase">किसान सेवा समिति / KISHAN SEVA SAMITI</h3>
+        </div>
+
+        {/* Card Back Content Info List */}
+        <div className="flex-1 px-5 py-4 flex flex-col justify-between relative z-0">
+          
+          <div className="space-y-3">
+            {/* Address */}
+            <div className="flex gap-3 items-start">
+              <div className="w-5 h-5 rounded-full bg-[#122c1f]/10 flex items-center justify-center shrink-0 mt-0.5">
+                <span className="text-xs select-none">📍</span>
+              </div>
+              <div className="leading-tight max-w-[310px]">
+                <p className="text-[7px] uppercase tracking-widest text-zinc-500 font-bold">पता / Address</p>
+                <p className="text-[10px] font-bold mt-0.5 truncate-3-lines leading-snug">
+                  ग्राम - {userData.village || '—'}, पोस्ट - {userData.postOffice || '—'}, जिला - {userData.district || '—'}, {userData.state || 'Uttar Pradesh'} - {userData.pincode || '—'}
+                </p>
+              </div>
+            </div>
+
+            {/* Mobile Number */}
+            <div className="flex gap-3 items-start">
+              <div className="w-5 h-5 rounded-full bg-[#122c1f]/10 flex items-center justify-center shrink-0 mt-0.5">
+                <span className="text-xs select-none">📞</span>
+              </div>
+              <div className="leading-tight">
+                <p className="text-[7px] uppercase tracking-widest text-zinc-500 font-bold">मोबाइल नंबर / Mobile No.</p>
+                <p className="text-[10px] font-mono font-bold mt-0.5">+91 {userData.phone}</p>
+              </div>
+            </div>
+
+            {/* Date of Issue */}
+            <div className="flex gap-3 items-start">
+              <div className="w-5 h-5 rounded-full bg-[#122c1f]/10 flex items-center justify-center shrink-0 mt-0.5">
+                <span className="text-xs select-none">📅</span>
+              </div>
+              <div className="leading-tight">
+                <p className="text-[7px] uppercase tracking-widest text-zinc-500 font-bold">जारी करने की तिथि / Date of Issue</p>
+                <p className="text-[10px] font-mono font-bold mt-0.5">{formatDate(userData.registrationDate) || '01/05/2026'}</p>
+              </div>
+            </div>
           </div>
-          <span className="text-[7px] text-[#77574d] font-bold">
-            {lang === 'hi' ? 'जारी तिथि:' : 'Issued:'} {userData.registrationDate ? new Date(userData.registrationDate).toLocaleDateString('en-IN') : '2026'}
+          
+        </div>
+
+        {/* Solid Green Footer Bar with Legal text & Helpline */}
+        <div className="bg-[#122c1f] text-white px-3 py-2 flex justify-between items-center text-[7px] select-none">
+          <span className="leading-snug max-w-[270px] font-medium text-left opacity-90 select-none">
+            यह कार्ड किसान सेवा समिति द्वारा जारी सदस्य पहचान का प्रमाण है।<br />
+            This card is a member identity proof issued by Kishan Seva Samiti.
           </span>
-        </div>
-
-        {/* Card details list */}
-        <div className="relative grid grid-cols-2 gap-y-3 gap-x-2 my-auto text-xs py-1">
-          <div className="space-y-0.5">
-            <p className="text-[6px] uppercase tracking-widest text-[#77574d] font-bold leading-none">Mobile / मोबाइल</p>
-            <p className="font-mono font-bold text-[#122c1f] text-[9px] flex items-center gap-1 leading-none">
-              <Phone className="w-2.5 h-2.5 text-[#77574d]/50 shrink-0" />
-              +91 {userData.phone}
-            </p>
-          </div>
-          <div className="space-y-0.5">
-            <p className="text-[6px] uppercase tracking-widest text-[#77574d] font-bold leading-none">Land Size / भूमि</p>
-            <p className="font-bold text-[#122c1f] text-[9px] flex items-center gap-1 leading-none">
-              <Tractor className="w-2.5 h-2.5 text-[#77574d]/50 shrink-0" />
-              {userData.landSize} Acres
-            </p>
-          </div>
-          <div className="space-y-0.5 col-span-2">
-            <p className="text-[6px] uppercase tracking-widest text-[#77574d] font-bold leading-none">Address / पता</p>
-            <p className="font-bold text-[#122c1f] text-[9px] flex items-center gap-1 leading-tight truncate">
-              <MapPin className="w-2.5 h-2.5 text-[#77574d]/50 shrink-0" />
-              {userData.village}, {userData.district}, {userData.state}
-            </p>
-          </div>
-          <div className="space-y-0.5 col-span-2">
-            <p className="text-[6px] uppercase tracking-widest text-[#77574d] font-bold leading-none">Crops Grown / प्रमुख फसलें</p>
-            <p className="font-bold text-emerald-800 text-[9px] flex items-center gap-1 leading-tight truncate">
-              <Sprout className="w-2.5 h-2.5 text-emerald-800/50 shrink-0" />
-              {userData.crops}
-            </p>
+          <div className="flex items-center gap-1 font-bold shrink-0 opacity-100 select-none">
+            <span className="text-lg leading-none select-none">📞</span>
+            <div className="leading-tight">
+              <p className="text-[6px] leading-none uppercase select-none opacity-80 text-right">हेल्पलाइन / Helpline</p>
+              <p className="font-mono text-[8px] leading-none mt-0.5 select-none text-right">1800-180-1551</p>
+            </div>
           </div>
         </div>
 
-        {/* Card Back Footer */}
-        <div className="relative border-t border-[#122c1f]/10 pt-2 flex justify-between items-center text-[5px] text-[#77574d]/70 font-bold leading-none uppercase">
-          <span>Kishan Seva Samiti Collective</span>
-          <span>sandeepkumarchauhan805@gmail.com</span>
-        </div>
       </div>
 
     </div>
