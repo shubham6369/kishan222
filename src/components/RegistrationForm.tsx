@@ -172,7 +172,7 @@ export default function RegistrationForm() {
         referralCode: newMemberId,
         referredBy: referrerId || null,
         registrationDate: new Date().toISOString(),
-        membershipFeePaid: 50,
+        membershipFeePaid: 1,
         paymentId: paymentId,
         paymentOrderId: orderId,
         walletBalance: 0,
@@ -338,7 +338,7 @@ export default function RegistrationForm() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
-          amount: 50, // ₹50 smart ID card issuance fee
+          amount: 1, // ₹1 smart ID card issuance fee
           customerId: user.uid,
           customerPhone: get10DigitPhone(formData.phone),
           customerName: formData.fullName,
@@ -1008,11 +1008,11 @@ export default function RegistrationForm() {
                       <div className="p-6 bg-[#fbf9f5] rounded-2xl border border-black/5">
                         <div className="flex justify-between items-center pb-4 border-b border-black/5">
                           <span className="text-[#77574d]">{dict.register.lifelong_card}</span>
-                          <span className="font-bold text-[#122c1f]">₹50.00</span>
+                          <span className="font-bold text-[#122c1f]">₹1.00</span>
                         </div>
                         <div className="flex justify-between items-center pt-4">
                           <span className="font-bold text-lg text-[#122c1f]">{dict.register.total_amount}</span>
-                          <span className="font-bold text-2xl text-green-700">₹50</span>
+                          <span className="font-bold text-2xl text-green-700">₹1</span>
                         </div>
                       </div>
 
