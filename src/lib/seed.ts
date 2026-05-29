@@ -1,7 +1,7 @@
 import { db } from './firebase';
 import { collection, doc, writeBatch } from 'firebase/firestore';
 
-export const MOCK_PRODUCTS: any[] = [];
+export const MOCK_PRODUCTS: Record<string, unknown>[] = [];
 
 export async function seedProducts() {
   if (MOCK_PRODUCTS.length === 0) {

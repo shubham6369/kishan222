@@ -6,19 +6,15 @@ import {
   User, 
   MapPin, 
   Phone as PhoneIcon, 
-  Eye, 
-  EyeOff, 
   ChevronRight, 
   ChevronLeft, 
   Check, 
   Copy, 
   Sprout, 
   CheckCircle2,
-  Landmark,
   CreditCard,
   AlertCircle,
   Camera,
-  Tractor,
   Calendar,
   Printer,
   Download
@@ -28,8 +24,6 @@ import {
   RecaptchaVerifier, 
   signInWithPhoneNumber,
   ConfirmationResult,
-  linkWithCredential,
-  EmailAuthProvider,
   updateProfile,
   AuthError
 } from 'firebase/auth';
@@ -42,13 +36,12 @@ import Image from 'next/image';
 import FarmerCardVisual from './dashboard/FarmerCardVisual';
 
 
-type Step = 1 | 2 | 3 | 4 | 'success';
+type Step = 1 | 2 | 3 | 'success';
 
 const steps = [
   { id: 1, title: "Identity", icon: User },
   { id: 2, title: "Farming", icon: Sprout },
-  { id: 3, title: "Security", icon: Landmark },
-  { id: 4, title: "Payment", icon: CreditCard },
+  { id: 3, title: "Payment", icon: CreditCard },
   { id: 'success', title: "Complete", icon: CheckCircle2 },
 ];
 
@@ -76,7 +69,6 @@ export default function RegistrationForm() {
     district: "",
     state: "Uttar Pradesh",
     crops: "",
-    password: "",
     photoBase64: "",
     fatherName: "",
     dob: "",
@@ -92,7 +84,6 @@ export default function RegistrationForm() {
   const [error, setError] = useState('');
   const [referralLink, setReferralLink] = useState('');
   const [memberId, setMemberId] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
   const [otpValue, setOtpValue] = useState('');
   const [paymentProcessing, setPaymentProcessing] = useState(false);
@@ -139,15 +130,8 @@ export default function RegistrationForm() {
       const user = auth.currentUser;
       if (!user) throw new Error(dict.register.errors.session_lost);
 
-      // Link the password to their phone account using EmailAuthProvider proxy
+      // Generate email proxy for user profile
       const emailProxy = `${get10DigitPhone(currentData.phone)}@kishanseva.in`;
-      
-      try {
-        const credential = EmailAuthProvider.credential(emailProxy, currentData.password);
-        await linkWithCredential(user, credential);
-      } catch (err: unknown) {
-        console.warn('Linking credential warning:', err);
-      }
 
       await updateProfile(user, { displayName: currentData.fullName });
 
@@ -536,12 +520,6 @@ export default function RegistrationForm() {
         return;
       }
       setStep(3);
-    } else if (step === 3) {
-      if (!formData.password || formData.password.length < 6) {
-        setError(dict.register.errors.passcode_min);
-        return;
-      }
-      setStep(4);
     }
   };
 
@@ -575,8 +553,7 @@ export default function RegistrationForm() {
                 <span className={`text-[8px] md:text-[10px] font-bold uppercase tracking-widest hidden sm:block ${isActive ? "text-[#122c1f]" : "text-[#122c1f]/30"}`}>
                   {s.id === 1 ? dict.register.steps.identity :
                    s.id === 2 ? dict.register.steps.farming :
-                   s.id === 3 ? dict.register.steps.security :
-                   s.id === 4 ? dict.register.steps.payment :
+                   s.id === 3 ? dict.register.steps.payment :
                    dict.register.steps.complete}
                 </span>
               </div>
@@ -1015,43 +992,6 @@ export default function RegistrationForm() {
 
                   {step === 3 && (
                     <div className="space-y-6">
-                      <div className="space-y-2">
-                        <h2 className="text-2xl font-serif font-bold text-[#122c1f]">{dict.register.set_passcode}</h2>
-                        <p className="text-sm text-[#77574d]">{dict.register.passcode_desc}</p>
-                      </div>
-                      
-                      {error && (
-                        <div className="p-4 bg-red-50 border border-red-100 rounded-xl text-red-600 text-sm">
-                          {error}
-                        </div>
-                      )}
-
-                      <div className="space-y-4">
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-bold uppercase tracking-widest text-[#77574d]">{dict.register.secret_passcode}</label>
-                          <div className="relative">
-                            <button
-                              type="button"
-                              onClick={() => setShowPassword(!showPassword)}
-                              className="absolute right-4 top-1/2 -translate-y-1/2 z-10 text-[#77574d]/50"
-                            >
-                              {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                            </button>
-                            <input
-                              type={showPassword ? 'text' : 'password'}
-                              value={formData.password}
-                              onChange={(e) => setFormData({...formData, password: e.target.value})}
-                              className="w-full px-4 py-4 bg-[#fbf9f5] border-none rounded-xl focus:ring-2 focus:ring-[#122c1f]/10 transition-all text-[#122c1f]"
-                              placeholder={dict.register.passcode_placeholder}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {step === 4 && (
-                    <div className="space-y-6">
                       <div className="space-y-2 text-center">
                         <div className="w-16 h-16 bg-[#122c1f]/5 rounded-full flex items-center justify-center mx-auto mb-4">
                           <CreditCard className="w-8 h-8 text-[#122c1f]" />
@@ -1091,7 +1031,7 @@ export default function RegistrationForm() {
                       </button>
                     )}
                     <button
-                      onClick={step === 4 ? processPayment : nextStep}
+                      onClick={step === 3 ? processPayment : nextStep}
                       disabled={isSubmitting || paymentProcessing}
                       className="flex-2 py-4 px-6 bg-[#122c1f] text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:shadow-xl transition-all disabled:opacity-50"
                     >
@@ -1105,7 +1045,7 @@ export default function RegistrationForm() {
                         <>
                           {step === 1 && !otpSent ? (dict?.register?.send_otp || "Send OTP") : 
                            step === 1 && otpSent ? (dict?.register?.verify_otp || "Verify OTP") : 
-                           step === 4 ? (dict?.register?.pay_securely || "Pay Securely") : (dict?.register?.continue || "Continue")}
+                           step === 3 ? (dict?.register?.pay_securely || "Pay Securely") : (dict?.register?.continue || "Continue")}
                           <ChevronRight className="w-5 h-5" />
                         </>
                       )}
