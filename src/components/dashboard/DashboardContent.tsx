@@ -11,7 +11,8 @@ import {
   Bell,
   CreditCard,
   CheckCircle2,
-  Printer
+  Printer,
+  Download
 } from 'lucide-react';
 import Link from 'next/link';
 import { db } from '@/lib/firebase';
@@ -38,6 +39,36 @@ export default function DashboardContent({ lang, dict }: DashboardContentProps) 
   const { user, userData, loading: authLoading } = useAuth();
   const [referrals, setReferrals] = useState<Referral[]>([]);
   const [loadingReferrals, setLoadingReferrals] = useState(true);
+
+  const handlePrint = () => {
+    if (typeof window !== 'undefined') {
+      window.print();
+    }
+  };
+
+  const handleDownload = async (side: 'front' | 'back') => {
+    const element = document.getElementById(`farmer-card-${side}`);
+    if (!element) {
+      alert('Card element not found.');
+      return;
+    }
+    try {
+      const html2canvas = (await import('html2canvas')).default;
+      const canvas = await html2canvas(element, {
+        scale: 3,
+        useCORS: true,
+        backgroundColor: null,
+      });
+      const dataUrl = canvas.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.href = dataUrl;
+      link.download = `Farmer_ID_${side === 'front' ? 'Front' : 'Back'}_${userData?.membershipId || 'Card'}.png`;
+      link.click();
+    } catch (err) {
+      console.error('Error generating card image:', err);
+      alert('Failed to download card. Please try using print to save as PDF.');
+    }
+  };
 
   useEffect(() => {
     async function fetchDashboardData() {
@@ -158,6 +189,37 @@ export default function DashboardContent({ lang, dict }: DashboardContentProps) 
             <div className="p-8 sm:p-10 bg-white rounded-[40px] border border-black/5 shadow-sm relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-[#77574d]/5 blur-[80px]" />
                 
+                <style>{`
+                  @media print {
+                    body * {
+                      visibility: hidden !important;
+                    }
+                    #printable-card-area, #printable-card-area * {
+                      visibility: visible !important;
+                    }
+                    #printable-card-area {
+                      position: absolute !important;
+                      left: 0 !important;
+                      top: 0 !important;
+                      width: 100% !important;
+                      height: auto !important;
+                      display: flex !important;
+                      flex-direction: column !important;
+                      align-items: center !important;
+                      justify-content: center !important;
+                      gap: 40px !important;
+                      padding: 20px 0 !important;
+                      margin: 0 !important;
+                      background: white !important;
+                      transform: none !important;
+                    }
+                    @page {
+                      size: auto;
+                      margin: 10mm;
+                    }
+                  }
+                `}</style>
+
                 <div className="relative z-10 space-y-8">
                     <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 border-b border-black/5 pb-6">
                         <div>
@@ -165,7 +227,7 @@ export default function DashboardContent({ lang, dict }: DashboardContentProps) 
                                 {lang === 'en' ? "Your Membership Card" : "आपका सदस्यता कार्ड"}
                             </h3>
                             <p className="text-sm text-[#77574d] mt-1">
-                                {lang === 'en' ? "Verify and print your official Smart ID Card." : "अपने आधिकारिक स्मार्ट आईडी कार्ड को सत्यापित और प्रिंट करें।"}
+                                {lang === 'en' ? "Verify, download, or print your official Smart ID Card." : "अपने आधिकारिक स्मार्ट आईडी कार्ड को सत्यापित, डाउनलोड या प्रिंट करें।"}
                             </p>
                         </div>
                         <Link 
@@ -173,12 +235,38 @@ export default function DashboardContent({ lang, dict }: DashboardContentProps) 
                           className="inline-flex items-center gap-2 px-5 py-3 bg-[#122c1f] text-white rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-[#122c1f]/90 hover:scale-105 transition-all self-start sm:self-auto shadow-md"
                         >
                             <Printer className="w-4 h-4" />
-                            {lang === 'en' ? "View & Print Card" : "देखें और प्रिंट करें"}
+                            {lang === 'en' ? "Full View & Instructions" : "पूर्ण दृश्य और निर्देश"}
                         </Link>
                     </div>
 
-                    <div className="py-2">
-                        <FarmerCardVisual userData={userData} lang={lang} />
+                    <div className="py-2 flex flex-col items-center">
+                        <div id="printable-card-area" className="w-full flex justify-center py-4 bg-[#fbf9f5]/50 rounded-[32px] border border-dashed border-[#77574d]/10 px-6">
+                            <FarmerCardVisual userData={userData} lang={lang} />
+                        </div>
+                        
+                        <div className="flex flex-wrap justify-center gap-3 mt-6 print:hidden">
+                            <button 
+                                onClick={() => handleDownload('front')}
+                                className="px-4 py-2.5 bg-[#122c1f]/5 border border-[#122c1f]/10 text-[#122c1f] rounded-xl text-xs font-bold uppercase tracking-wider flex items-center gap-2 hover:bg-[#122c1f]/10 transition shadow-sm"
+                            >
+                                <Download className="w-4 h-4 text-[#122c1f]" />
+                                {lang === 'en' ? "Download Front" : "सामने का भाग डाउनलोड"}
+                            </button>
+                            <button 
+                                onClick={() => handleDownload('back')}
+                                className="px-4 py-2.5 bg-[#122c1f]/5 border border-[#122c1f]/10 text-[#122c1f] rounded-xl text-xs font-bold uppercase tracking-wider flex items-center gap-2 hover:bg-[#122c1f]/10 transition shadow-sm"
+                            >
+                                <Download className="w-4 h-4 text-[#122c1f]" />
+                                {lang === 'en' ? "Download Back" : "पीछे का भाग डाउनलोड"}
+                            </button>
+                            <button 
+                                onClick={handlePrint}
+                                className="px-4 py-2.5 bg-[#122c1f] text-white rounded-xl text-xs font-bold uppercase tracking-wider flex items-center gap-2 hover:bg-[#122c1f]/90 transition shadow-md"
+                            >
+                                <Printer className="w-4 h-4" />
+                                {lang === 'en' ? "Print Card" : "कार्ड प्रिंट करें"}
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

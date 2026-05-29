@@ -22,6 +22,30 @@ export default function CardContent({ lang, dict }: CardContentProps) {
     }
   };
 
+  const handleDownload = async (side: 'front' | 'back') => {
+    const element = document.getElementById(`farmer-card-${side}`);
+    if (!element) {
+      alert('Card element not found.');
+      return;
+    }
+    try {
+      const html2canvas = (await import('html2canvas')).default;
+      const canvas = await html2canvas(element, {
+        scale: 3,
+        useCORS: true,
+        backgroundColor: null,
+      });
+      const dataUrl = canvas.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.href = dataUrl;
+      link.download = `Farmer_ID_${side === 'front' ? 'Front' : 'Back'}_${userData?.membershipId || 'Card'}.png`;
+      link.click();
+    } catch (err) {
+      console.error('Error generating card image:', err);
+      alert('Failed to download card. Please try using print to save as PDF.');
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-[50vh] flex items-center justify-center">
@@ -122,6 +146,24 @@ export default function CardContent({ lang, dict }: CardContentProps) {
         {/* Printable Card Area */}
         <div id="printable-card-area" className="flex justify-center py-4 bg-[#fbf9f5]/50 rounded-[32px] border border-dashed border-[#77574d]/10">
           <FarmerCardVisual userData={userData} lang={lang} />
+        </div>
+
+        {/* Download Buttons Panel */}
+        <div className="flex flex-wrap justify-center gap-4 print:hidden -mt-6">
+          <button 
+            onClick={() => handleDownload('front')}
+            className="px-5 py-3.5 bg-[#122c1f]/5 border border-[#122c1f]/10 text-[#122c1f] rounded-2xl text-xs font-bold uppercase tracking-wider flex items-center gap-2 hover:bg-[#122c1f]/10 transition shadow-sm"
+          >
+            <Download className="w-4.5 h-4.5 text-[#122c1f]" />
+            {lang === 'en' ? "Download Front Side (PNG)" : "सामने का भाग डाउनलोड करें (PNG)"}
+          </button>
+          <button 
+            onClick={() => handleDownload('back')}
+            className="px-5 py-3.5 bg-[#122c1f]/5 border border-[#122c1f]/10 text-[#122c1f] rounded-2xl text-xs font-bold uppercase tracking-wider flex items-center gap-2 hover:bg-[#122c1f]/10 transition shadow-sm"
+          >
+            <Download className="w-4.5 h-4.5 text-[#122c1f]" />
+            {lang === 'en' ? "Download Back Side (PNG)" : "पीछे का भाग डाउनलोड करें (PNG)"}
+          </button>
         </div>
 
         {/* Instructions Panel (hidden on print) */}

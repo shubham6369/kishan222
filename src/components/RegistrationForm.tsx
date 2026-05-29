@@ -19,7 +19,9 @@ import {
   AlertCircle,
   Camera,
   Tractor,
-  Calendar
+  Calendar,
+  Printer,
+  Download
 } from 'lucide-react';
 import { auth, db, storage } from '@/lib/firebase';
 import { 
@@ -97,6 +99,36 @@ export default function RegistrationForm() {
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
   const [countdown, setCountdown] = useState(0);
+
+  const handlePrint = () => {
+    if (typeof window !== 'undefined') {
+      window.print();
+    }
+  };
+
+  const handleDownload = async (side: 'front' | 'back') => {
+    const element = document.getElementById(`farmer-card-${side}`);
+    if (!element) {
+      alert('Card element not found.');
+      return;
+    }
+    try {
+      const html2canvas = (await import('html2canvas')).default;
+      const canvas = await html2canvas(element, {
+        scale: 3,
+        useCORS: true,
+        backgroundColor: null,
+      });
+      const dataUrl = canvas.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.href = dataUrl;
+      link.download = `Farmer_ID_${side === 'front' ? 'Front' : 'Back'}_${memberId || 'Card'}.png`;
+      link.click();
+    } catch (err) {
+      console.error('Error generating card image:', err);
+      alert('Failed to download card. Please try using print to save as PDF.');
+    }
+  };
 
   const handleSubmit = useCallback(async (paymentId: string, orderId: string, recoveredData?: typeof formData) => {
     const currentData = recoveredData || formData;
@@ -590,12 +622,67 @@ export default function RegistrationForm() {
                   };
                   return (
                     <div className="w-full flex flex-col items-center py-2">
-                      <div className="scale-85 sm:scale-100 origin-center">
+                      <style>{`
+                        @media print {
+                          body * {
+                            visibility: hidden !important;
+                          }
+                          #printable-card-area, #printable-card-area * {
+                            visibility: visible !important;
+                          }
+                          #printable-card-area {
+                            position: absolute !important;
+                            left: 0 !important;
+                            top: 0 !important;
+                            width: 100% !important;
+                            height: auto !important;
+                            display: flex !important;
+                            flex-direction: column !important;
+                            align-items: center !important;
+                            justify-content: center !important;
+                            gap: 40px !important;
+                            padding: 20px 0 !important;
+                            margin: 0 !important;
+                            background: white !important;
+                            transform: none !important;
+                          }
+                          @page {
+                            size: auto;
+                            margin: 10mm;
+                          }
+                        }
+                      `}</style>
+                      <div id="printable-card-area" className="scale-85 sm:scale-100 origin-center py-4 bg-[#fbf9f5]/50 rounded-[32px] border border-dashed border-[#77574d]/10 px-6">
                         <FarmerCardVisual userData={tempUserData} lang={lang} />
                       </div>
+
+                      <div className="flex flex-wrap justify-center gap-3 mt-6 print:hidden">
+                        <button 
+                          onClick={() => handleDownload('front')}
+                          className="px-4 py-2.5 bg-[#122c1f]/5 border border-[#122c1f]/10 text-[#122c1f] rounded-xl text-xs font-bold uppercase tracking-wider flex items-center gap-2 hover:bg-[#122c1f]/10 transition shadow-sm"
+                        >
+                          <Download className="w-4 h-4 text-[#122c1f]" />
+                          {lang === 'en' ? "Download Front" : "सामने का भाग डाउनलोड"}
+                        </button>
+                        <button 
+                          onClick={() => handleDownload('back')}
+                          className="px-4 py-2.5 bg-[#122c1f]/5 border border-[#122c1f]/10 text-[#122c1f] rounded-xl text-xs font-bold uppercase tracking-wider flex items-center gap-2 hover:bg-[#122c1f]/10 transition shadow-sm"
+                        >
+                          <Download className="w-4 h-4 text-[#122c1f]" />
+                          {lang === 'en' ? "Download Back" : "पीछे का भाग डाउनलोड"}
+                        </button>
+                        <button 
+                          onClick={handlePrint}
+                          className="px-4 py-2.5 bg-[#122c1f] text-white rounded-xl text-xs font-bold uppercase tracking-wider flex items-center gap-2 hover:bg-[#122c1f]/90 transition shadow-md"
+                        >
+                          <Printer className="w-4 h-4" />
+                          {lang === 'en' ? "Print Card" : "कार्ड प्रिंट करें"}
+                        </button>
+                      </div>
+
                       <p className="text-[#77574d] text-xs mt-4 print:hidden text-center">
-                        सफलतापूर्वक कार्ड जनरेट हो गया है! आप इसे डैशबोर्ड से प्रिंट कर सकते हैं।<br/>
-                        Your identity card is generated! You can print it from your dashboard.
+                        सफलतापूर्वक कार्ड जनरेट हो गया है! आप इसे यहाँ से डाउनलोड/प्रिंट कर सकते हैं या डैशबोर्ड से भी कर सकते हैं।<br/>
+                        Your identity card has been successfully generated! You can download/print it from here or access it later in your dashboard.
                       </p>
                     </div>
                   );

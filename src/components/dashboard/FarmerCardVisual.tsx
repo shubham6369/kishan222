@@ -132,7 +132,7 @@ Verify: ${verificationUrl}`;
     <div className="flex flex-col lg:flex-row gap-8 items-center justify-center p-2 sm:p-6 print:p-0 print:flex-col print:gap-12 select-none">
       
       {/* -------------------- CARD FRONT -------------------- */}
-      <div className="relative h-[260px] w-[420px] bg-white text-zinc-800 rounded-2xl overflow-hidden border border-zinc-200 shadow-xl flex flex-col justify-between shrink-0 print:shadow-none print:border-black/30">
+      <div id="farmer-card-front" className="relative h-[260px] w-[420px] bg-white text-zinc-800 rounded-2xl overflow-hidden border border-zinc-200 shadow-xl flex flex-col justify-between shrink-0 print:shadow-none print:border-black/30">
         
         {/* Wheat backdrop stalk */}
         <WheatStalk />
@@ -232,7 +232,7 @@ Verify: ${verificationUrl}`;
       </div>
 
       {/* -------------------- CARD BACK -------------------- */}
-      <div className="relative h-[260px] w-[420px] bg-white text-[#122c1f] rounded-2xl overflow-hidden border border-zinc-200 shadow-xl flex flex-col justify-between shrink-0 print:shadow-none print:border-black/30">
+      <div id="farmer-card-back" className="relative h-[260px] w-[420px] bg-white text-[#122c1f] rounded-2xl overflow-hidden border border-zinc-200 shadow-xl flex flex-col justify-between shrink-0 print:shadow-none print:border-black/30">
         
         {/* Ox plowing farmer backdrop */}
         <PlowingBackdrop />
