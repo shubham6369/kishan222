@@ -143,10 +143,15 @@ export default function RegistrationForm() {
       // Upload Photo
       let finalPhotoUrl = currentData.photoBase64;
       if (photoFile) {
-        const fileExt = photoFile.name.split('.').pop() || 'jpg';
-        const storageRef = ref(storage, `farmers/${user.uid}/profile_${Date.now()}.${fileExt}`);
-        await uploadBytes(storageRef, photoFile);
-        finalPhotoUrl = await getDownloadURL(storageRef);
+        try {
+          const fileExt = photoFile.name.split('.').pop() || 'jpg';
+          const storageRef = ref(storage, `farmers/${user.uid}/profile_${Date.now()}.${fileExt}`);
+          await uploadBytes(storageRef, photoFile);
+          finalPhotoUrl = await getDownloadURL(storageRef);
+        } catch (storageErr) {
+          console.warn('Firebase Storage upload failed, falling back to base64 data URI:', storageErr);
+          finalPhotoUrl = currentData.photoBase64;
+        }
       }
 
       const normalizedPhone = get10DigitPhone(currentData.phone);
