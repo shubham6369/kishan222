@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import SidebarNav from './SidebarNav';
 import { useAuth } from '@/context/AuthContext';
+import Logo from '../layout/Logo';
 
 interface SidebarProps {
   lang: string;
@@ -42,7 +43,8 @@ export default function Sidebar({ lang, dict }: SidebarProps) {
       
       {/* Logo */}
       <div className="p-10 relative z-10">
-        <Link href={`/${lang}`} className="flex items-center gap-3">
+        <Link href={`/${lang}`} className="flex items-center gap-3 group">
+          <Logo className="w-10 h-10 transition-transform group-hover:scale-105" variant="light" />
           <div>
             <h1 className="text-xl font-serif font-bold tracking-tight">{dict.sidebar?.brand || "Kishan Seva"}</h1>
             <p className="text-[10px] uppercase tracking-[0.2em] opacity-40">{dict.sidebar?.portal || "Farmer Portal"}</p>
