@@ -81,7 +81,7 @@ export default function Navbar({ lang, dict }: { lang: string, dict: Dictionary 
             href={`/${lang}/register`} 
             className={`text-sm font-bold uppercase tracking-widest hover:text-accent-dark transition-colors ${hasScrolled ? "text-primary" : "text-white"}`}
           >
-            {dict.nav?.join || "Generate Card"}
+            {lang === 'hi' ? "कार्ड बनाएं" : "Generate Card"}
           </Link>
           <Link 
             href={`/${lang}/about`} 
@@ -130,14 +130,16 @@ export default function Navbar({ lang, dict }: { lang: string, dict: Dictionary 
                 >
                   {dict.nav?.login || 'Login'}
                 </Link>
-                <Link 
-                  href={`/${lang}/register`} 
-                  className="bg-accent hover:bg-gold-500 text-primary px-8 py-3 rounded-full font-bold text-sm uppercase tracking-widest transition-all shadow-xl shadow-accent/20 active:scale-95"
-                >
-                  {dict.nav?.join || 'Join Us'}
-                </Link>
               </>
             )}
+
+            {/* Permanent Become a Member Button */}
+            <Link 
+              href={`/${lang}/register`} 
+              className="bg-accent hover:bg-gold-500 text-primary px-8 py-3 rounded-full font-bold text-sm uppercase tracking-widest transition-all shadow-xl shadow-accent/20 active:scale-95 shrink-0"
+            >
+              {dict.nav?.join || 'Become a Member'}
+            </Link>
           </div>
         </div>
 
@@ -209,7 +211,7 @@ export default function Navbar({ lang, dict }: { lang: string, dict: Dictionary 
                     </Link>
                     <button 
                       onClick={handleLogout}
-                      className="flex items-center gap-4 text-xl text-red-400 font-body"
+                      className="flex items-center gap-4 text-xl text-red-400 font-body pb-2"
                     >
                       <LogOut className="w-6 h-6" />
                       {dict.nav?.signout || "Sign Out"}
@@ -224,15 +226,17 @@ export default function Navbar({ lang, dict }: { lang: string, dict: Dictionary 
                     >
                       {dict.nav?.login || 'Login'}
                     </Link>
-                    <Link 
-                      href={`/${lang}/register`} 
-                      className="text-center py-4 bg-accent text-primary rounded-full font-bold uppercase tracking-widest shadow-xl"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      {dict.nav?.join || 'Become a Member'}
-                    </Link>
                   </div>
                 )}
+
+                {/* Permanent Mobile Become a Member Button */}
+                <Link 
+                  href={`/${lang}/register`} 
+                  className="block text-center py-4 bg-accent text-primary rounded-full font-bold uppercase tracking-widest shadow-xl"
+                  onClick={() => setIsOpen(false)}
+                >
+                  {dict.nav?.join || 'Become a Member'}
+                </Link>
               </div>
             </div>
           </m.div>
