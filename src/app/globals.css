@@ -47,20 +47,23 @@
   --radius-xl: var(--round-xl);
 }
 
-body {
-  background-color: var(--background);
-  color: var(--on-surface);
-  font-family: var(--font-sans);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@layer base {
+  body {
+    background-color: var(--background);
+    color: var(--on-surface);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  :where(h1, h2, h3, h4, h5, h6) {
+    font-family: var(--font-serif);
+    font-weight: 700;
+    color: var(--primary);
+    letter-spacing: -0.02em;
+  }
 }
 
-:where(h1, h2, h3, h4, h5, h6) {
-  font-family: var(--font-serif);
-  font-weight: 700;
-  color: var(--primary);
-  letter-spacing: -0.02em;
-}
 
 /* Premium Utilities */
 .glass-panel {
