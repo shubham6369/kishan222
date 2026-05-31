@@ -4,8 +4,8 @@ import type { NextRequest } from 'next/server';
 const locales = ['en', 'hi'];
 const defaultLocale = 'en';
 
-export function proxy(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+export function middleware(request: NextRequest) {
+  const { pathname, search } = request.nextUrl;
 
   // Check if the pathname is missing a locale
   const pathnameIsMissingLocale = locales.every(
@@ -24,9 +24,14 @@ export function proxy(request: NextRequest) {
     }
 
     const locale = defaultLocale;
-    return NextResponse.redirect(
-      new URL(`/${locale}${pathname === '/' ? '' : pathname}`, request.url)
+    
+    // Create redirect URL preserving the original pathname and query parameters (search)
+    const redirectUrl = new URL(
+      `/${locale}${pathname === '/' ? '' : pathname}${search}`,
+      request.url
     );
+    
+    return NextResponse.redirect(redirectUrl);
   }
 }
 
@@ -34,7 +39,5 @@ export const config = {
   matcher: [
     // Skip all internal paths (_next)
     '/((?!_next|api|.*\\.).*)',
-    // Optional: only run on root (use if you want to be less aggressive)
-    // '/'
   ],
 };

@@ -138,7 +138,7 @@ export default function RegistrationForm() {
       // Generate Membership ID
       const newMemberId = 'KSS-' + Math.random().toString(36).substr(2, 6).toUpperCase();
       setMemberId(newMemberId);
-      setReferralLink(`${window.location.origin}/register?ref=${newMemberId}`);
+      setReferralLink(`${window.location.origin}/${lang}/register?ref=${newMemberId}`);
 
       // Upload Photo
       let finalPhotoUrl = currentData.photoBase64;
