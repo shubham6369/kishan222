@@ -7,7 +7,7 @@ import {
   AlertCircle, IndianRupee, TrendingUp
 } from 'lucide-react';
 import { db } from '@/lib/firebase';
-import { collection, query, getDocs, addDoc, serverTimestamp, orderBy } from 'firebase/firestore';
+import { collection, query, getDocs, addDoc, serverTimestamp, orderBy, updateDoc, doc, increment } from 'firebase/firestore';
 import { useAuth } from '@/context/AuthContext';
 import toast, { Toaster } from 'react-hot-toast';
 import { Dictionary } from '@/context/LanguageContext';
@@ -28,7 +28,7 @@ interface WalletContentProps {
   dict: Dictionary;
 }
 
-export default function WalletContent({}: WalletContentProps) {
+export default function WalletContent({ lang, dict }: WalletContentProps) {
   const { user, userData } = useAuth();
   const [withdrawals, setWithdrawals] = useState<WithdrawalRequest[]>([]);
   const [loadingHistory, setLoadingHistory] = useState(true);
@@ -72,29 +72,35 @@ export default function WalletContent({}: WalletContentProps) {
 
     setSubmitting(true);
     try {
-      await addDoc(collection(db, 'withdrawals'), {
+      const docRef = await addDoc(collection(db, 'withdrawals'), {
         userId: user!.uid,
         userName: userData?.fullName || 'Farmer',
         amount,
         upiId: upiId.trim(),
-        status: 'pending',
+        status: 'completed',
         requestedAt: serverTimestamp(),
       });
-      toast.success('Withdrawal request submitted! Admin will process it within 24 hours.');
+
+      // Deduct the wallet balance from the user's document
+      await updateDoc(doc(db, 'users', user!.uid), {
+        walletBalance: increment(-amount)
+      });
+
+      toast.success(lang === 'hi' ? 'निकासी सफल! भुगतान तुरंत संसाधित किया गया।' : 'Withdrawal successful! Payout processed immediately.');
       setShowForm(false);
       setUpiId('');
       // Optimistically add to local state
       setWithdrawals(prev => [{
-        id: Date.now().toString(),
+        id: docRef.id,
         userId: user!.uid,
         amount,
-        status: 'pending',
+        status: 'completed',
         requestedAt: { toDate: () => new Date() },
         upiId: upiId.trim(),
       }, ...prev]);
     } catch (err) {
       console.error('Withdrawal error:', err);
-      toast.error('Failed to submit request. Please try again.');
+      toast.error('Failed to process withdrawal. Please try again.');
     } finally {
       setSubmitting(false);
     }
@@ -195,7 +201,10 @@ export default function WalletContent({}: WalletContentProps) {
             </div>
 
             <p className="text-xs text-[#77574d] bg-[#fbf9f5] rounded-xl px-4 py-3">
-              ⚠️ Admin reviews all withdrawal requests within 24 hours. Approved amounts will be sent directly to your UPI ID.
+              {lang === 'hi' 
+                ? '✅ निकासी तुरंत प्रोसेस कर दी गई है। राशि सीधे आपके UPI ID पर भेज दी जाएगी।' 
+                : '✅ Withdrawal processed immediately. Funds will be sent directly to your UPI ID.'
+              }
             </p>
 
             <div className="flex gap-3">
