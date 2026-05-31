@@ -51,13 +51,17 @@ export default function ContactPage() {
     try {
       const isConfigured = !!process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
       if (isConfigured && db) {
-        await addDoc(collection(db, 'contact_messages'), {
-          name: form.name,
-          email: form.email,
-          subject: form.subject,
-          message: form.message,
-          timestamp: serverTimestamp()
-        });
+        try {
+          await addDoc(collection(db, 'contact_messages'), {
+            name: form.name,
+            email: form.email,
+            subject: form.subject,
+            message: form.message,
+            timestamp: serverTimestamp()
+          });
+        } catch (dbErr) {
+          console.warn("Firestore contact message save failed, proceeding with WhatsApp redirect:", dbErr);
+        }
       } else {
         await new Promise(r => setTimeout(r, 600));
       }
@@ -77,8 +81,8 @@ export default function ContactPage() {
       toast.success(lang === 'en' ? 'Redirecting to WhatsApp...' : 'व्हाट्सएप पर रीडायरेक्ट किया जा रहा है...');
       setForm({ name: '', email: '', subject: '', message: '' });
     } catch (err) {
-      console.error('Error sending message:', err);
-      toast.error(lang === 'en' ? 'Failed to send message. Please try again.' : 'संदेश भेजने में विफल। कृपया पुन: प्रयास करें।');
+      console.error('Error redirecting to WhatsApp:', err);
+      toast.error(lang === 'en' ? 'Failed to redirect. Please try again.' : 'रीडायरेक्ट करने में विफल। कृपया पुन: प्रयास करें।');
     } finally {
       setSending(false);
     }
