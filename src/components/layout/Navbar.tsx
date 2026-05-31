@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import Logo from "./Logo";
 import { useState, useEffect } from "react";
 import { m, AnimatePresence } from "framer-motion";
 import { Menu, X, LogOut, LayoutDashboard, Globe, ShieldCheck } from "lucide-react";
@@ -51,9 +50,12 @@ export default function Navbar({ lang, dict }: { lang: string, dict: Dictionary 
       <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
         {/* Brand/Logo */}
         <Link href="/" className="flex items-center gap-3 group">
-          <Logo 
-            className="w-12 h-12 transition-transform group-hover:scale-105" 
-            variant={hasScrolled ? "color" : "light"} 
+          <Image 
+            src="/logo.png" 
+            alt="Kishan Seva Logo" 
+            width={48} 
+            height={48} 
+            className="w-12 h-12 object-contain transition-transform group-hover:scale-105"
           />
           <div className="flex flex-col">
             <span className={`font-serif text-2xl font-bold tracking-tight leading-tight transition-colors ${hasScrolled ? "text-primary" : "text-white"}`}>
