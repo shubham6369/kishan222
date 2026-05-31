@@ -89,13 +89,24 @@ export default function CardFeatures({ lang, dict }: CardFeaturesProps) {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
           
           {/* Card Mockup View */}
-          <div className="lg:col-span-5 flex justify-center">
+          <div className="lg:col-span-5 flex justify-center [perspective:1000px]">
             <FadeIn direction="right" className="w-full max-w-[340px] relative group">
               {/* Glow Behind */}
               <div className="absolute -inset-2 bg-gradient-to-tr from-accent/20 to-primary/10 rounded-[36px] blur-xl opacity-80 group-hover:opacity-100 transition-opacity duration-500"></div>
               
               {/* ID Card Front */}
-              <div className="relative bg-[#122c1f] rounded-[32px] overflow-hidden border border-white/10 shadow-2xl p-6 text-white space-y-6 flex flex-col justify-between aspect-[3/4.5] w-full">
+              <m.div 
+                whileHover={{ 
+                  y: -10, 
+                  rotateY: 8, 
+                  rotateX: -8,
+                  scale: 1.02,
+                  boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)"
+                }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                className="relative bg-[#122c1f] rounded-[32px] overflow-hidden border border-white/10 shadow-2xl p-6 text-white space-y-6 flex flex-col justify-between aspect-[3/4.5] w-full cursor-pointer select-none"
+                style={{ transformStyle: 'preserve-3d' }}
+              >
                 
                 {/* Decorative textures */}
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(212,175,55,0.12),transparent_60%)]"></div>
@@ -162,7 +173,7 @@ export default function CardFeatures({ lang, dict }: CardFeaturesProps) {
                     </svg>
                   </div>
                 </div>
-              </div>
+              </m.div>
             </FadeIn>
           </div>
 
@@ -187,7 +198,13 @@ export default function CardFeatures({ lang, dict }: CardFeaturesProps) {
                 { title: lang === 'en' ? "Verification QR Code" : "सत्यापन क्यूआर कोड", desc: lang === 'en' ? "Live, secure database verification scanner." : "लाइव, सुरक्षित डेटाबेस सत्यापन स्कैनर।" },
                 { title: lang === 'en' ? "Download & Print Ready" : "डाउनलोड और प्रिंट के लिए तैयार", desc: lang === 'en' ? "Standard card dimensions ready to print as PVC card." : "मानक कार्ड आयाम पीवीसी कार्ड के रूप में प्रिंट करने के लिए तैयार।" }
               ].map((item, idx) => (
-                <FadeIn key={idx} delay={idx * 0.05} className="flex gap-3 items-start bg-white p-5 rounded-2xl border border-black/5 shadow-xs">
+                <FadeIn 
+                  key={idx} 
+                  delay={idx * 0.05} 
+                  whileHover={{ y: -4, scale: 1.02, boxShadow: "0 10px 20px rgba(0,0,0,0.05)" }}
+                  transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                  className="flex gap-3 items-start bg-white p-5 rounded-2xl border border-black/5 shadow-xs cursor-pointer"
+                >
                   <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
                   <div className="space-y-1">
                     <h4 className="text-sm font-bold text-[#122c1f]">{item.title}</h4>
@@ -200,11 +217,11 @@ export default function CardFeatures({ lang, dict }: CardFeaturesProps) {
         </div>
 
         {/* How Referral Program Works */}
-        <div className="bg-[#122c1f] rounded-[48px] p-10 md:p-16 text-white relative overflow-hidden">
+        <FadeIn className="bg-[#122c1f] rounded-[48px] p-10 md:p-16 text-white relative overflow-hidden w-full">
           <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#77574d]/10 rounded-full blur-[100px] -mr-64 -mt-64"></div>
           
           <div className="relative z-10 space-y-16">
-            <FadeIn direction="up" className="max-w-2xl space-y-4">
+            <div className="max-w-2xl space-y-4">
               <h3 className="text-3xl md:text-5xl font-serif font-bold italic text-accent">
                 {lang === 'en' ? "The Community Referral Model" : "सामुदायिक रेफरल मॉडल"}
               </h3>
@@ -213,39 +230,55 @@ export default function CardFeatures({ lang, dict }: CardFeaturesProps) {
                   ? "We grow together. Share your unique link with other farmers. When a farmer successfully registers and generates their ID card using your code, ₹7 is instantly added to your wallet. No limit on invites!"
                   : "हम एक साथ बढ़ते हैं। अपना अनूठा लिंक अन्य किसानों के साथ साझा करें। जब कोई किसान आपके कोड का उपयोग करके सफलतापूर्वक पंजीकरण करता है और अपना आईडी कार्ड बनाता है, तो आपके वॉलेट में तुरंत ₹7 जुड़ जाते हैं। आमंत्रण की कोई सीमा नहीं है!"}
               </p>
-            </FadeIn>
+            </div>
 
             {/* Step-by-Step timeline */}
             <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               {steps.map((step, idx) => (
-                <FadeIn 
-                  key={idx} 
-                  delay={idx * 0.1}
-                  direction="up"
-                  className="bg-white/5 border border-white/10 rounded-[32px] p-8 space-y-6 hover:bg-white/10 hover:-translate-y-2 hover:shadow-2xl hover:shadow-black/20 transition-all duration-300"
+                <m.div 
+                  key={idx}
+                  variants={{
+                    initial: { opacity: 0, y: 30 },
+                    whileInView: { opacity: 1, y: 0 }
+                  }}
+                  whileHover={{ 
+                    y: -8, 
+                    scale: 1.03, 
+                    backgroundColor: "rgba(255, 255, 255, 0.08)",
+                    borderColor: "rgba(255, 255, 255, 0.2)"
+                  }}
+                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                  className="bg-white/5 border border-white/10 rounded-[32px] p-8 space-y-6 cursor-pointer"
                 >
-                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${step.bg} shadow-md`}>
+                  <m.div 
+                    whileHover={{ rotate: 12, scale: 1.1 }}
+                    className={`w-12 h-12 rounded-2xl flex items-center justify-center ${step.bg} shadow-md`}
+                  >
                     {step.icon}
-                  </div>
+                  </m.div>
                   <div className="space-y-3">
-                    <h4 className="text-lg font-serif font-bold text-white! leading-tight">{step.title}</h4>
+                    <h4 className="text-lg font-serif font-bold text-white leading-tight">{step.title}</h4>
                     <p className="text-white/60 text-xs leading-relaxed">{step.desc}</p>
                   </div>
-                </FadeIn>
+                </m.div>
               ))}
             </StaggerContainer>
 
             {/* CTAs */}
-            <FadeIn direction="up" delay={0.4} className="flex flex-col sm:flex-row justify-center items-center gap-6 pt-4 border-t border-white/10">
-              <Link href={`/${lang}/register`} className="btn-premium group flex items-center gap-2">
-                {lang === 'en' ? "Generate My Card" : "मेरा कार्ड बनाएं"} <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </Link>
-              <Link href={`/${lang}/login`} className="text-white font-bold hover:text-accent hover:underline flex items-center gap-1 text-sm uppercase tracking-widest">
-                {lang === 'en' ? "Access My Wallet" : "मेरे वॉलेट तक पहुँचें"} <ArrowUpRight className="w-4 h-4" />
-              </Link>
-            </FadeIn>
+            <div className="flex flex-col sm:flex-row justify-center items-center gap-6 pt-4 border-t border-white/10">
+              <m.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.98 }}>
+                <Link href={`/${lang}/register`} className="btn-premium group flex items-center gap-2">
+                  {lang === 'en' ? "Generate My Card" : "मेरा कार्ड बनाएं"} <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </m.div>
+              <m.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.98 }}>
+                <Link href={`/${lang}/login`} className="text-white font-bold hover:text-accent hover:underline flex items-center gap-1 text-sm uppercase tracking-widest">
+                  {lang === 'en' ? "Access My Wallet" : "मेरे वॉलेट तक पहुँचें"} <ArrowUpRight className="w-4 h-4" />
+                </Link>
+              </m.div>
+            </div>
           </div>
-        </div>
+        </FadeIn>
 
       </div>
     </section>
