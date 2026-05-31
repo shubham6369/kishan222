@@ -159,7 +159,11 @@ Verify: ${verificationUrl}`;
           <div className="w-[100px] h-[120px] rounded-lg bg-zinc-50 border border-zinc-300 overflow-hidden relative shrink-0 flex items-center justify-center shadow-inner">
             {userData.photoUrl || userData.photoBase64 ? (
               <Image 
-                src={userData.photoUrl || userData.photoBase64 || ''} 
+                src={(() => {
+                  const url = userData.photoUrl || userData.photoBase64 || '';
+                  if (url.startsWith('data:')) return url;
+                  return `/api/proxy-image?url=${encodeURIComponent(url)}`;
+                })()} 
                 alt={userData.fullName} 
                 fill
                 sizes="100px"
