@@ -63,7 +63,7 @@ export default function Hero({ lang, dict }: { lang: string, dict: Dictionary })
                 <CreditCard className="text-primary w-8 h-8" />
               </div>
               <div>
-                <h3 className="text-white text-xl">Smart Farmer ID</h3>
+                <h3 className="text-white! text-xl">Smart Farmer ID</h3>
                 <p className="text-white/60 text-sm">QR Verified Identity Card</p>
               </div>
             </div>
@@ -73,7 +73,7 @@ export default function Hero({ lang, dict }: { lang: string, dict: Dictionary })
                 <Users className="text-accent w-8 h-8" />
               </div>
               <div>
-                <h3 className="text-white text-xl">Referral Network</h3>
+                <h3 className="text-white! text-xl">Referral Network</h3>
                 <p className="text-white/60 text-sm">Earn ₹7 per Registration</p>
               </div>
             </div>
