@@ -17,9 +17,9 @@ export default function Footer({ lang, dict }: { lang: string, dict: Dictionary 
               <Image 
                 src="/logo.png" 
                 alt="Kishan Seva Logo" 
-                width={56} 
-                height={56} 
-                className="w-14 h-14 object-contain transition-transform group-hover:scale-105"
+                width={73} 
+                height={73} 
+                className="w-[73px] h-[73px] object-contain transition-transform group-hover:scale-105"
               />
               <div className="flex flex-col">
                 <span className="font-serif text-3xl font-bold tracking-tight">

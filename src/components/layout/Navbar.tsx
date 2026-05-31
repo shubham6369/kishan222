@@ -53,9 +53,9 @@ export default function Navbar({ lang, dict }: { lang: string, dict: Dictionary 
           <Image 
             src="/logo.png" 
             alt="Kishan Seva Logo" 
-            width={48} 
-            height={48} 
-            className="w-12 h-12 object-contain transition-transform group-hover:scale-105"
+            width={62} 
+            height={62} 
+            className="w-[62px] h-[62px] object-contain transition-transform group-hover:scale-105"
           />
           <div className="flex flex-col">
             <span className={`font-serif text-2xl font-bold tracking-tight leading-tight transition-colors ${hasScrolled ? "text-primary" : "text-white"}`}>

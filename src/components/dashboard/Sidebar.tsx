@@ -47,9 +47,9 @@ export default function Sidebar({ lang, dict }: SidebarProps) {
           <Image 
             src="/logo.png" 
             alt="Kishan Seva Logo" 
-            width={40} 
-            height={40} 
-            className="w-10 h-10 object-contain transition-transform group-hover:scale-105"
+            width={52} 
+            height={52} 
+            className="w-[52px] h-[52px] object-contain transition-transform group-hover:scale-105"
           />
           <div>
             <h1 className="text-xl font-serif font-bold tracking-tight">{dict.sidebar?.brand || "Kishan Seva"}</h1>
