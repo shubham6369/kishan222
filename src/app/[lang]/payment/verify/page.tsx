@@ -3,8 +3,10 @@
 import React, { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
+import { useLanguage } from '@/context/LanguageContext';
 
-function VerifyContent({ params }: { params: { lang: string } }) {
+function VerifyContent() {
+  const { lang } = useLanguage();
   const router = useRouter();
   const searchParams = useSearchParams();
   const orderId = searchParams.get('order_id');
@@ -12,7 +14,7 @@ function VerifyContent({ params }: { params: { lang: string } }) {
 
   useEffect(() => {
     if (!orderId) {
-      router.push(`/${params.lang}/cart`);
+      router.push(`/${lang}/cart`);
       return;
     }
 
@@ -22,9 +24,9 @@ function VerifyContent({ params }: { params: { lang: string } }) {
         const data = await res.json();
 
         if (data.status === 'SUCCESS') {
-          router.push(`/${params.lang}/payment/success?order_id=${orderId}&payment_id=${data.paymentId}`);
+          router.push(`/${lang}/payment/success?order_id=${orderId}&payment_id=${data.paymentId}`);
         } else {
-          router.push(`/${params.lang}/payment/failure?order_id=${orderId}`);
+          router.push(`/${lang}/payment/failure?order_id=${orderId}`);
         }
       } catch (err) {
         console.error('Verification error:', err);
@@ -33,7 +35,7 @@ function VerifyContent({ params }: { params: { lang: string } }) {
     };
 
     verifyPayment();
-  }, [orderId, params.lang, router]);
+  }, [orderId, lang, router]);
 
   if (error) {
     return (
@@ -41,7 +43,7 @@ function VerifyContent({ params }: { params: { lang: string } }) {
         <h1 className="text-2xl font-bold text-red-600 mb-4">Error</h1>
         <p className="text-[#77574d] mb-8">{error}</p>
         <button 
-          onClick={() => router.push(`/${params.lang}/dashboard`)}
+          onClick={() => router.push(`/${lang}/dashboard`)}
           className="px-8 py-3 bg-[#122c1f] text-white rounded-xl font-bold"
         >
           Go to Dashboard
@@ -59,7 +61,7 @@ function VerifyContent({ params }: { params: { lang: string } }) {
   );
 }
 
-export default function PaymentVerifyPage(props: { params: { lang: string } }) {
+export default function PaymentVerifyPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center">
@@ -67,7 +69,7 @@ export default function PaymentVerifyPage(props: { params: { lang: string } }) {
         <h1 className="text-2xl font-serif font-bold text-[#122c1f]">Initialising...</h1>
       </div>
     }>
-      <VerifyContent {...props} />
+      <VerifyContent />
     </Suspense>
   );
 }

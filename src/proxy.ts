@@ -4,8 +4,19 @@ import type { NextRequest } from 'next/server';
 const locales = ['en', 'hi'];
 const defaultLocale = 'en';
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
+
+  // Intercept paths with "undefined" locale (e.g. from previously generated broken links)
+  // and redirect them to the default locale.
+  if (pathname === '/undefined' || pathname.startsWith('/undefined/')) {
+    const cleanedPath = pathname.replace(/^\/undefined/, '');
+    const redirectUrl = new URL(
+      `/${defaultLocale}${cleanedPath === '' || cleanedPath === '/' ? '' : cleanedPath}${search}`,
+      request.url
+    );
+    return NextResponse.redirect(redirectUrl);
+  }
 
   // Check if the pathname is missing a locale
   const pathnameIsMissingLocale = locales.every(

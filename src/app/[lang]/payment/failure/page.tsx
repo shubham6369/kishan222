@@ -7,7 +7,8 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { useLanguage } from '@/context/LanguageContext';
 
-function FailureContent({ params }: { params: { lang: string } }) {
+function FailureContent() {
+  const { lang } = useLanguage();
   const router = useRouter();
   const searchParams = useSearchParams();
   const orderId = searchParams.get('order_id');
@@ -39,14 +40,14 @@ function FailureContent({ params }: { params: { lang: string } }) {
 
         <div className="flex flex-col sm:flex-row gap-4">
           <button 
-            onClick={() => router.push(`/${params.lang}/checkout`)}
+            onClick={() => router.push(`/${lang}/checkout`)}
             className="flex-1 py-4 bg-[#122c1f] text-white rounded-2xl font-bold uppercase tracking-wider text-sm flex items-center justify-center gap-2 shadow-xl hover:shadow-[#122c1f]/20 hover:scale-[1.02] transition-all"
           >
             <RefreshCcw className="w-4 h-4" />
             Try Again
           </button>
           <button 
-            onClick={() => router.push(`/${params.lang}/cart`)}
+            onClick={() => router.push(`/${lang}/cart`)}
             className="flex-1 py-4 bg-white border border-black/10 text-[#122c1f] rounded-2xl font-bold uppercase tracking-wider text-sm flex items-center justify-center gap-2 hover:bg-black/5 transition-all"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -58,7 +59,7 @@ function FailureContent({ params }: { params: { lang: string } }) {
   );
 }
 
-export default function PaymentFailurePage(props: { params: { lang: string } }) {
+export default function PaymentFailurePage() {
   const { lang, dict } = useLanguage();
   return (
     <div className="min-h-screen bg-[#fbf9f5] flex flex-col">
@@ -68,7 +69,7 @@ export default function PaymentFailurePage(props: { params: { lang: string } }) 
           <Loader2 className="w-8 h-8 animate-spin text-[#122c1f]" />
         </main>
       }>
-        <FailureContent {...props} />
+        <FailureContent />
       </Suspense>
       <Footer lang={lang} dict={dict} />
     </div>

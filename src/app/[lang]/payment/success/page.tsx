@@ -7,7 +7,8 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { useLanguage } from '@/context/LanguageContext';
 
-function SuccessContent({ params }: { params: { lang: string } }) {
+function SuccessContent() {
+  const { lang } = useLanguage();
   const router = useRouter();
   const searchParams = useSearchParams();
   const orderId = searchParams.get('order_id');
@@ -44,14 +45,14 @@ function SuccessContent({ params }: { params: { lang: string } }) {
 
         <div className="flex flex-col sm:flex-row gap-4">
           <button 
-            onClick={() => router.push(`/${params.lang}/dashboard/purchases`)}
+            onClick={() => router.push(`/${lang}/dashboard/purchases`)}
             className="flex-1 py-4 bg-[#122c1f] text-white rounded-2xl font-bold uppercase tracking-wider text-sm flex items-center justify-center gap-2 shadow-xl hover:shadow-[#122c1f]/20 hover:scale-[1.02] transition-all"
           >
             View Orders
             <ArrowRight className="w-4 h-4" />
           </button>
           <button 
-            onClick={() => router.push(`/${params.lang}/marketplace`)}
+            onClick={() => router.push(`/${lang}/marketplace`)}
             className="flex-1 py-4 bg-white border border-black/10 text-[#122c1f] rounded-2xl font-bold uppercase tracking-wider text-sm flex items-center justify-center gap-2 hover:bg-black/5 transition-all"
           >
             <ShoppingBag className="w-4 h-4" />
@@ -63,7 +64,7 @@ function SuccessContent({ params }: { params: { lang: string } }) {
   );
 }
 
-export default function PaymentSuccessPage(props: { params: { lang: string } }) {
+export default function PaymentSuccessPage() {
   const { lang, dict } = useLanguage();
   return (
     <div className="min-h-screen bg-[#fbf9f5] flex flex-col">
@@ -73,7 +74,7 @@ export default function PaymentSuccessPage(props: { params: { lang: string } }) 
           <Loader2 className="w-8 h-8 animate-spin text-[#122c1f]" />
         </main>
       }>
-        <SuccessContent {...props} />
+        <SuccessContent />
       </Suspense>
       <Footer lang={lang} dict={dict} />
     </div>
