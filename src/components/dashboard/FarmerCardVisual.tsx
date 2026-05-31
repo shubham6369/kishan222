@@ -25,26 +25,42 @@ const PrivateSecurityBadge = () => (
 );
 
 // 2. Custom Farmer Collective Logo SVG
-const FarmerLogo = () => (
-  <svg viewBox="0 0 100 100" className="w-[38px] h-[38px] shrink-0 fill-current text-white select-none">
-    <circle cx="50" cy="50" r="46" fill="none" stroke="white" strokeWidth="4.5"/>
-    <circle cx="50" cy="50" r="41" fill="#122c1f"/>
-    {/* Stylized Farmer Icon */}
-    {/* Turban (Pagri) */}
-    <path d="M35 34 C35 24 65 24 65 34 C60 30 40 30 35 34 Z" fill="#ffffff" />
-    <path d="M37 31 C37 25 63 25 63 31 C57 28 43 28 37 31 Z" fill="#d4af37" />
-    {/* Head */}
-    <circle cx="50" cy="41" r="9" fill="#ffffff"/>
-    {/* Mustache */}
-    <path d="M44 45 Q50 49 56 45 Q50 43 44 45 Z" fill="#122c1f"/>
-    {/* Body / Shoulders */}
-    <path d="M50 54 C35 54 28 62 28 72 V74 H72 V72 C72 62 65 54 50 54 Z" fill="#ffffff"/>
-    {/* Green T-Shirt Line */}
-    <path d="M45 54 L50 62 L55 54 Z" fill="#122c1f" />
-    {/* Mini wheat icon inside body */}
-    <path d="M48 68 L50 64 L52 68 M50 64 V74" stroke="#122c1f" strokeWidth="1" fill="none" />
-  </svg>
-);
+const FarmerLogo = ({ className = "w-[38px] h-[38px]", isWatermark = false }: { className?: string, isWatermark?: boolean }) => {
+  if (isWatermark) {
+    return (
+      <svg viewBox="0 0 100 100" className={`${className} shrink-0 fill-current text-[#122c1f]/5 select-none pointer-events-none`}>
+        <circle cx="50" cy="50" r="46" fill="none" stroke="currentColor" strokeWidth="4.5"/>
+        <circle cx="50" cy="50" r="41" fill="currentColor" opacity="0.3"/>
+        <path d="M35 34 C35 24 65 24 65 34 C60 30 40 30 35 34 Z" fill="currentColor" />
+        <path d="M37 31 C37 25 63 25 63 31 C57 28 43 28 37 31 Z" fill="currentColor" opacity="0.6" />
+        <circle cx="50" cy="41" r="9" fill="currentColor"/>
+        <path d="M44 45 Q50 49 56 45 Q50 43 44 45 Z" fill="none" stroke="currentColor" strokeWidth="2.5"/>
+        <path d="M50 54 C35 54 28 62 28 72 V74 H72 V72 C72 62 65 54 50 54 Z" fill="currentColor"/>
+      </svg>
+    );
+  }
+
+  return (
+    <svg viewBox="0 0 100 100" className={`${className} shrink-0 fill-current text-white select-none`}>
+      <circle cx="50" cy="50" r="46" fill="none" stroke="white" strokeWidth="4.5"/>
+      <circle cx="50" cy="50" r="41" fill="#122c1f"/>
+      {/* Stylized Farmer Icon */}
+      {/* Turban (Pagri) */}
+      <path d="M35 34 C35 24 65 24 65 34 C60 30 40 30 35 34 Z" fill="#ffffff" />
+      <path d="M37 31 C37 25 63 25 63 31 C57 28 43 28 37 31 Z" fill="#d4af37" />
+      {/* Head */}
+      <circle cx="50" cy="41" r="9" fill="#ffffff"/>
+      {/* Mustache */}
+      <path d="M44 45 Q50 49 56 45 Q50 43 44 45 Z" fill="#122c1f"/>
+      {/* Body / Shoulders */}
+      <path d="M50 54 C35 54 28 62 28 72 V74 H72 V72 C72 62 65 54 50 54 Z" fill="#ffffff"/>
+      {/* Green T-Shirt Line */}
+      <path d="M45 54 L50 62 L55 54 Z" fill="#122c1f" />
+      {/* Mini wheat icon inside body */}
+      <path d="M48 68 L50 64 L52 68 M50 64 V74" stroke="#122c1f" strokeWidth="1" fill="none" />
+    </svg>
+  );
+};
 
 // 3. Wheat Stalk Silhouette for Front Card Background
 const WheatStalk = () => (
@@ -155,6 +171,11 @@ Verify: ${verificationUrl}`;
         {/* Card Body Profile Area */}
         <div className="flex-1 px-4 py-3 flex gap-4 items-center relative z-0">
           
+          {/* Logo Watermark */}
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
+            <FarmerLogo className="w-[140px] h-[140px]" isWatermark={true} />
+          </div>
+          
           {/* Farmer Photo */}
           <div className="w-[100px] h-[120px] rounded-lg bg-zinc-50 border border-zinc-300 overflow-hidden relative shrink-0 flex items-center justify-center shadow-inner">
             {userData.photoUrl || userData.photoBase64 ? (
@@ -248,6 +269,11 @@ Verify: ${verificationUrl}`;
 
         {/* Card Back Content Info List */}
         <div className="flex-1 px-5 py-4 flex flex-col justify-between relative z-0">
+          
+          {/* Logo Watermark */}
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
+            <FarmerLogo className="w-[140px] h-[140px]" isWatermark={true} />
+          </div>
           
           <div className="space-y-3">
             {/* Address */}
