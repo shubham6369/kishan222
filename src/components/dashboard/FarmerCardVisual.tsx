@@ -64,39 +64,46 @@ const FarmerLogo = ({ className = "w-[38px] h-[38px]", isWatermark = false }: { 
 
 // 3. Wheat Stalk Silhouette for Front Card Background
 const WheatStalk = () => (
-  <svg viewBox="0 0 60 160" className="w-[85px] h-[190px] text-green-700/10 fill-current absolute right-1 bottom-4 pointer-events-none select-none">
+  <svg viewBox="0 0 60 160" className="w-[85px] h-[190px] absolute right-1 bottom-4 pointer-events-none select-none">
     {/* Main Stem */}
-    <path d="M15 150 C28 110, 32 70, 25 15" stroke="currentColor" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
+    <path 
+      d="M15 150 C28 110, 32 70, 25 15" 
+      stroke="#15803d" 
+      strokeOpacity={0.10} 
+      strokeWidth="2.5" 
+      fill="none" 
+      strokeLinecap="round"
+    />
     {/* Wheat Grains */}
-    <path d="M22 120 C18 114, 12 114, 9 122 C12 129, 18 129, 22 120 Z"/>
-    <path d="M28 126 C32 120, 38 120, 41 128 C38 135, 32 135, 28 126 Z"/>
-    <path d="M23 94 C19 88, 13 88, 10 96 C13 103, 19 103, 23 94 Z"/>
-    <path d="M29 100 C33 94, 39 94, 42 102 C39 109, 33 109, 29 100 Z"/>
-    <path d="M22 68 C18 62, 12 62, 9 70 C12 77, 18 77, 22 68 Z"/>
-    <path d="M28 74 C32 68, 38 68, 41 76 C38 83, 32 83, 28 74 Z"/>
-    <path d="M20 42 C16 36, 10 36, 7 44 C10 51, 16 51, 20 42 Z"/>
-    <path d="M26 48 C30 42, 36 42, 39 50 C36 57, 30 57, 26 48 Z"/>
-    <path d="M24 20 C21 14, 23 8, 25 8 C27 8, 28 14, 24 20 Z"/>
+    <path d="M22 120 C18 114, 12 114, 9 122 C12 129, 18 129, 22 120 Z" fill="#15803d" fillOpacity={0.10} />
+    <path d="M28 126 C32 120, 38 120, 41 128 C38 135, 32 135, 28 126 Z" fill="#15803d" fillOpacity={0.10} />
+    <path d="M23 94 C19 88, 13 88, 10 96 C13 103, 19 103, 23 94 Z" fill="#15803d" fillOpacity={0.10} />
+    <path d="M29 100 C33 94, 39 94, 42 102 C39 109, 33 109, 29 100 Z" fill="#15803d" fillOpacity={0.10} />
+    <path d="M22 68 C18 62, 12 62, 9 70 C12 77, 18 77, 22 68 Z" fill="#15803d" fillOpacity={0.10} />
+    <path d="M28 74 C32 68, 38 68, 41 76 C38 83, 32 83, 28 74 Z" fill="#15803d" fillOpacity={0.10} />
+    <path d="M20 42 C16 36, 10 36, 7 44 C10 51, 16 51, 20 42 Z" fill="#15803d" fillOpacity={0.10} />
+    <path d="M26 48 C30 42, 36 42, 39 50 C36 57, 30 57, 26 48 Z" fill="#15803d" fillOpacity={0.10} />
+    <path d="M24 20 C21 14, 23 8, 25 8 C27 8, 28 14, 24 20 Z" fill="#15803d" fillOpacity={0.10} />
   </svg>
 );
 
 // 4. Plowing Farmer with Oxen Background SVG for Card Back
 const PlowingBackdrop = () => (
-  <svg viewBox="0 0 200 100" className="w-[170px] h-[85px] text-green-800/5 fill-current absolute bottom-8 right-2 pointer-events-none select-none">
+  <svg viewBox="0 0 200 100" className="w-[170px] h-[85px] absolute bottom-8 right-2 pointer-events-none select-none">
     {/* Ox 1 (Back) */}
-    <path d="M20 62 C 20 48, 38 43, 47 43 C 51 43, 55 46, 59 49 C 63 47, 68 49, 70 52 C 72 54, 72 57, 70 59 C 68 61, 63 63, 59 63 L 57 84 L 53 84 L 55 63 L 37 63 L 35 84 L 31 84 L 33 63 L 20 62 Z"/>
+    <path d="M20 62 C 20 48, 38 43, 47 43 C 51 43, 55 46, 59 49 C 63 47, 68 49, 70 52 C 72 54, 72 57, 70 59 C 68 61, 63 63, 59 63 L 57 84 L 53 84 L 55 63 L 37 63 L 35 84 L 31 84 L 33 63 L 20 62 Z" fill="#166534" fillOpacity={0.05} />
     {/* Ox 2 (Front) */}
-    <path d="M47 67 C 47 53, 64 48, 73 48 C 77 48, 81 51, 85 54 C 89 52, 94 54, 96 57 Q98 60, 96 62 C 93 64, 89 66, 85 66 L 83 87 L 79 87 L 81 66 L 64 66 L 62 87 L 58 87 L 60 66 L 47 67 Z"/>
+    <path d="M47 67 C 47 53, 64 48, 73 48 C 77 48, 81 51, 85 54 C 89 52, 94 54, 96 57 Q98 60, 96 62 C 93 64, 89 66, 85 66 L 83 87 L 79 87 L 81 66 L 64 66 L 62 87 L 58 87 L 60 66 L 47 67 Z" fill="#166534" fillOpacity={0.05} />
     {/* Connecting Harness bar */}
-    <path d="M59 52 L 120 72" stroke="currentColor" strokeWidth="1.8" fill="none"/>
+    <path d="M59 52 L 120 72" stroke="#166534" strokeOpacity={0.05} strokeWidth="1.8" fill="none"/>
     {/* The Plow blade */}
-    <path d="M120 72 L 132 75 L 135 59 L 137 59 L 134 77 L 118 73 Z"/>
+    <path d="M120 72 L 132 75 L 135 59 L 137 59 L 134 77 L 118 73 Z" fill="#166534" fillOpacity={0.05} />
     {/* Farmer silhouette */}
-    <circle cx="145" cy="48" r="4.5" />
-    <path d="M145 52.5 L 143 65 L 136 82 L 140 82 L 146 68 L 151 82 L 155 82 L 148 65 L 148 52.5 Z"/>
-    <path d="M145 57 L 134 60 M 145 57 L 134 67" stroke="currentColor" strokeWidth="1.8" fill="none"/>
+    <circle cx="145" cy="48" r="4.5" fill="#166534" fillOpacity={0.05} />
+    <path d="M145 52.5 L 143 65 L 136 82 L 140 82 L 146 68 L 151 82 L 155 82 L 148 65 L 148 52.5 Z" fill="#166534" fillOpacity={0.05} />
+    <path d="M145 57 L 134 60 M 145 57 L 134 67" stroke="#166534" strokeOpacity={0.05} strokeWidth="1.8" fill="none"/>
     {/* Ground Soil Line */}
-    <line x1="5" y1="85" x2="190" y2="85" stroke="currentColor" strokeWidth="1.2" strokeDasharray="4,4"/>
+    <line x1="5" y1="85" x2="190" y2="85" stroke="#166534" strokeOpacity={0.05} strokeWidth="1.2" strokeDasharray="4,4"/>
   </svg>
 );
 
