@@ -81,23 +81,57 @@ export default function AboutContent({ lang, dict }: AboutContentProps) {
       {/* Mission Statement */}
       <section className="max-w-6xl mx-auto px-6 py-24">
         <div className="grid md:grid-cols-2 gap-16 items-center">
-          <m.div {...fadeUp()}>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-[#77574d] mb-4">{dict.about.mission_tag}</p>
-            <h2 className="text-4xl font-serif font-bold text-[#122c1f] leading-tight mb-6">
-              {dict.about.mission_title}
+          <m.div {...fadeUp()} className="space-y-6">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-[#77574d]">
+              {lang === 'en' ? 'Membership Campaign' : 'सदस्यता अभियान'}
+            </p>
+            
+            <h2 className="text-4xl font-serif font-bold text-[#122c1f] leading-tight">
+              {lang === 'en' ? 'Kishan Seva Membership Campaign' : 'किसान सेवा सदस्यता अभियान'}
             </h2>
-            <p className="text-[#77574d] text-lg leading-relaxed mb-4">
-              {dict.about.mission_p1}
+            
+            <p className="text-lg font-bold text-green-700">
+              {lang === 'en' ? '🌾 Join Kishan Seva, Promote Organic Farming! 🌾' : '🌾 किसान सेवा से जुड़ें, जैविक खेती को बढ़ाएँ! 🌾'}
             </p>
-            <p className="text-[#77574d] leading-relaxed">
-              {dict.about.mission_p2}
+            
+            <div className="inline-block px-4 py-2 bg-green-50 text-green-800 font-bold rounded-xl text-sm border border-green-100 shadow-sm">
+              {lang === 'en' ? 'Get your membership card for just ₹50.' : 'मात्र ₹50 में सदस्यता कार्ड बनवाएँ।'}
+            </div>
+            
+            <ul className="space-y-3 pt-2">
+              {[
+                lang === 'en' ? 'Cow dung purchase and sale facility' : 'गोबर खरीद एवं बिक्री की सुविधा',
+                lang === 'en' ? 'Opportunity to join organic fertilizer production' : 'जैविक खाद निर्माण से जुड़ने का अवसर',
+                lang === 'en' ? 'Organic farming information and support' : 'जैविक खेती संबंधी जानकारी और सहयोग',
+                lang === 'en' ? 'Information on farmer welfare schemes' : 'किसान हित की योजनाओं की जानकारी',
+              ].map((bullet, idx) => (
+                <li key={idx} className="flex items-start gap-2.5 text-[#77574d] font-semibold text-sm">
+                  <span className="text-emerald-600 shrink-0 text-base leading-none">✅</span>
+                  <span>{bullet}</span>
+                </li>
+              ))}
+            </ul>
+
+            <p className="text-[#77574d] text-sm font-medium leading-relaxed pt-2">
+              {lang === 'en' 
+                ? 'Get your Kishan Seva Membership Card today and become a part of this campaign.' 
+                : 'आज ही किसान सेवा सदस्यता कार्ड बनवाएँ और किसानों के इस अभियान का हिस्सा बनें।'}
             </p>
-            <Link
-              href={`/${lang}/register`}
-              className="inline-flex items-center gap-2 mt-8 px-8 py-4 bg-[#122c1f] text-white rounded-2xl font-bold hover:bg-[#122c1f]/90 transition-all hover:scale-105"
-            >
-              {dict.about.join_movement} <ChevronRight className="w-4 h-4" />
-            </Link>
+
+            <div className="border-l-4 border-green-600 pl-4 py-2 bg-[#fbf9f5] rounded-r-2xl border border-black/5 p-4 shadow-sm text-xs font-semibold text-[#77574d] leading-relaxed italic">
+              {lang === 'en'
+                ? '"A membership card for just ₹50 – an easy way to join the Kishan Seva family." 🌱🚜🌾'
+                : '"मात्र ₹50 का सदस्यता कार्ड – किसान सेवा परिवार से जुड़ने का आसान माध्यम।" 🌱🚜🌾'}
+            </div>
+
+            <div className="pt-4">
+              <Link
+                href={`/${lang}/register`}
+                className="inline-flex items-center gap-2 px-8 py-4 bg-[#122c1f] text-white rounded-2xl font-bold hover:bg-[#122c1f]/90 transition-all hover:scale-105 shadow-md"
+              >
+                {lang === 'en' ? 'Join the Campaign' : 'अभियान से जुड़ें'} <ChevronRight className="w-4 h-4" />
+              </Link>
+            </div>
           </m.div>
 
           <m.div {...fadeUp(0.2)} className="grid grid-cols-2 gap-4">
