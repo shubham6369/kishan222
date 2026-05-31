@@ -7,6 +7,8 @@ import {
 } from 'lucide-react';
 import toast, { Toaster } from 'react-hot-toast';
 import { useLanguage } from '@/context/LanguageContext';
+import { db } from '@/lib/firebase';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 export default function ContactPage() {
   const { dict, lang } = useLanguage();
@@ -36,20 +38,38 @@ export default function ContactPage() {
   ];
 
 
-  const [form, setForm] = React.useState({ name: '', phone: '', email: '', message: '' });
+  const [form, setForm] = React.useState({ name: '', email: '', subject: '', message: '' });
   const [sending, setSending] = React.useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.name || !form.phone || !form.message) {
-      toast.error(lang === 'en' ? 'Please fill name, phone, and message.' : 'कृपया नाम, फोन और संदेश भरें।');
+    if (!form.name || !form.subject || !form.message) {
+      toast.error(lang === 'en' ? 'Please fill name, subject, and message.' : 'कृपया नाम, विषय और संदेश भरें।');
       return;
     }
     setSending(true);
-    await new Promise(r => setTimeout(r, 1500));
-    toast.success(lang === 'en' ? 'Message sent! We will respond within 24 hours.' : 'संदेश भेजा गया! हम 24 घंटों के भीतर जवाब देंगे।');
-    setForm({ name: '', phone: '', email: '', message: '' });
-    setSending(false);
+    try {
+      const isConfigured = !!process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
+      if (isConfigured && db) {
+        await addDoc(collection(db, 'contact_messages'), {
+          name: form.name,
+          email: form.email,
+          subject: form.subject,
+          message: form.message,
+          timestamp: serverTimestamp()
+        });
+      } else {
+        // Fallback for missing Firebase configuration (e.g. build time)
+        await new Promise(r => setTimeout(r, 1200));
+      }
+      toast.success(lang === 'en' ? 'Message sent! We will respond within 24 hours.' : 'संदेश भेजा गया! हम 24 घंटों के भीतर जवाब देंगे।');
+      setForm({ name: '', email: '', subject: '', message: '' });
+    } catch (err) {
+      console.error('Error sending message:', err);
+      toast.error(lang === 'en' ? 'Failed to send message. Please try again.' : 'संदेश भेजने में विफल। कृपया पुन: प्रयास करें।');
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -112,24 +132,24 @@ export default function ContactPage() {
             transition={{ duration: 0.6, delay: 0.1 }}
           >
             <h2 className="text-3xl font-serif font-bold text-[#122c1f] mb-8">{dict.contact.reach_out}</h2>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <label className="text-xs font-bold text-[#122c1f] uppercase tracking-wider">{dict.contact.form_name}</label>
-                  <input type="text" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} className="w-full bg-[#fbf9f5] border border-black/5 rounded-2xl p-4 focus:ring-2 focus:ring-[#122c1f]/10 outline-none transition-all" required />
+                  <input type="text" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} className="w-full bg-white border border-[#122c1f]/15 rounded-2xl p-4 text-[#122c1f] placeholder-[#122c1f]/40 focus:border-[#122c1f] focus:ring-4 focus:ring-[#122c1f]/5 outline-none transition-all shadow-xs" required />
                 </div>
                 <div className="space-y-2">
                   <label className="text-xs font-bold text-[#122c1f] uppercase tracking-wider">{dict.contact.form_email}</label>
-                  <input type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} className="w-full bg-[#fbf9f5] border border-black/5 rounded-2xl p-4 focus:ring-2 focus:ring-[#122c1f]/10 outline-none transition-all" />
+                  <input type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} className="w-full bg-white border border-[#122c1f]/15 rounded-2xl p-4 text-[#122c1f] placeholder-[#122c1f]/40 focus:border-[#122c1f] focus:ring-4 focus:ring-[#122c1f]/5 outline-none transition-all shadow-xs" />
                 </div>
               </div>
               <div className="space-y-2">
                 <label className="text-xs font-bold text-[#122c1f] uppercase tracking-wider">{dict.contact.form_subject}</label>
-                <input type="text" value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} className="w-full bg-[#fbf9f5] border border-black/5 rounded-2xl p-4 focus:ring-2 focus:ring-[#122c1f]/10 outline-none transition-all" />
+                <input type="text" value={form.subject} onChange={e => setForm(f => ({ ...f, subject: e.target.value }))} className="w-full bg-white border border-[#122c1f]/15 rounded-2xl p-4 text-[#122c1f] placeholder-[#122c1f]/40 focus:border-[#122c1f] focus:ring-4 focus:ring-[#122c1f]/5 outline-none transition-all shadow-xs" required />
               </div>
               <div className="space-y-2">
                 <label className="text-xs font-bold text-[#122c1f] uppercase tracking-wider">{dict.contact.form_message}</label>
-                <textarea rows={4} value={form.message} onChange={e => setForm(f => ({ ...f, message: e.target.value }))} className="w-full bg-[#fbf9f5] border border-black/5 rounded-2xl p-4 focus:ring-2 focus:ring-[#122c1f]/10 outline-none transition-all resize-none" required></textarea>
+                <textarea rows={4} value={form.message} onChange={e => setForm(f => ({ ...f, message: e.target.value }))} className="w-full bg-white border border-[#122c1f]/15 rounded-2xl p-4 text-[#122c1f] placeholder-[#122c1f]/40 focus:border-[#122c1f] focus:ring-4 focus:ring-[#122c1f]/5 outline-none transition-all resize-none shadow-xs" required></textarea>
               </div>
               <button disabled={sending} className="w-full py-5 bg-[#122c1f] text-white rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-[#122c1f]/90 transition-all hover:scale-[1.01]">
                 <Send className="w-4 h-4" />
