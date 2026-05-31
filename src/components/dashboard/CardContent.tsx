@@ -144,9 +144,15 @@ export default function CardContent({ lang, dict }: CardContentProps) {
       <div className="bg-white rounded-[40px] border border-black/5 shadow-sm p-8 sm:p-12 space-y-12">
         
         {/* Printable Card Area */}
-        <div id="printable-card-area" className="flex justify-center py-4 bg-[#fbf9f5]/50 rounded-[32px] border border-dashed border-[#77574d]/10">
+        <m.div 
+          initial={{ opacity: 0, scale: 0.96 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          id="printable-card-area" 
+          className="flex justify-center py-4 bg-[#fbf9f5]/50 rounded-[32px] border border-dashed border-[#77574d]/10"
+        >
           <FarmerCardVisual userData={userData} lang={lang} />
-        </div>
+        </m.div>
 
         {/* Download Buttons Panel */}
         <div className="flex flex-wrap justify-center gap-4 print:hidden -mt-6">

@@ -204,7 +204,7 @@ export default function CardFeatures({ lang, dict }: CardFeaturesProps) {
           <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#77574d]/10 rounded-full blur-[100px] -mr-64 -mt-64"></div>
           
           <div className="relative z-10 space-y-16">
-            <div className="max-w-2xl space-y-4">
+            <FadeIn direction="up" className="max-w-2xl space-y-4">
               <h3 className="text-3xl md:text-5xl font-serif font-bold italic text-accent">
                 {lang === 'en' ? "The Community Referral Model" : "सामुदायिक रेफरल मॉडल"}
               </h3>
@@ -213,32 +213,37 @@ export default function CardFeatures({ lang, dict }: CardFeaturesProps) {
                   ? "We grow together. Share your unique link with other farmers. When a farmer successfully registers and generates their ID card using your code, ₹7 is instantly added to your wallet. No limit on invites!"
                   : "हम एक साथ बढ़ते हैं। अपना अनूठा लिंक अन्य किसानों के साथ साझा करें। जब कोई किसान आपके कोड का उपयोग करके सफलतापूर्वक पंजीकरण करता है और अपना आईडी कार्ड बनाता है, तो आपके वॉलेट में तुरंत ₹7 जुड़ जाते हैं। आमंत्रण की कोई सीमा नहीं है!"}
               </p>
-            </div>
+            </FadeIn>
 
             {/* Step-by-Step timeline */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               {steps.map((step, idx) => (
-                <div key={idx} className="bg-white/5 border border-white/10 rounded-[32px] p-8 space-y-6 hover:bg-white/10 transition-colors">
+                <FadeIn 
+                  key={idx} 
+                  delay={idx * 0.1}
+                  direction="up"
+                  className="bg-white/5 border border-white/10 rounded-[32px] p-8 space-y-6 hover:bg-white/10 hover:-translate-y-2 hover:shadow-2xl hover:shadow-black/20 transition-all duration-300"
+                >
                   <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${step.bg} shadow-md`}>
                     {step.icon}
                   </div>
                   <div className="space-y-3">
-                    <h4 className="text-lg font-serif font-bold text-white leading-tight">{step.title}</h4>
+                    <h4 className="text-lg font-serif font-bold text-white! leading-tight">{step.title}</h4>
                     <p className="text-white/60 text-xs leading-relaxed">{step.desc}</p>
                   </div>
-                </div>
+                </FadeIn>
               ))}
-            </div>
+            </StaggerContainer>
 
             {/* CTAs */}
-            <div className="flex flex-col sm:flex-row justify-center items-center gap-6 pt-4 border-t border-white/10">
+            <FadeIn direction="up" delay={0.4} className="flex flex-col sm:flex-row justify-center items-center gap-6 pt-4 border-t border-white/10">
               <Link href={`/${lang}/register`} className="btn-premium group flex items-center gap-2">
                 {lang === 'en' ? "Generate My Card" : "मेरा कार्ड बनाएं"} <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
               <Link href={`/${lang}/login`} className="text-white font-bold hover:text-accent hover:underline flex items-center gap-1 text-sm uppercase tracking-widest">
                 {lang === 'en' ? "Access My Wallet" : "मेरे वॉलेट तक पहुँचें"} <ArrowUpRight className="w-4 h-4" />
               </Link>
-            </div>
+            </FadeIn>
           </div>
         </div>
 
