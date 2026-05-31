@@ -59,10 +59,22 @@ export default function ContactPage() {
           timestamp: serverTimestamp()
         });
       } else {
-        // Fallback for missing Firebase configuration (e.g. build time)
-        await new Promise(r => setTimeout(r, 1200));
+        await new Promise(r => setTimeout(r, 600));
       }
-      toast.success(lang === 'en' ? 'Message sent! We will respond within 24 hours.' : 'संदेश भेजा गया! हम 24 घंटों के भीतर जवाब देंगे।');
+
+      // Format WhatsApp message text
+      const waText = `*New Contact Message - Kishan Seva*\n\n` +
+        `• *Name:* ${form.name}\n` +
+        `• *Email:* ${form.email || 'N/A'}\n` +
+        `• *Subject:* ${form.subject}\n` +
+        `• *Message:* ${form.message}`;
+      
+      const whatsappUrl = `https://wa.me/919120077139?text=${encodeURIComponent(waText)}`;
+      
+      // Open WhatsApp in a new tab
+      window.open(whatsappUrl, '_blank');
+
+      toast.success(lang === 'en' ? 'Redirecting to WhatsApp...' : 'व्हाट्सएप पर रीडायरेक्ट किया जा रहा है...');
       setForm({ name: '', email: '', subject: '', message: '' });
     } catch (err) {
       console.error('Error sending message:', err);
