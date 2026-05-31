@@ -172,7 +172,7 @@ export default function RegistrationForm() {
         referralCode: newMemberId,
         referredBy: referrerId || null,
         registrationDate: new Date().toISOString(),
-        membershipFeePaid: 1,
+        membershipFeePaid: 50,
         paymentId: paymentId,
         paymentOrderId: orderId,
         walletBalance: 0,
@@ -338,7 +338,7 @@ export default function RegistrationForm() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
-          amount: 1, // ₹1 smart ID card issuance fee
+          amount: 50, // ₹50 smart ID card issuance fee
           customerId: user.uid,
           customerPhone: get10DigitPhone(formData.phone),
           customerName: formData.fullName,
@@ -360,7 +360,7 @@ export default function RegistrationForm() {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
         amount: orderData.amount,
         currency: orderData.currency || 'INR',
-        name: 'Kishan Seva Samiti',
+        name: 'Kishan Seva',
         description: 'Lifelong Smart Card Issuance Fee',
         order_id: orderData.orderId,
         handler: async function (response: { razorpay_order_id: string; razorpay_payment_id: string; razorpay_signature: string }) {
@@ -1008,11 +1008,11 @@ export default function RegistrationForm() {
                       <div className="p-6 bg-[#fbf9f5] rounded-2xl border border-black/5">
                         <div className="flex justify-between items-center pb-4 border-b border-black/5">
                           <span className="text-[#77574d]">{dict.register.lifelong_card}</span>
-                          <span className="font-bold text-[#122c1f]">₹1.00</span>
+                          <span className="font-bold text-[#122c1f]">₹50.00</span>
                         </div>
                         <div className="flex justify-between items-center pt-4">
                           <span className="font-bold text-lg text-[#122c1f]">{dict.register.total_amount}</span>
-                          <span className="font-bold text-2xl text-green-700">₹1</span>
+                          <span className="font-bold text-2xl text-green-700">₹50</span>
                         </div>
                       </div>
 

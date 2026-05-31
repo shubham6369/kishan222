@@ -20,7 +20,7 @@ const PrivateSecurityBadge = () => (
     {/* Checkmark */}
     <path d="M35 50 L45 60 L65 38" fill="none" stroke="#d4af37" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" />
     {/* Mini letters KSS */}
-    <text x="50" y="76" textAnchor="middle" fill="#d4af37" fontSize="12" fontWeight="black" fontFamily="sans-serif" letterSpacing="1">KSS</text>
+    <text x="50" y="76" textAnchor="middle" fill="#d4af37" fontSize="12" fontWeight="black" fontFamily="sans-serif" letterSpacing="1">KS</text>
   </svg>
 );
 
@@ -113,7 +113,7 @@ export default function FarmerCardVisual({ userData, lang }: FarmerCardVisualPro
     }
   };
 
-  const verificationData = `--- KISHAN SEVA SAMITI ---
+  const verificationData = `--- KISHAN SEVA ---
 MEMBER VERIFICATION
 
 Member ID: ${userData.membershipId}
@@ -239,7 +239,7 @@ Verify: ${verificationUrl}`;
         
         {/* Solid Green Header Bar */}
         <div className="bg-[#122c1f] text-white px-4 py-3 select-none">
-          <h3 className="font-serif text-xs font-extrabold tracking-widest text-center select-none uppercase">किसान सेवा समिति / KISHAN SEVA SAMITI</h3>
+          <h3 className="font-serif text-xs font-extrabold tracking-widest text-center select-none uppercase">किसान सेवा / KISHAN SEVA</h3>
         </div>
 
         {/* Card Back Content Info List */}
@@ -287,8 +287,8 @@ Verify: ${verificationUrl}`;
         {/* Solid Green Footer Bar with Legal text & Helpline */}
         <div className="bg-[#122c1f] text-white px-3 py-2 flex justify-between items-center text-[7px] select-none">
           <span className="leading-snug max-w-[270px] font-medium text-left opacity-90 select-none">
-            यह कार्ड किसान सेवा समिति द्वारा जारी सदस्य पहचान का प्रमाण है।<br />
-            This card is a member identity proof issued by Kishan Seva Samiti.
+            यह कार्ड किसान सेवा द्वारा जारी सदस्य पहचान का प्रमाण है।<br />
+            This card is a member identity proof issued by Kishan Seva.
           </span>
           <div className="flex items-center gap-1 font-bold shrink-0 opacity-100 select-none">
             <span className="text-lg leading-none select-none">📞</span>
