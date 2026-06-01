@@ -89,9 +89,9 @@ export default function WalletContent({ lang, dict }: WalletContentProps) {
       }
 
       toast.success(
-        lang === 'hi' 
-          ? 'निकासी सफल! भुगतान तुरंत संसाधित किया गया।' 
-          : 'Withdrawal successful! Payout processed immediately.'
+        data.status === 'completed'
+          ? (lang === 'hi' ? 'निकासी सफल! भुगतान तुरंत संसाधित किया गया।' : 'Withdrawal successful! Payout processed immediately.')
+          : (lang === 'hi' ? 'अनुरोध भेजा गया! प्रशासक सत्यापन के बाद भुगतान पूरा किया जाएगा।' : 'Request submitted! Payout will be processed after admin verification.')
       );
       setShowForm(false);
       setUpiId('');

@@ -15,21 +15,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Invalid amount' }, { status: 400 });
     }
 
-    // Initialize Razorpay credentials
-    const keyId = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
-    const keySecret = process.env.RAZORPAY_KEY_SECRET;
-    const accountNumber = process.env.RAZORPAYX_ACCOUNT_NUMBER;
-
-    if (!keyId || !keySecret) {
-      return NextResponse.json({ error: 'Razorpay keys are not configured on the server' }, { status: 500 });
-    }
-
-    if (!accountNumber) {
-      return NextResponse.json({ 
-        error: 'RazorpayX Business Account Number (RAZORPAYX_ACCOUNT_NUMBER) is not configured in environment variables.' 
-      }, { status: 500 });
-    }
-
     // Securely retrieve the user's wallet balance from Firestore
     const userDocRef = doc(db, 'users', userId);
     const userDoc = await getDoc(userDocRef);
@@ -46,12 +31,40 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Insufficient wallet balance' }, { status: 400 });
     }
 
-    // Call Razorpay Payouts API
-    const authString = Buffer.from(`${keyId}:${keySecret}`).toString('base64');
-    
-    // Razorpay requires contact details to create a fund account. We'll use user's profile info.
     const userName = userData.fullName || 'Farmer Member';
     const userPhone = userData.phone || '9876543210';
+
+    // Initialize Razorpay credentials
+    const keyId = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
+    const keySecret = process.env.RAZORPAY_KEY_SECRET;
+    const accountNumber = process.env.RAZORPAYX_ACCOUNT_NUMBER;
+
+    if (!keyId || !keySecret || !accountNumber) {
+      // Fallback to manual approval flow if keys or RazorpayX account number are missing
+      await updateDoc(userDocRef, {
+        walletBalance: currentBalance - numericAmount
+      });
+
+      const withdrawalDoc = await addDoc(collection(db, 'withdrawals'), {
+        userId,
+        userName,
+        amount: numericAmount,
+        upiId: upiId.trim(),
+        status: 'pending',
+        payoutId: 'manual',
+        requestedAt: serverTimestamp(),
+      });
+
+      return NextResponse.json({
+        success: true,
+        withdrawalId: withdrawalDoc.id,
+        status: 'pending',
+        isManual: true
+      });
+    }
+
+    // Call Razorpay Payouts API
+    const authString = Buffer.from(`${keyId}:${keySecret}`).toString('base64');
 
     const razorpayPayload = {
       account_number: accountNumber,
