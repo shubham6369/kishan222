@@ -72,35 +72,51 @@ export default function WalletContent({ lang, dict }: WalletContentProps) {
 
     setSubmitting(true);
     try {
-      const docRef = await addDoc(collection(db, 'withdrawals'), {
-        userId: user!.uid,
-        userName: userData?.fullName || 'Farmer',
-        amount,
-        upiId: upiId.trim(),
-        status: 'completed',
-        requestedAt: serverTimestamp(),
+      const response = await fetch('/api/razorpay/payout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: user!.uid,
+          upiId: upiId.trim(),
+          amount,
+        }),
       });
 
-      // Deduct the wallet balance from the user's document
-      await updateDoc(doc(db, 'users', user!.uid), {
-        walletBalance: increment(-amount)
-      });
+      const data = await response.json();
 
-      toast.success(lang === 'hi' ? 'निकासी सफल! भुगतान तुरंत संसाधित किया गया।' : 'Withdrawal successful! Payout processed immediately.');
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to process payout');
+      }
+
+      toast.success(
+        lang === 'hi' 
+          ? 'निकासी सफल! भुगतान तुरंत संसाधित किया गया।' 
+          : 'Withdrawal successful! Payout processed immediately.'
+      );
       setShowForm(false);
       setUpiId('');
+      
       // Optimistically add to local state
       setWithdrawals(prev => [{
-        id: docRef.id,
+        id: data.withdrawalId || Math.random().toString(),
         userId: user!.uid,
         amount,
-        status: 'completed',
+        status: data.status || 'pending',
         requestedAt: { toDate: () => new Date() },
         upiId: upiId.trim(),
       }, ...prev]);
-    } catch (err) {
+
+      // Reload window after 2.5 seconds to refresh the wallet balance in AuthContext
+      setTimeout(() => {
+        if (typeof window !== 'undefined') {
+          window.location.reload();
+        }
+      }, 2500);
+      
+    } catch (err: unknown) {
       console.error('Withdrawal error:', err);
-      toast.error('Failed to process withdrawal. Please try again.');
+      const errorMsg = err instanceof Error ? err.message : 'Failed to process withdrawal. Please try again.';
+      toast.error(errorMsg);
     } finally {
       setSubmitting(false);
     }
