@@ -60,7 +60,7 @@ export default function RegistrationForm() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { dict, lang } = useLanguage();
-  const referrerId = searchParams.get('ref');
+  const referrerId = searchParams.get('cid') || searchParams.get('ref');
   
   const [formData, setFormData] = useState({
     fullName: "",
@@ -130,7 +130,20 @@ export default function RegistrationForm() {
       const user = auth.currentUser;
       if (!user) throw new Error(dict.register.errors.session_lost);
 
-      // Generate email proxy for user profile
+      // Check if server-side activation has already updated the document
+      const userDocRef = doc(db, 'users', user.uid);
+      const userDoc = await getDoc(userDocRef);
+      if (userDoc.exists()) {
+        const data = userDoc.data();
+        if (data.membershipId) {
+          setMemberId(data.membershipId);
+          setReferralLink(`${window.location.origin}/${lang}/register?cid=${data.membershipId}`);
+          setStep('success');
+          return;
+        }
+      }
+
+      // Fallback: If server-side activation hasn't run/completed yet, finalize it client-side
       const emailProxy = `${get10DigitPhone(currentData.phone)}@kishanseva.in`;
 
       await updateProfile(user, { displayName: currentData.fullName });
@@ -138,7 +151,7 @@ export default function RegistrationForm() {
       // Generate Membership ID
       const newMemberId = 'KSS-' + Math.random().toString(36).substr(2, 6).toUpperCase();
       setMemberId(newMemberId);
-      setReferralLink(`${window.location.origin}/${lang}/register?ref=${newMemberId}`);
+      setReferralLink(`${window.location.origin}/${lang}/register?cid=${newMemberId}`);
 
       // Upload Photo
       let finalPhotoUrl = currentData.photoBase64;
@@ -156,7 +169,7 @@ export default function RegistrationForm() {
 
       const normalizedPhone = get10DigitPhone(currentData.phone);
 
-      // Store Farmer Data — only after payment is confirmed
+      // Store Farmer Data
       const userData = {
         uid: user.uid,
         fullName: currentData.fullName,
@@ -173,6 +186,7 @@ export default function RegistrationForm() {
         referredBy: referrerId || null,
         registrationDate: new Date().toISOString(),
         membershipFeePaid: 50,
+        paymentStatus: 'paid',
         paymentId: paymentId,
         paymentOrderId: orderId,
         walletBalance: 0,
@@ -184,12 +198,9 @@ export default function RegistrationForm() {
         pincode: currentData.pincode || ""
       };
 
-      await setDoc(doc(db, 'users', user.uid), userData);
+      await setDoc(userDocRef, userData);
 
       // Credit ₹7 referral reward ONLY if:
-      // 1. There is a referrer code
-      // 2. Payment is confirmed (we're inside the payment handler)
-      // 3. Referrer is a real, different user (fraud check)
       if (referrerId) {
         try {
           const usersRef = collection(db, 'users');
@@ -200,7 +211,6 @@ export default function RegistrationForm() {
             const referrerDoc = querySnapshot.docs[0];
             const referrerData = referrerDoc.data();
 
-            // Fraud guard: referrer's phone must differ from new user's phone
             const referrerPhone = (referrerData.phone || '').replace(/\D/g, '');
             if (referrerPhone === normalizedPhone) {
               console.warn('Self-referral attempt blocked:', referrerId);
@@ -226,7 +236,6 @@ export default function RegistrationForm() {
             }
           }
         } catch (refErr: unknown) {
-          // Non-fatal: referral credit failure should not block the user's card
           console.error('Error rewarding referrer:', refErr);
         }
       }
@@ -241,7 +250,7 @@ export default function RegistrationForm() {
       setIsSubmitting(false);
       setPaymentProcessing(false);
     }
-  }, [formData, dict.register.errors.session_lost, photoFile, referrerId, setMemberId, setReferralLink, setStep, setIsSubmitting, setError, setPaymentProcessing]);
+  }, [formData, dict.register.errors.session_lost, photoFile, referrerId, setMemberId, setReferralLink, setStep, setIsSubmitting, setError, setPaymentProcessing, lang]);
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -349,6 +358,50 @@ export default function RegistrationForm() {
       const orderData = await orderRes.json();
       if (orderData.error) throw new Error(orderData.error);
       if (!orderData.orderId) throw new Error(dict.register.errors.payment_failed || 'Failed to initialize payment order');
+
+      // Upload Photo if selected
+      let finalPhotoUrl = formData.photoBase64;
+      if (photoFile) {
+        try {
+          const fileExt = photoFile.name.split('.').pop() || 'jpg';
+          const storageRef = ref(storage, `farmers/${user.uid}/profile_${Date.now()}.${fileExt}`);
+          await uploadBytes(storageRef, photoFile);
+          finalPhotoUrl = await getDownloadURL(storageRef);
+        } catch (storageErr) {
+          console.warn('Firebase Storage upload failed, falling back to base64 data URI:', storageErr);
+        }
+      }
+
+      const normalizedPhone = get10DigitPhone(formData.phone);
+      const emailProxy = `${normalizedPhone}@kishanseva.in`;
+
+      // Save user registration data as 'pending_payment'
+      const pendingUserData = {
+        uid: user.uid,
+        fullName: formData.fullName,
+        phone: normalizedPhone,
+        email: emailProxy,
+        village: formData.village,
+        district: formData.district,
+        state: formData.state,
+        crops: formData.crops,
+        photoUrl: finalPhotoUrl,
+        photoBase64: finalPhotoUrl,
+        referredBy: referrerId || null,
+        registrationDate: new Date().toISOString(),
+        membershipFeePaid: 0,
+        paymentStatus: 'pending',
+        paymentOrderId: orderData.orderId,
+        walletBalance: 0,
+        stats: { totalReferrals: 0, earnings: 0, activeListings: 0 },
+        fatherName: formData.fatherName || "",
+        dob: formData.dob || "",
+        gender: formData.gender || "Male",
+        postOffice: formData.postOffice || "",
+        pincode: formData.pincode || ""
+      };
+
+      await setDoc(doc(db, 'users', user.uid), pendingUserData);
 
       // Step 2: Open Razorpay Checkout Modal
       const RazorpayConstructor = (window as unknown as { Razorpay: new (options: Record<string, unknown>) => { open: () => void } }).Razorpay;

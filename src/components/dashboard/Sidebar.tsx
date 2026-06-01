@@ -25,7 +25,7 @@ export default function Sidebar({ lang, dict }: SidebarProps) {
     { name: dict.sidebar?.overview || "Overview", href: `/${lang}/dashboard`, icon: BarChart3 },
     { name: lang === 'en' ? "Membership Card" : "सदस्यता कार्ड", href: `/${lang}/dashboard/card`, icon: CreditCard },
     { name: dict.sidebar?.wallet || "Wallet", href: `/${lang}/dashboard/wallet`, icon: Wallet },
-    { name: dict.sidebar?.referrals || "Referrals", href: `/${lang}/dashboard/referrals`, icon: Users },
+    { name: dict.sidebar?.referrals || "Community Outreach", href: `/${lang}/dashboard/outreach`, icon: Users },
   ];
 
   const handleLogout = async () => {

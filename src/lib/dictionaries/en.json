@@ -14,7 +14,7 @@
   },
   "hero": {
     "title": "Get Your Digital Farmer ID Card & Earn Rewards",
-    "subtitle": "Register to instantly generate your verified digital Farmer ID Card with QR code verification for a one-time fee of ₹50. Invite other farmers to earn ₹7 per registration.",
+    "subtitle": "Register to instantly generate your verified digital Farmer ID Card with QR code verification for a one-time fee of ₹50. Strengthen our community and receive ₹7 community impact reward for each verified farmer who joins the collective.",
     "cta_join": "Join Kishan Seva",
     "cta_marketplace": "Farmer Login",
     "trust": "Trusted by"
@@ -289,18 +289,18 @@
     "welcome": "Welcome back to your Seva Portal. Here's your impact today.",
     "stats": {
       "earnings": "Growth Rewards",
-      "referrals": "Total Referrals",
+      "referrals": "Community Outreach",
       "listings": "Active Listings",
       "today": "today",
       "lifetime": "Lifetime",
       "live_now": "Live Now"
     },
     "referrals": {
-      "title": "Recent Referrals",
+      "title": "Recent Outreach",
       "subtitle": "Farmers who joined using your unique link.",
       "view_all": "View All",
       "loading": "Loading referrals...",
-      "none": "No recent referrals found. Start sharing to earn rewards!",
+      "none": "No recent outreach found. Start sharing to receive rewards!",
       "earned": "Earned",
       "joined": "Joined",
       "recently": "recently",
@@ -316,7 +316,7 @@
     "referral_box": {
       "title": "Spread the Growth",
       "subtitle": "Strengthen our community network and receive verified member rewards.",
-      "link_label": "Your Referral link",
+      "link_label": "Your Community link",
       "copied": "Link copied!"
     },
     "support": {
@@ -378,7 +378,7 @@
     "marketplace": "Farmer Card",
     "seller_hub": "Seller Hub",
     "my_products": "My Products",
-    "referrals": "Referrals",
+    "referrals": "Community Outreach",
     "payments": "Payments",
     "wallet": "Wallet",
     "surplus_title": "Have Surplus?",

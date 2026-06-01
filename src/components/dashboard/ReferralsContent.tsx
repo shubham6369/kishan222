@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useEffect, useState } from 'react';
 import {
@@ -32,7 +32,7 @@ export default function ReferralsContent({ lang, dict }: ReferralsContentProps) 
   const walletBalance = userData?.walletBalance || 0;
   const referralCode = userData?.membershipId || '';
   const referralLink = referralCode
-    ? `${typeof window !== 'undefined' ? window.location.origin : ''}/${lang}/register?ref=${referralCode}`
+    ? `${typeof window !== 'undefined' ? window.location.origin : ''}/${lang}/register?cid=${referralCode}`
     : '';
 
   useEffect(() => {
@@ -60,12 +60,12 @@ export default function ReferralsContent({ lang, dict }: ReferralsContentProps) 
 
   const copyLink = () => {
     navigator.clipboard.writeText(referralLink);
-    alert('Referral link copied!');
+    alert('Community link copied!');
   };
 
   const shareWhatsApp = () => {
     const msg = encodeURIComponent(
-      `🌾 Join Kishan Seva — India's farmer community!\nGet your official Farmer ID card and sell organic products directly.\n\nUse my referral link: ${referralLink}`
+      `🌾 Join Kishan Seva — India's farmer community!\nGet your official Farmer ID card and sell organic products directly.\n\nUse my community link: ${referralLink}`
     );
     window.open(`https://wa.me/?text=${msg}`, '_blank');
   };

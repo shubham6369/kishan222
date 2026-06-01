@@ -278,7 +278,7 @@ export default function DashboardContent({ lang, dict }: DashboardContentProps) 
                         <h3 className="text-2xl font-serif font-bold text-[#122c1f]">{dict.dashboard?.referrals?.title || "Recent Referrals"}</h3>
                         <p className="text-sm text-[#77574d]">{dict.dashboard?.referrals?.subtitle || "Farmers who joined using your unique link."}</p>
                     </div>
-                    <Link href={`/${lang}/dashboard/referrals`} className="text-xs font-bold uppercase tracking-widest text-[#122c1f] flex items-center gap-2 group">
+                    <Link href={`/${lang}/dashboard/outreach`} className="text-xs font-bold uppercase tracking-widest text-[#122c1f] flex items-center gap-2 group">
                         {dict.dashboard?.referrals?.view_all || "View All"} <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </Link>
                 </div>
@@ -346,12 +346,12 @@ export default function DashboardContent({ lang, dict }: DashboardContentProps) 
                 </div>
                 <div className="p-4 bg-white rounded-2xl border border-[#77574d]/20 flex justify-between items-center gap-4">
                     <span className="text-xs font-mono text-[#122c1f] truncate">
-                        {typeof window !== 'undefined' ? `${window.location.origin}/${lang}/register?ref=${userData?.membershipId}` : '...'}
+                        {typeof window !== 'undefined' ? `${window.location.origin}/${lang}/register?cid=${userData?.membershipId}` : '...'}
                     </span>
                     <button 
                         onClick={() => {
                             if (userData?.membershipId) {
-                                navigator.clipboard.writeText(`${window.location.origin}/${lang}/register?ref=${userData.membershipId}`);
+                                navigator.clipboard.writeText(`${window.location.origin}/${lang}/register?cid=${userData.membershipId}`);
                                 alert(dict.dashboard?.referral_box?.copied || "Link copied!");
                             }
                         }}
