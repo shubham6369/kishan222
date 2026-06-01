@@ -11,6 +11,7 @@ import {
   Check, 
   Copy, 
   Sprout, 
+  Fingerprint,
   CheckCircle2,
   CreditCard,
   AlertCircle,
@@ -448,7 +449,6 @@ export default function RegistrationForm() {
           name: formData.fullName,
           email: `${get10DigitPhone(formData.phone)}@kishanseva.in`,
           contact: get10DigitPhone(formData.phone),
-          method: 'upi'
         },
         theme: {
           color: '#122c1f',
@@ -569,13 +569,18 @@ export default function RegistrationForm() {
         !formData.village || 
         !formData.district || 
         !formData.crops || 
+        formData.crops.length !== 12 ||
         !formData.fatherName ||
         !formData.dob ||
         !formData.gender ||
         !formData.postOffice ||
         !formData.pincode
       ) {
-        setError("कृपया सभी व्यक्तिगत और कृषि विवरण भरें / Please fill all details");
+        if (formData.crops && formData.crops.length !== 12) {
+          setError(lang === 'en' ? "Please enter a valid 12-digit Aadhaar Number" : "कृपया 12-अंकीय वैध आधार नंबर दर्ज करें");
+        } else {
+          setError("कृपया सभी व्यक्तिगत और आधार विवरण भरें / Please fill all details");
+        }
         return;
       }
       setStep(3);
@@ -954,15 +959,16 @@ export default function RegistrationForm() {
                           </div>
                         </div>
 
-                        {/* Primary Crops */}
+                        {/* Aadhaar Number */}
                         <div className="space-y-2">
                           <label className="text-[10px] font-bold uppercase tracking-widest text-[#77574d]">{dict.register.crops}</label>
                           <div className="relative">
-                            <Sprout className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#77574d]/30" />
+                            <Fingerprint className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#77574d]/30" />
                             <input
                               type="text"
+                              maxLength={12}
                               value={formData.crops}
-                              onChange={(e) => setFormData({...formData, crops: e.target.value})}
+                              onChange={(e) => setFormData({...formData, crops: e.target.value.replace(/\D/g, '')})}
                               className="w-full pl-12 pr-4 py-4 bg-[#fbf9f5] border-none rounded-xl focus:ring-2 focus:ring-[#122c1f]/10 transition-all text-[#122c1f]"
                               placeholder={dict.register.crops_placeholder}
                             />

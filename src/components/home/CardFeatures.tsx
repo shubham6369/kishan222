@@ -155,8 +155,8 @@ export default function CardFeatures({ lang, dict }: CardFeaturesProps) {
                     <p className="font-bold text-white text-[10px] truncate">Mahoba, Mahoba</p>
                   </div>
                   <div className="space-y-0.5">
-                    <p className="text-[7px] uppercase tracking-widest text-white/40 font-bold">Crops & Land</p>
-                    <p className="font-bold text-white text-[10px] truncate">Wheat, Rice • 5 Acres</p>
+                    <p className="text-[7px] uppercase tracking-widest text-white/40 font-bold">Aadhaar Number</p>
+                    <p className="font-bold text-white text-[10px] truncate">1234 5678 9012</p>
                   </div>
                 </div>
 
@@ -194,7 +194,7 @@ export default function CardFeatures({ lang, dict }: CardFeaturesProps) {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {[
                 { title: lang === 'en' ? "Farmer Photo & Name" : "किसान की फोटो और नाम", desc: lang === 'en' ? "High-res portrait and full legal name." : "हाई-रेजोल्यूशन पोर्ट्रेट और पूरा कानूनी नाम।" },
-                { title: lang === 'en' ? "Farming Specifications" : "खेती के विशिष्ट विवरण", desc: lang === 'en' ? "Village, district, crops grown, and land size in acres." : "गांव, जिला, उगाई जाने वाली फसलें और एकड़ में भूमि का आकार।" },
+                { title: lang === 'en' ? "Identity Specifications" : "पहचान के विशिष्ट विवरण", desc: lang === 'en' ? "Village, district, Aadhaar number, and basic details." : "गांव, जिला, आधार नंबर और बुनियादी विवरण।" },
                 { title: lang === 'en' ? "Verification QR Code" : "सत्यापन क्यूआर कोड", desc: lang === 'en' ? "Live, secure database verification scanner." : "लाइव, सुरक्षित डेटाबेस सत्यापन स्कैनर।" },
                 { title: lang === 'en' ? "Download & Print Ready" : "डाउनलोड और प्रिंट के लिए तैयार", desc: lang === 'en' ? "Standard card dimensions ready to print as PVC card." : "मानक कार्ड आयाम पीवीसी कार्ड के रूप में प्रिंट करने के लिए तैयार।" }
               ].map((item, idx) => (

@@ -144,6 +144,7 @@ Name: ${userData.fullName}
 Father/Husband: ${userData.fatherName || '—'}
 DOB: ${formatDate(userData.dob) || '—'}
 Gender: ${userData.gender || 'Male'}
+Aadhaar Number: ${userData.crops || '—'}
 Mobile: +91 ${userData.phone}
 Address: ${userData.village || '—'}, Post ${userData.postOffice || '—'}, ${userData.district || '—'}, ${userData.state || 'Uttar Pradesh'} - ${userData.pincode || '—'}
 Issue Date: ${formatDate(userData.registrationDate) || '01/05/2026'}
@@ -282,7 +283,7 @@ Verify: ${verificationUrl}`;
             <FarmerLogo className="w-[140px] h-[140px]" isWatermark={true} />
           </div>
           
-          <div className="space-y-3">
+          <div className="space-y-2">
             {/* Address */}
             <div className="flex gap-3 items-start">
               <div className="w-5 h-5 rounded-full bg-[#122c1f]/10 flex items-center justify-center shrink-0 mt-0.5">
@@ -304,6 +305,17 @@ Verify: ${verificationUrl}`;
               <div className="leading-tight">
                 <p className="text-[7px] uppercase tracking-widest text-zinc-500 font-bold">मोबाइल नंबर / Mobile No.</p>
                 <p className="text-[10px] font-mono font-bold mt-0.5">+91 {userData.phone}</p>
+              </div>
+            </div>
+
+            {/* Aadhaar Number */}
+            <div className="flex gap-3 items-start">
+              <div className="w-5 h-5 rounded-full bg-[#122c1f]/10 flex items-center justify-center shrink-0 mt-0.5">
+                <span className="text-xs select-none">🆔</span>
+              </div>
+              <div className="leading-tight">
+                <p className="text-[7px] uppercase tracking-widest text-zinc-500 font-bold">आधार नंबर / Aadhaar No.</p>
+                <p className="text-[10px] font-mono font-bold mt-0.5">{userData.crops ? userData.crops.replace(/(\d{4})/g, '$1 ').trim() : '—'}</p>
               </div>
             </div>
 

@@ -194,7 +194,7 @@ export default function FarmersTab() {
                         <span>{farmer.village}, {farmer.district}</span>
                       </div>
                       <div className="text-[10px] text-white/30 mt-1 uppercase tracking-widest font-bold">
-                        {farmer.crops} • {farmer.landSize} Acres
+                        Aadhaar: {farmer.crops ? farmer.crops.replace(/(\d{4})/g, '$1 ').trim() : '—'}
                       </div>
                     </td>
                     <td className="px-8 py-6">
