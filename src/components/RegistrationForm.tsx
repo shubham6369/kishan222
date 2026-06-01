@@ -448,6 +448,7 @@ export default function RegistrationForm() {
           name: formData.fullName,
           email: `${get10DigitPhone(formData.phone)}@kishanseva.in`,
           contact: get10DigitPhone(formData.phone),
+          method: 'upi'
         },
         theme: {
           color: '#122c1f',
