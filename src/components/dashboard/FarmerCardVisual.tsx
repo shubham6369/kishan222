@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { QRCodeSVG } from 'qrcode.react';
-import Image from 'next/image';
 import { UserData } from '@/types';
 
 interface FarmerCardVisualProps {
@@ -187,17 +186,15 @@ Verify: ${verificationUrl}`;
           {/* Farmer Photo */}
           <div className="w-[100px] h-[120px] rounded-lg bg-zinc-50 border border-zinc-300 overflow-hidden relative shrink-0 flex items-center justify-center shadow-inner">
             {userData.photoUrl || userData.photoBase64 ? (
-              <Image 
+              <img 
                 src={(() => {
                   const url = userData.photoUrl || userData.photoBase64 || '';
                   if (url.startsWith('data:')) return url;
                   return `/api/proxy-image?url=${encodeURIComponent(url)}`;
                 })()} 
                 alt={userData.fullName} 
-                fill
-                sizes="100px"
-                className="object-cover object-center"
-                unoptimized
+                className="object-cover object-center w-full h-full"
+                crossOrigin="anonymous"
               />
             ) : (
               <span className="text-4xl select-none">👨‍🌾</span>
