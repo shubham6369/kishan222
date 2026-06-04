@@ -27,14 +27,14 @@ const PrivateSecurityBadge = () => (
 const FarmerLogo = ({ className = "w-[38px] h-[38px]", isWatermark = false }: { className?: string, isWatermark?: boolean }) => {
   if (isWatermark) {
     return (
-      <svg viewBox="0 0 100 100" className={`${className} shrink-0 fill-current text-[#122c1f]/5 select-none pointer-events-none`}>
-        <circle cx="50" cy="50" r="46" fill="none" stroke="currentColor" strokeWidth="4.5"/>
-        <circle cx="50" cy="50" r="41" fill="currentColor" opacity="0.3"/>
-        <path d="M35 34 C35 24 65 24 65 34 C60 30 40 30 35 34 Z" fill="currentColor" />
-        <path d="M37 31 C37 25 63 25 63 31 C57 28 43 28 37 31 Z" fill="currentColor" opacity="0.6" />
-        <circle cx="50" cy="41" r="9" fill="currentColor"/>
-        <path d="M44 45 Q50 49 56 45 Q50 43 44 45 Z" fill="none" stroke="currentColor" strokeWidth="2.5"/>
-        <path d="M50 54 C35 54 28 62 28 72 V74 H72 V72 C72 62 65 54 50 54 Z" fill="currentColor"/>
+      <svg viewBox="0 0 100 100" className={`${className} shrink-0 select-none pointer-events-none`}>
+        <circle cx="50" cy="50" r="46" fill="none" stroke="rgba(18, 44, 31, 0.05)" strokeWidth="4.5"/>
+        <circle cx="50" cy="50" r="41" fill="rgba(18, 44, 31, 0.04)"/>
+        <path d="M35 34 C35 24 65 24 65 34 C60 30 40 30 35 34 Z" fill="rgba(18, 44, 31, 0.06)" />
+        <path d="M37 31 C37 25 63 25 63 31 C57 28 43 28 37 31 Z" fill="rgba(18, 44, 31, 0.06)" />
+        <circle cx="50" cy="41" r="9" fill="rgba(18, 44, 31, 0.06)"/>
+        <path d="M44 45 Q50 49 56 45 Q50 43 44 45 Z" fill="none" stroke="rgba(18, 44, 31, 0.06)" strokeWidth="2.5"/>
+        <path d="M50 54 C35 54 28 62 28 72 V74 H72 V72 C72 62 65 54 50 54 Z" fill="rgba(18, 44, 31, 0.06)"/>
       </svg>
     );
   }
