@@ -40,6 +40,8 @@ export interface UserData {
         earnings: number;
         totalReferrals: number;
         activeListings: number;
+        levelCounts?: Record<string, number>;
+        levelEarnings?: Record<string, number>;
     };
 }
 
@@ -111,9 +113,12 @@ export interface Referral {
     id: string;
     referredUserId: string;
     referredUserName: string;
-    rewardAmount: number;
-    createdAt: Timestamp;
-    status: 'pending' | 'completed';
+    referredUserPhone?: string;
+    reward: number;
+    joinedAt: string;
+    paymentConfirmed?: boolean;
+    paymentId?: string;
+    level?: number;
 }
 
 declare global {

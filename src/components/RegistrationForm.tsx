@@ -191,7 +191,7 @@ export default function RegistrationForm() {
         paymentId: paymentId,
         paymentOrderId: orderId,
         walletBalance: 0,
-        stats: { totalReferrals: 0, earnings: 0, activeListings: 0 },
+        stats: { totalReferrals: 0, earnings: 0, activeListings: 0, levelCounts: {}, levelEarnings: {} },
         fatherName: currentData.fatherName || "",
         dob: currentData.dob || "",
         gender: currentData.gender || "Male",
@@ -201,43 +201,19 @@ export default function RegistrationForm() {
 
       await setDoc(userDocRef, userData);
 
-      // Credit ₹7 referral reward ONLY if:
+      // Credit MLM referral rewards ONLY if:
       if (referrerId) {
         try {
-          const usersRef = collection(db, 'users');
-          const q = query(usersRef, where('membershipId', '==', referrerId));
-          const querySnapshot = await getDocs(q);
-          
-          if (!querySnapshot.empty) {
-            const referrerDoc = querySnapshot.docs[0];
-            const referrerData = referrerDoc.data();
-
-            const referrerPhone = (referrerData.phone || '').replace(/\D/g, '');
-            if (referrerPhone === normalizedPhone) {
-              console.warn('Self-referral attempt blocked:', referrerId);
-            } else {
-              // Credit ₹7 to referrer
-              await updateDoc(doc(db, 'users', referrerDoc.id), {
-                'stats.totalReferrals': increment(1),
-                'stats.earnings': increment(7),
-                'walletBalance': increment(7)
-              });
-
-              // Record referral details under referrer's subcollection
-              const referralsRef = collection(db, 'users', referrerDoc.id, 'referrals');
-              await setDoc(doc(referralsRef, user.uid), {
-                referredUserId: user.uid,
-                referredUserName: currentData.fullName,
-                referredUserPhone: normalizedPhone,
-                joinedAt: new Date().toISOString(),
-                reward: 7,
-                paymentConfirmed: true,
-                paymentId: paymentId,
-              });
-            }
-          }
+          const { processMlmReferral } = await import('@/lib/referral-mlm');
+          await processMlmReferral(
+            user.uid,
+            currentData.fullName,
+            normalizedPhone,
+            referrerId,
+            paymentId
+          );
         } catch (refErr: unknown) {
-          console.error('Error rewarding referrer:', refErr);
+          console.error('Error rewarding referrer MLM:', refErr);
         }
       }
 
@@ -394,7 +370,7 @@ export default function RegistrationForm() {
         paymentStatus: 'pending',
         paymentOrderId: orderData.orderId,
         walletBalance: 0,
-        stats: { totalReferrals: 0, earnings: 0, activeListings: 0 },
+        stats: { totalReferrals: 0, earnings: 0, activeListings: 0, levelCounts: {}, levelEarnings: {} },
         fatherName: formData.fatherName || "",
         dob: formData.dob || "",
         gender: formData.gender || "Male",
