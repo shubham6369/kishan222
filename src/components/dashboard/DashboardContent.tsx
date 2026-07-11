@@ -1,34 +1,20 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { m } from 'framer-motion';
 import { 
   Users, 
-  TrendingUp, 
-  ChevronRight, 
-  ArrowUpRight,
-  Gift,
-  Bell,
+  Bell, 
   CreditCard,
   CheckCircle2,
   Printer,
   Download
 } from 'lucide-react';
 import Link from 'next/link';
-import { db } from '@/lib/firebase';
-import { collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
 
 import { useAuth } from '@/context/AuthContext';
 import { Dictionary } from '@/context/LanguageContext';
 import FarmerCardVisual from './FarmerCardVisual';
-
-interface Referral {
-  id: string;
-  referredUserName: string;
-  joinedAt: string;
-  reward: number;
-  paymentConfirmed?: boolean;
-}
 
 interface DashboardContentProps {
   lang: string;
@@ -36,9 +22,7 @@ interface DashboardContentProps {
 }
 
 export default function DashboardContent({ lang, dict }: DashboardContentProps) {
-  const { user, userData, loading: authLoading } = useAuth();
-  const [referrals, setReferrals] = useState<Referral[]>([]);
-  const [loadingReferrals, setLoadingReferrals] = useState(true);
+  const { userData, loading: authLoading } = useAuth();
 
   const handlePrint = () => {
     if (typeof window !== 'undefined') {
@@ -48,74 +32,45 @@ export default function DashboardContent({ lang, dict }: DashboardContentProps) 
 
   const handleDownload = async (side: 'front' | 'back') => {
     const element = document.getElementById(`farmer-card-${side}`);
-    if (!element) {
-      alert('Card element not found.');
-      return;
-    }
+    if (!element) return;
     try {
       const html2canvas = (await import('html2canvas')).default;
       const canvas = await html2canvas(element, {
-        scale: 3,
         useCORS: true,
+        allowTaint: false,
         backgroundColor: null,
+        scale: 2
       });
-      const dataUrl = canvas.toDataURL('image/png');
       const link = document.createElement('a');
-      link.href = dataUrl;
-      link.download = `Farmer_ID_${side === 'front' ? 'Front' : 'Back'}_${userData?.membershipId || 'Card'}.png`;
+      link.download = `farmer-card-${side}.png`;
+      link.href = canvas.toDataURL('image/png');
       link.click();
     } catch (err) {
-      console.error('Error generating card image:', err);
-      alert('Failed to download card. Please try using print to save as PDF.');
+      console.error('Error rendering card side:', side, err);
     }
   };
-
-  useEffect(() => {
-    async function fetchDashboardData() {
-      if (!user?.uid) {
-          setLoadingReferrals(false);
-          return;
-      }
-      
-      try {
-        // Fetch Referrals
-        const refQuery = query(
-          collection(db, 'users', user.uid, 'referrals'),
-          orderBy('joinedAt', 'desc'),
-          limit(5)
-        );
-        const refSnapshot = await getDocs(refQuery);
-        setReferrals(refSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Referral[]);
-      } catch (err) {
-        console.error("Error fetching dashboard data:", err);
-      } finally {
-        setLoadingReferrals(false);
-      }
-    }
-    fetchDashboardData();
-  }, [user]);
   
   const stats = [
     { 
-      name: dict.dashboard?.stats?.earnings || "Growth Rewards", 
-      value: `₹${userData?.stats?.earnings || 0}`, 
-      change: `+₹0 ${dict.dashboard?.stats?.today || "today"}`, 
-      icon: Gift, 
-      color: 'bg-orange-100 text-orange-600' 
-    },
-    { 
-      name: dict.dashboard?.stats?.referrals || "Total Referrals", 
-      value: userData?.stats?.totalReferrals || 0, 
-      change: dict.dashboard?.stats?.lifetime || "Lifetime", 
-      icon: Users, 
+      name: lang === 'en' ? "Membership ID" : "सदस्यता संख्या", 
+      value: userData?.membershipId || (lang === 'en' ? "Not Assigned" : "निर्धारित नहीं"), 
+      change: lang === 'en' ? "Unique ID" : "अद्वितीय आईडी", 
+      icon: CreditCard, 
       color: 'bg-blue-100 text-blue-600' 
     },
     { 
       name: lang === 'en' ? "Card Status" : "कार्ड की स्थिति", 
       value: userData?.membershipId ? (lang === 'hi' ? 'सत्यापित' : 'Verified') : (lang === 'hi' ? 'लंबित' : 'Pending'), 
       change: lang === 'en' ? "Lifetime Access" : "आजीवन पहुंच", 
-      icon: CreditCard, 
+      icon: CheckCircle2, 
       color: 'bg-emerald-100 text-emerald-600' 
+    },
+    { 
+      name: lang === 'en' ? "Registration Date" : "पंजीकरण तिथि", 
+      value: userData?.registrationDate ? new Date(userData.registrationDate).toLocaleDateString(lang === 'hi' ? 'hi-IN' : 'en-IN') : '—', 
+      change: lang === 'en' ? "Collective Member" : "सामूहिक सदस्य", 
+      icon: Users, 
+      color: 'bg-orange-100 text-orange-600' 
     },
   ];
 
@@ -270,98 +225,10 @@ export default function DashboardContent({ lang, dict }: DashboardContentProps) 
                     </div>
                 </div>
             </div>
-
-            {/* Recent Referrals */}
-            <div className="space-y-6">
-                <div className="flex justify-between items-end">
-                    <div>
-                        <h3 className="text-2xl font-serif font-bold text-[#122c1f]">{dict.dashboard?.referrals?.title || "Recent Referrals"}</h3>
-                        <p className="text-sm text-[#77574d]">{dict.dashboard?.referrals?.subtitle || "Farmers who joined using your unique link."}</p>
-                    </div>
-                    <Link href={`/${lang}/dashboard/outreach`} className="text-xs font-bold uppercase tracking-widest text-[#122c1f] flex items-center gap-2 group">
-                        {dict.dashboard?.referrals?.view_all || "View All"} <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                    </Link>
-                </div>
-                
-                <div className="bg-white rounded-[32px] border border-black/5 overflow-hidden shadow-sm">
-                    {loadingReferrals ? (
-                        <div className="p-12 text-center text-[#77574d] italic text-sm">{dict.dashboard?.referrals?.loading || "Loading referrals..."}</div>
-                    ) : referrals.length > 0 ? (
-                        <div className="divide-y divide-black/5">
-                            {referrals.map((referral) => (
-                                <div key={referral.id} className="p-6 flex justify-between items-center hover:bg-[#fbf9f5] transition-colors">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
-                                            <Users className="w-5 h-5" />
-                                        </div>
-                                        <div>
-                                            <p className="font-bold text-[#122c1f]">{referral.referredUserName || dict.dashboard?.referrals?.unknown || "Unknown Farmer"}</p>
-                                            <p className="text-[10px] text-[#77574d] uppercase tracking-wider">{referral.joinedAt ? new Date(referral.joinedAt).toLocaleDateString(lang === 'hi' ? 'hi-IN' : 'en-IN') : dict.dashboard?.referrals?.recently || "recently"}</p>
-                                        </div>
-                                    </div>
-                                    <div className="text-right">
-                                        <p className="font-bold text-green-600">+₹{referral.reward}</p>
-                                        <p className="text-[10px] uppercase tracking-wider text-[#77574d]">{dict.dashboard?.referrals?.earned || "Earned"}</p>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    ) : (
-                        <div className="p-12 text-center text-[#77574d] italic text-sm">
-                            {dict.dashboard?.referrals?.none || "No recent referrals found. Start sharing to earn rewards!"}
-                        </div>
-                    )}
-                </div>
-            </div>
         </div>
 
         {/* Sidebar / Actions */}
         <div className="space-y-8">
-            {/* Wallet Section */}
-            <div className="p-8 bg-white rounded-[32px] border border-black/5 space-y-6 shadow-sm">
-                <div className="flex justify-between items-center">
-                    <h4 className="text-xl font-serif font-bold text-[#122c1f]">{dict.dashboard?.wallet?.title || "Your Wallet"}</h4>
-                    <span className="p-2 bg-[#fbf9f5] rounded-xl"><Gift className="w-5 h-5 text-[#77574d]" /></span>
-                </div>
-                <div>
-                    <p className="text-sm text-[#77574d] mb-1">{dict.dashboard?.wallet?.balance || "Available Balance"}</p>
-                    <h3 className="text-4xl font-serif font-bold text-[#122c1f]">₹{userData?.walletBalance || 0}</h3>
-                </div>
-                <Link 
-                  href={`/${lang}/dashboard/wallet`}
-                  className="block text-center w-full py-4 bg-[#122c1f] text-white rounded-2xl font-bold tracking-wider hover:bg-[#122c1f]/90 transition shadow-md"
-                >
-                    {lang === 'en' ? "Open Wallet" : "वॉलेट खोलें"}
-                </Link>
-            </div>
-
-            {/* Referral Link Box */}
-            <div className="p-8 bg-[#77574d]/5 rounded-[32px] border border-[#77574d]/10 space-y-6">
-                <div className="w-12 h-12 bg-[#77574d] rounded-2xl flex items-center justify-center shadow-lg shadow-[#77574d]/20">
-                    <TrendingUp className="w-6 h-6 text-white" />
-                </div>
-                <div className="space-y-2">
-                    <h4 className="text-xl font-serif font-bold text-[#122c1f]">{dict.dashboard?.referral_box?.title || "Spread the Growth"}</h4>
-                    <p className="text-sm text-[#77574d] italic">{dict.dashboard?.referral_box?.subtitle || "Strengthen our community network and receive verified member rewards."}</p>
-                </div>
-                <div className="p-4 bg-white rounded-2xl border border-[#77574d]/20 flex justify-between items-center gap-4">
-                    <span className="text-xs font-mono text-[#122c1f] truncate">
-                        {typeof window !== 'undefined' ? `${window.location.origin}/${lang}/register?cid=${userData?.membershipId}` : '...'}
-                    </span>
-                    <button 
-                        onClick={() => {
-                            if (userData?.membershipId) {
-                                navigator.clipboard.writeText(`${window.location.origin}/${lang}/register?cid=${userData.membershipId}`);
-                                alert(dict.dashboard?.referral_box?.copied || "Link copied!");
-                            }
-                        }}
-                        className="p-2 bg-[#122c1f] text-white rounded-lg hover:rotate-12 transition-transform shrink-0"
-                    >
-                        <ArrowUpRight className="w-4 h-4" />
-                    </button>
-                </div>
-            </div>
-
             {/* Quick Actions */}
             <div className="bg-white rounded-[32px] border border-black/5 p-8 space-y-6 shadow-sm">
                 <h4 className="text-lg font-serif font-bold text-[#122c1f]">{dict.dashboard?.support?.title || "Direct Support"}</h4>

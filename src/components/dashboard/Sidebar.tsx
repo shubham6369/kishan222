@@ -5,9 +5,7 @@ import Image from 'next/image';
 import { Dictionary } from '@/context/LanguageContext';
 import { 
   BarChart3, 
-  Users, 
   LogOut, 
-  Wallet,
   CreditCard
 } from 'lucide-react';
 import SidebarNav from './SidebarNav';
@@ -24,8 +22,6 @@ export default function Sidebar({ lang, dict }: SidebarProps) {
   const NAV_ITEMS = [
     { name: dict.sidebar?.overview || "Overview", href: `/${lang}/dashboard`, icon: BarChart3 },
     { name: lang === 'en' ? "Membership Card" : "सदस्यता कार्ड", href: `/${lang}/dashboard/card`, icon: CreditCard },
-    { name: dict.sidebar?.wallet || "Wallet", href: `/${lang}/dashboard/wallet`, icon: Wallet },
-    { name: dict.sidebar?.referrals || "Community Outreach", href: `/${lang}/dashboard/outreach`, icon: Users },
   ];
 
   const handleLogout = async () => {

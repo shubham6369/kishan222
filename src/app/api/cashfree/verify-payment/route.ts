@@ -8,7 +8,7 @@ const cashfree = new Cashfree(
 );
 
 import { db } from '@/lib/firebase';
-import { collection, query, where, getDocs, updateDoc, doc, setDoc, increment } from 'firebase/firestore';
+import { collection, query, where, getDocs, updateDoc, doc } from 'firebase/firestore';
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -43,33 +43,13 @@ export async function GET(req: Request) {
           // If not already activated, activate the user and process outreach rewards
           if (!userData.membershipId) {
             const newMemberId = 'KSS-' + Math.random().toString(36).substring(2, 8).toUpperCase();
-            const normalizedPhone = userData.phone || '';
-            
             await updateDoc(doc(db, 'users', userDoc.id), {
               membershipId: newMemberId,
-              referralCode: newMemberId,
               membershipFeePaid: 50,
               paymentStatus: 'paid',
               paymentId: successfulPayment.cf_payment_id,
               updatedAt: new Date()
             });
-
-            // Credit Outreach MLM rewards to the referrers if present
-            const referrerId = userData.referredBy;
-            if (referrerId) {
-              try {
-                const { processMlmReferral } = await import('@/lib/referral-mlm');
-                await processMlmReferral(
-                  userDoc.id,
-                  userData.fullName || 'Unknown Farmer',
-                  normalizedPhone,
-                  referrerId,
-                  successfulPayment.cf_payment_id
-                );
-              } catch (refErr) {
-                console.error('Server-side outreach MLM reward failed:', refErr);
-              }
-            }
           }
         }
       } catch (dbErr) {

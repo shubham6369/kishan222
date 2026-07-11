@@ -73,8 +73,8 @@ export default function Hero({ lang, dict }: { lang: string, dict: Dictionary })
                 <Users className="text-accent w-8 h-8" />
               </div>
               <div>
-                <h3 className="text-white! text-xl">Referral Network</h3>
-                <p className="text-white/60 text-sm">Earn ₹7 per Registration</p>
+                <h3 className="text-white! text-xl">Direct Marketplace</h3>
+                <p className="text-white/60 text-sm">Sell produce direct to buyers</p>
               </div>
             </div>
           </div>

@@ -3,64 +3,19 @@
 import React from 'react';
 import { m } from 'framer-motion';
 import { 
-  CreditCard, 
-  QrCode, 
-  UserCheck, 
-  Coins, 
-  ArrowRight, 
-  MapPin, 
-  Sprout, 
-  Phone, 
-  Award,
   CheckCircle2,
-  Calendar,
-  Layers,
-  ArrowUpRight
+  Calendar
 } from 'lucide-react';
-import Link from 'next/link';
 import { Dictionary } from '@/context/LanguageContext';
-import FadeIn, { StaggerContainer } from '../animations/FadeIn';
+import FadeIn from '../animations/FadeIn';
 
 interface CardFeaturesProps {
   lang: string;
-  dict: Dictionary;
+  dict?: Dictionary;
 }
 
-export default function CardFeatures({ lang, dict }: CardFeaturesProps) {
-  const steps = [
-    {
-      icon: <CreditCard className="w-6 h-6" />,
-      title: lang === 'en' ? "1. Register & Pay ₹50" : "1. पंजीकरण करें और ₹50 भुगतान करें",
-      desc: lang === 'en' 
-        ? "Fill in your profile details, upload your photo, and pay the one-time ₹50 membership fee securely." 
-        : "अपने प्रोफ़ाइल विवरण भरें, अपनी फ़ोटो अपलोड करें और सुरक्षित रूप से एक बार ₹50 सदस्यता शुल्क का भुगतान करें।",
-      bg: "bg-emerald-50 text-emerald-600 border-emerald-100"
-    },
-    {
-      icon: <QrCode className="w-6 h-6" />,
-      title: lang === 'en' ? "2. Get Smart Card & QR" : "2. स्मार्ट कार्ड और क्यूआर प्राप्त करें",
-      desc: lang === 'en' 
-        ? "Instantly generate your Smart Farmer ID Card containing a unique verification QR code." 
-        : "तुरंत अपना स्मार्ट किसान आईडी कार्ड जनरेट करें जिसमें एक अनूठा सत्यापन क्यूआर कोड शामिल है।",
-      bg: "bg-amber-50 text-amber-600 border-amber-100"
-    },
-    {
-      icon: <Award className="w-6 h-6" />,
-      title: lang === 'en' ? "3. Share & Refer Farmers" : "3. साझा करें और किसानों को संदर्भित करें",
-      desc: lang === 'en' 
-        ? "Copy your unique referral link from the dashboard and share it with other farmers on WhatsApp." 
-        : "डैशबोर्ड से अपना विशिष्ट रेफ़रल लिंक कॉपी करें और इसे व्हाट्सएप पर अन्य किसानों के साथ साझा करें।",
-      bg: "bg-blue-50 text-blue-600 border-blue-100"
-    },
-    {
-      icon: <Coins className="w-6 h-6" />,
-      title: lang === 'en' ? "4. Earn ₹7 & Withdraw" : "4. ₹7 कमाएं और निकासी करें",
-      desc: lang === 'en' 
-        ? "Earn ₹7 for every farmer who registers and pays. Withdraw directly to your UPI ID after reaching ₹100." 
-        : "भुगतान करने वाले प्रत्येक किसान के लिए ₹7 कमाएं। ₹100 पहुंचने के बाद सीधे अपने यूपीआई आईडी पर निकालें।",
-      bg: "bg-purple-50 text-purple-600 border-purple-100"
-    }
-  ];
+export default function CardFeatures({ lang }: CardFeaturesProps) {
+
 
   return (
     <section className="py-24 bg-[#fbf9f5] relative overflow-hidden border-t border-black/5">
@@ -80,8 +35,8 @@ export default function CardFeatures({ lang, dict }: CardFeaturesProps) {
           </h2>
           <p className="text-[#77574d] font-body text-lg leading-relaxed">
             {lang === 'en' 
-              ? "Become a verified member of Kishan Seva. Get your Smart ID card, secure special support benefits, and build an income stream through our direct referral model."
-              : "किसान सेवा के एक सत्यापित सदस्य बनें। अपना स्मार्ट आईडी कार्ड प्राप्त करें, विशेष सहायता लाभ सुरक्षित करें, और हमारे प्रत्यक्ष रेफरल मॉडल के माध्यम से एक आय स्रोत बनाएं।"}
+              ? "Become a verified member of Kishan Seva. Get your Smart ID card, secure special support benefits, and access our direct agricultural marketplace."
+              : "किसान सेवा के एक सत्यापित सदस्य बनें। अपना स्मार्ट आईडी कार्ड प्राप्त करें, विशेष सहायता लाभ सुरक्षित करें, और हमारे प्रत्यक्ष कृषि बाजार तक पहुंचें।"}
           </p>
         </FadeIn>
 
@@ -216,69 +171,7 @@ export default function CardFeatures({ lang, dict }: CardFeaturesProps) {
           </div>
         </div>
 
-        {/* How Referral Program Works */}
-        <FadeIn className="bg-[#122c1f] rounded-[48px] p-10 md:p-16 text-white relative overflow-hidden w-full">
-          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#77574d]/10 rounded-full blur-[100px] -mr-64 -mt-64"></div>
-          
-          <div className="relative z-10 space-y-16">
-            <div className="max-w-2xl space-y-4">
-              <h3 className="text-3xl md:text-5xl font-serif font-bold italic text-accent">
-                {lang === 'en' ? "The Community Referral Model" : "सामुदायिक रेफरल मॉडल"}
-              </h3>
-              <p className="text-white/70 text-sm md:text-base leading-relaxed">
-                {lang === 'en'
-                  ? "We grow together. Share your unique link with other farmers. When a farmer successfully registers and generates their ID card using your code, ₹7 is instantly added to your wallet. No limit on invites!"
-                  : "हम एक साथ बढ़ते हैं। अपना अनूठा लिंक अन्य किसानों के साथ साझा करें। जब कोई किसान आपके कोड का उपयोग करके सफलतापूर्वक पंजीकरण करता है और अपना आईडी कार्ड बनाता है, तो आपके वॉलेट में तुरंत ₹7 जुड़ जाते हैं। आमंत्रण की कोई सीमा नहीं है!"}
-              </p>
-            </div>
 
-            {/* Step-by-Step timeline */}
-            <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {steps.map((step, idx) => (
-                <m.div 
-                  key={idx}
-                  variants={{
-                    initial: { opacity: 0, y: 30 },
-                    whileInView: { opacity: 1, y: 0 }
-                  }}
-                  whileHover={{ 
-                    y: -8, 
-                    scale: 1.03, 
-                    backgroundColor: "rgba(255, 255, 255, 0.08)",
-                    borderColor: "rgba(255, 255, 255, 0.2)"
-                  }}
-                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                  className="bg-white/5 border border-white/10 rounded-[32px] p-8 space-y-6 cursor-pointer"
-                >
-                  <m.div 
-                    whileHover={{ rotate: 12, scale: 1.1 }}
-                    className={`w-12 h-12 rounded-2xl flex items-center justify-center ${step.bg} shadow-md`}
-                  >
-                    {step.icon}
-                  </m.div>
-                  <div className="space-y-3">
-                    <h4 className="text-lg font-serif font-bold text-white leading-tight">{step.title}</h4>
-                    <p className="text-white/60 text-xs leading-relaxed">{step.desc}</p>
-                  </div>
-                </m.div>
-              ))}
-            </StaggerContainer>
-
-            {/* CTAs */}
-            <div className="flex flex-col sm:flex-row justify-center items-center gap-6 pt-4 border-t border-white/10">
-              <m.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.98 }}>
-                <Link href={`/${lang}/register`} className="btn-premium group flex items-center gap-2">
-                  {lang === 'en' ? "Generate My Card" : "मेरा कार्ड बनाएं"} <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </Link>
-              </m.div>
-              <m.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.98 }}>
-                <Link href={`/${lang}/login`} className="text-white font-bold hover:text-accent hover:underline flex items-center gap-1 text-sm uppercase tracking-widest">
-                  {lang === 'en' ? "Access My Wallet" : "मेरे वॉलेट तक पहुँचें"} <ArrowUpRight className="w-4 h-4" />
-                </Link>
-              </m.div>
-            </div>
-          </div>
-        </FadeIn>
 
       </div>
     </section>

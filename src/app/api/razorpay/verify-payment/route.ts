@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 import { db } from '@/lib/firebase';
-import { collection, query, where, getDocs, updateDoc, doc, setDoc, increment } from 'firebase/firestore';
+import { collection, query, where, getDocs, updateDoc, doc } from 'firebase/firestore';
 
 export async function POST(req: Request) {
   try {
@@ -17,7 +17,7 @@ export async function POST(req: Request) {
     }
 
     // Verify the payment signature
-    const text = razorpay_order_id + "|";
+
     const generated_signature = crypto
       .createHmac('sha256', keySecret)
       .update(razorpay_order_id + "|" + razorpay_payment_id)
@@ -40,33 +40,13 @@ export async function POST(req: Request) {
         // If not already activated, activate the user and process outreach rewards
         if (!userData.membershipId) {
           const newMemberId = 'KSS-' + Math.random().toString(36).substring(2, 8).toUpperCase();
-          const normalizedPhone = userData.phone || '';
-          
           await updateDoc(doc(db, 'users', userDoc.id), {
             membershipId: newMemberId,
-            referralCode: newMemberId,
             membershipFeePaid: 50,
             paymentStatus: 'paid',
             paymentId: razorpay_payment_id,
             updatedAt: new Date()
           });
-
-          // Credit Outreach MLM rewards to referrers if present
-          const referrerId = userData.referredBy;
-          if (referrerId) {
-            try {
-              const { processMlmReferral } = await import('@/lib/referral-mlm');
-              await processMlmReferral(
-                userDoc.id,
-                userData.fullName || 'Unknown Farmer',
-                normalizedPhone,
-                referrerId,
-                razorpay_payment_id
-              );
-            } catch (refErr) {
-              console.error('Server-side outreach MLM reward failed:', refErr);
-            }
-          }
         }
       }
     } catch (dbErr) {

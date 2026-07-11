@@ -37,11 +37,7 @@ export interface UserData {
     postOffice?: string;
     pincode?: string;
     stats?: {
-        earnings: number;
-        totalReferrals: number;
         activeListings: number;
-        levelCounts?: Record<string, number>;
-        levelEarnings?: Record<string, number>;
     };
 }
 
@@ -109,17 +105,7 @@ export interface Product {
     createdAt?: Timestamp;
 }
 
-export interface Referral {
-    id: string;
-    referredUserId: string;
-    referredUserName: string;
-    referredUserPhone?: string;
-    reward: number;
-    joinedAt: string;
-    paymentConfirmed?: boolean;
-    paymentId?: string;
-    level?: number;
-}
+
 
 declare global {
     interface Window {

@@ -9,7 +9,6 @@ import {
   ChevronRight, 
   ChevronLeft, 
   Check, 
-  Copy, 
   Sprout, 
   Fingerprint,
   CheckCircle2,
@@ -28,9 +27,9 @@ import {
   updateProfile,
   AuthError
 } from 'firebase/auth';
-import { collection, query, where, getDocs, doc, getDoc, setDoc, updateDoc, increment } from 'firebase/firestore';
+import { collection, query, where, getDocs, doc, getDoc, setDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useLanguage } from '@/context/LanguageContext';
 
 import Image from 'next/image';
@@ -58,10 +57,10 @@ const get10DigitPhone = (phone: string): string => {
 };
 
 export default function RegistrationForm() {
-  const searchParams = useSearchParams();
+
   const router = useRouter();
   const { dict, lang } = useLanguage();
-  const referrerId = searchParams.get('cid') || searchParams.get('ref');
+
   
   const [formData, setFormData] = useState({
     fullName: "",
@@ -83,7 +82,7 @@ export default function RegistrationForm() {
   const [step, setStep] = useState<Step>(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
-  const [referralLink, setReferralLink] = useState('');
+
   const [memberId, setMemberId] = useState('');
   const [otpSent, setOtpSent] = useState(false);
   const [otpValue, setOtpValue] = useState('');
@@ -183,15 +182,12 @@ export default function RegistrationForm() {
         photoUrl: finalPhotoUrl,
         photoBase64: finalPhotoUrl,
         membershipId: newMemberId,
-        referralCode: newMemberId,
-        referredBy: referrerId || null,
         registrationDate: new Date().toISOString(),
         membershipFeePaid: 50,
         paymentStatus: 'paid',
         paymentId: paymentId,
         paymentOrderId: orderId,
-        walletBalance: 0,
-        stats: { totalReferrals: 0, earnings: 0, activeListings: 0, levelCounts: {}, levelEarnings: {} },
+        stats: { activeListings: 0 },
         fatherName: currentData.fatherName || "",
         dob: currentData.dob || "",
         gender: currentData.gender || "Male",
@@ -200,22 +196,6 @@ export default function RegistrationForm() {
       };
 
       await setDoc(userDocRef, userData);
-
-      // Credit MLM referral rewards ONLY if:
-      if (referrerId) {
-        try {
-          const { processMlmReferral } = await import('@/lib/referral-mlm');
-          await processMlmReferral(
-            user.uid,
-            currentData.fullName,
-            normalizedPhone,
-            referrerId,
-            paymentId
-          );
-        } catch (refErr: unknown) {
-          console.error('Error rewarding referrer MLM:', refErr);
-        }
-      }
 
       setStep('success');
     } catch (err: unknown) {
@@ -227,7 +207,7 @@ export default function RegistrationForm() {
       setIsSubmitting(false);
       setPaymentProcessing(false);
     }
-  }, [formData, dict.register.errors.session_lost, photoFile, referrerId, setMemberId, setReferralLink, setStep, setIsSubmitting, setError, setPaymentProcessing, lang]);
+  }, [formData, dict.register.errors.session_lost, photoFile, setMemberId, setStep, setIsSubmitting, setError, setPaymentProcessing, lang]);
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -364,13 +344,11 @@ export default function RegistrationForm() {
         crops: formData.crops,
         photoUrl: finalPhotoUrl,
         photoBase64: finalPhotoUrl,
-        referredBy: referrerId || null,
         registrationDate: new Date().toISOString(),
         membershipFeePaid: 0,
         paymentStatus: 'pending',
         paymentOrderId: orderData.orderId,
-        walletBalance: 0,
-        stats: { totalReferrals: 0, earnings: 0, activeListings: 0, levelCounts: {}, levelEarnings: {} },
+        stats: { activeListings: 0 },
         fatherName: formData.fatherName || "",
         dob: formData.dob || "",
         gender: formData.gender || "Male",
@@ -706,24 +684,6 @@ export default function RegistrationForm() {
                 })()}
 
                 <div className="w-full max-w-md bg-[#fbf9f5] p-6 rounded-2xl border border-[#77574d]/10 space-y-4">
-                  <div className="pt-4 border-t border-black/5">
-                    <p className="text-xs font-bold uppercase tracking-wider text-[#122c1f] mb-3">{dict.register.referral_link_label}</p>
-                    <div className="flex gap-2">
-                      <div className="flex-1 bg-white px-4 py-3 rounded-xl border border-[#77574d]/20 text-xs font-mono truncate flex items-center">
-                        {referralLink}
-                      </div>
-                      <button 
-                        onClick={() => {
-                            navigator.clipboard.writeText(referralLink);
-                            alert(dict.register.errors.link_copied);
-                        }}
-                        className="p-3 bg-[#122c1f] text-white rounded-xl hover:bg-[#122c1f]/90 transition-colors"
-                      >
-                        <Copy className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-                  
                   <button 
                     onClick={() => router.push('/dashboard')}
                     className="w-full py-4 bg-[#122c1f] text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#122c1f]/90 transition-all shadow-md mt-4"
