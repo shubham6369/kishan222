@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Notifications utility for sending SMS and WhatsApp messages.
  * This is a skeleton implementation. When ready to integrate a real provider 
  * (like Twilio, Gupshup, or MSG91), place the API calls here.
@@ -56,7 +56,6 @@ export const NotificationTemplates = {
     paymentReceived: (amount: number) => 
         `We have received your payment of ₹${amount}. Thank you!`,
         
-    referralBonus: (amount: number, referredUser: string) => 
-        `Congratulations! You've earned a referral bonus of ₹${amount} because ${referredUser} joined using your code.`
+
 };
 

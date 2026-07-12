@@ -27,9 +27,6 @@ export interface UserData {
     crops?: string;
     landSize?: string;
     isAdmin?: boolean;
-    walletBalance?: number;
-    referralCode?: string;
-    referredBy?: string;
     fatherName?: string;
     dob?: string;
     gender?: string;

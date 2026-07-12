@@ -137,7 +137,6 @@ export default function RegistrationForm() {
         const data = userDoc.data();
         if (data.membershipId) {
           setMemberId(data.membershipId);
-          setReferralLink(`${window.location.origin}/${lang}/register?cid=${data.membershipId}`);
           setStep('success');
           return;
         }
@@ -151,7 +150,6 @@ export default function RegistrationForm() {
       // Generate Membership ID
       const newMemberId = 'KSS-' + Math.random().toString(36).substr(2, 6).toUpperCase();
       setMemberId(newMemberId);
-      setReferralLink(`${window.location.origin}/${lang}/register?cid=${newMemberId}`);
 
       // Upload Photo
       let finalPhotoUrl = currentData.photoBase64;
@@ -207,7 +205,7 @@ export default function RegistrationForm() {
       setIsSubmitting(false);
       setPaymentProcessing(false);
     }
-  }, [formData, dict.register.errors.session_lost, photoFile, setMemberId, setStep, setIsSubmitting, setError, setPaymentProcessing, lang]);
+  }, [formData, dict.register.errors.session_lost, photoFile, setMemberId, setStep, setIsSubmitting, setError, setPaymentProcessing]);
 
   useEffect(() => {
     let timer: NodeJS.Timeout;

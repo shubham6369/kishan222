@@ -47,7 +47,7 @@ export default function AboutContent({ lang, dict }: AboutContentProps) {
     { year: '2019', event: lang === 'en' ? 'Foundation of Kishan Seva in Lucknow' : 'लखनऊ में किशन सेवा की स्थापना' },
     { year: '2021', event: lang === 'en' ? 'First 500 farmers enrolled in membership programme' : 'सदस्यता कार्यक्रम में पहले 500 किसान नामांकित' },
     { year: '2022', event: lang === 'en' ? 'Organic Marketplace launched with 50+ product categories' : '50+ उत्पाद श्रेणियों के साथ जैविक बाजार शुरू किया गया' },
-    { year: '2023', event: lang === 'en' ? 'Referral system introduced — ₹7 per verified farmer' : 'रेफरल प्रणाली शुरू की गई - ₹7 प्रति सत्यापित किसान' },
+    { year: '2023', event: lang === 'en' ? 'Community outreach program expanded to rural clusters' : 'सामुदायिक आउटरीच कार्यक्रम ग्रामीण समूहों तक विस्तारित किया गया' },
     { year: '2024', event: lang === 'en' ? 'Digital membership card launched for all enrolled farmers' : 'सभी नामांकित किसानों के लिए डिजिटल सदस्यता कार्ड लॉन्च किया गया' },
     { year: '2025', event: lang === 'en' ? 'Platform expanded pan-India with bilingual support' : 'द्विभाषी समर्थन के साथ पूरे भारत में मंच का विस्तार' },
   ];
