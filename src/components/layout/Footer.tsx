@@ -44,11 +44,11 @@ export default function Footer({ lang, dict }: { lang: string, dict: Dictionary 
             </div>
           </div>
 
-          <div className="lg:col-span-7 grid grid-cols-1 md:grid-cols-3 gap-12">
+          <div className="lg:col-span-7 grid grid-cols-1 md:grid-cols-2 gap-12">
             {/* Exploration */}
             <div>
-              <h4 className="font-serif text-lg font-bold mb-6 text-accent">{dict.footer?.exploration || "Exploration"}</h4>
-              <ul className="space-y-4 font-body text-white/50 text-sm">
+              <h4 className="font-serif text-xl font-bold mb-8 text-accent">{dict.footer?.exploration || "Exploration"}</h4>
+              <ul className="space-y-6 font-body text-white/50">
                 <li>
                   <Link href={`/${lang}/about`} className="hover:text-white transition-colors flex items-center gap-2 group">
                     {dict.footer?.exploration_links?.[0] || "Our Heritage"} <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -67,55 +67,28 @@ export default function Footer({ lang, dict }: { lang: string, dict: Dictionary 
               </ul>
             </div>
 
-            {/* Marketplace */}
-            <div>
-              <h4 className="font-serif text-lg font-bold mb-6 text-accent">{dict.marketplace?.title || "Marketplace"}</h4>
-              <ul className="space-y-4 font-body text-white/50 text-sm">
-                <li>
-                  <Link href={`/${lang}/marketplace`} className="hover:text-white transition-colors flex items-center gap-2 group">
-                    {dict.marketplace?.categories?.all || "All Products"} <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </Link>
-                </li>
-                <li>
-                  <Link href={`/${lang}/marketplace?category=seeds`} className="hover:text-white transition-colors flex items-center gap-2 group">
-                    {dict.marketplace?.categories?.seeds || "Seeds"} <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </Link>
-                </li>
-                <li>
-                  <Link href={`/${lang}/marketplace?category=fertilizers`} className="hover:text-white transition-colors flex items-center gap-2 group">
-                    {dict.marketplace?.categories?.fertilizers || "Fertilizers"} <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </Link>
-                </li>
-                <li>
-                  <Link href={`/${lang}/marketplace?category=pesticides`} className="hover:text-white transition-colors flex items-center gap-2 group">
-                    {dict.marketplace?.categories?.pesticides || "Bio Pesticides"} <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
             {/* Assistance */}
             <div>
-              <h4 className="font-serif text-lg font-bold mb-6 text-accent">{dict.footer?.assistance || "Assistance"}</h4>
-              <div className="space-y-6 font-body text-white/50 text-sm">
+              <h4 className="font-serif text-xl font-bold mb-8 text-accent">{dict.footer?.assistance || "Assistance"}</h4>
+              <div className="space-y-8 font-body text-white/50">
                 <div className="flex items-start gap-4">
-                  <Phone className="w-5 h-5 text-accent/50 shrink-0 mt-1" />
+                  <Phone className="w-6 h-6 text-accent/50 shrink-0" />
                   <div className="space-y-1">
-                    <span className="block text-white font-bold text-sm">+91 91200 77139</span>
+                    <span className="block text-white font-bold">+91 91200 77139</span>
                     <span className="text-xs">{dict.footer?.support_hours || "Mon - Sat, 9am - 6pm"}</span>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
-                  <Mail className="w-5 h-5 text-accent/50 shrink-0 mt-1" />
+                  <Mail className="w-6 h-6 text-accent/50 shrink-0" />
                   <div className="space-y-1">
-                    <span className="block text-white font-bold text-sm truncate max-w-[200px]" title="sandeepkumarchauhan805@gmail.com">sandeepkumarchauhan805@gmail.com</span>
+                    <span className="block text-white font-bold">sandeepkumarchauhan805@gmail.com</span>
                     <span className="text-xs">{dict.footer?.digital_support || "24/7 Digital Support"}</span>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
-                  <MapPin className="w-5 h-5 text-accent/50 shrink-0 mt-1" />
+                  <MapPin className="w-6 h-6 text-accent/50 shrink-0" />
                   <div className="space-y-1">
-                    <span className="block text-white font-bold text-sm">{dict.contact.visit}</span>
+                    <span className="block text-white font-bold">{dict.contact.visit}</span>
                     <span className="text-xs max-w-[200px] block leading-relaxed">{dict.contact.visit_address}</span>
                   </div>
                 </div>
