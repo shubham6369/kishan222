@@ -68,7 +68,7 @@ export default function Navbar({ lang, dict }: { lang: string, dict: Dictionary 
         </Link>
 
         {/* Desktop Links */}
-        <div className="hidden md:flex items-center gap-10 font-body">
+        <div className="hidden md:flex items-center gap-8 lg:gap-10 font-body">
           <button
             onClick={toggleLanguage}
             className={`flex items-center gap-2 text-sm font-bold uppercase tracking-widest hover:text-accent-dark transition-colors ${hasScrolled ? "text-primary" : "text-white"}`}
@@ -82,6 +82,12 @@ export default function Navbar({ lang, dict }: { lang: string, dict: Dictionary 
             className={`text-sm font-bold uppercase tracking-widest hover:text-accent-dark transition-colors ${hasScrolled ? "text-primary" : "text-white"}`}
           >
             {lang === 'hi' ? "कार्ड बनाएं" : "Generate Card"}
+          </Link>
+          <Link 
+            href={`/${lang}/marketplace`} 
+            className={`text-sm font-bold uppercase tracking-widest hover:text-accent-dark transition-colors ${hasScrolled ? "text-primary" : "text-white"}`}
+          >
+            {dict.nav?.marketplace || "Marketplace"}
           </Link>
           <Link 
             href={`/${lang}/about`} 
@@ -179,6 +185,13 @@ export default function Navbar({ lang, dict }: { lang: string, dict: Dictionary 
                 onClick={() => setIsOpen(false)}
               >
                 {dict.nav?.join || "Generate Card"}
+              </Link>
+              <Link 
+                href={`/${lang}/marketplace`} 
+                className="block text-2xl font-serif text-white hover:text-accent transition-colors"
+                onClick={() => setIsOpen(false)}
+              >
+                {dict.nav?.marketplace || "Marketplace"}
               </Link>
               <Link 
                 href={`/${lang}/about`} 
